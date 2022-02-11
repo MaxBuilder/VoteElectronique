@@ -1,11 +1,17 @@
+#ifndef __VERIFIER_H__
+#define __VERIFIER_H__
 
+#include "BulletinBoard.hpp"
 
 class Verifier {
 
-public:
-    BulletinBoard& board;
-
 private:
+    BulletinBoard board;
+
+public:
+
+    Verifier(BulletinBoard _board) : board(_board) {}
+
     /**
      * @brief L'autorité locale s'assure qu'un vote a été finalisé avant la date limite. 
      * 
@@ -54,4 +60,7 @@ private:
      */
     bool compare_results();
 
+    ~Verifier();
 };
+
+#endif // __VERIFIER_H__

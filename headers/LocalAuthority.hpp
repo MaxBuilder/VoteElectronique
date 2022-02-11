@@ -1,24 +1,54 @@
+#ifndef __LOCAL_AUTHORITY_H
+#define __LOCAL_AUTHORITY_H
+
+#include <Center.hpp>
+#include <CryptoUtils.hpp>
+#include <../headers/RegionalAuthority.hpp>
+#include <boost/multiprecision/cpp_int.hpp>
+
+using namespace boost::multiprecision;
+
 
 
 class LocalAuthority : public Center {
 
 private:
     int id;
-    Center& regional_auth;
+    RegionalAuthority& regional_auth;
+
 public:
-    int get_id();
+
+    LocalAuthority(PublicKey _pkey, cpp_int _skey, int _id, RegionalAuthority& _regional_auth) : Center(_pkey, _skey), id(_id), regional_auth(_regional_auth) {};
+
+    /**
+    * @brief Accesseur sur l'attribut id.
+    */
+    int get_id() { return id; };
+
 
     /**
      * @brief Retourne une référence vers l'autorité régionale qui gère l'autorité locale.
      * 
-     * @return Center& 
+     * @return RegionalAuthority& 
      */
-    Center& get_regional_auth();
+    RegionalAuthority& get_regional_auth() { return regional_auth; };
+
 
     /**
      * @brief Retourne les clés publiques de l'autorité locale et de ses deux autorités supérieures.
      * 
-     * @return std::array<std::pair<cpp_int, cpp_int>, 3> 
+     * @return std::array<PublicKey, 3> 
      */
-    std::array<std::pair<cpp_int, cpp_int>, 3> get_public_keys();
+    std::array<PublicKey, 3> get_public_keys();
+
+
+    /**
+    * @brief Transmet les résultats locaux à l'autorité supérieure.
+    */
+    void transmit_results();
+
+
+    virtual ~LocalAuthority() {};
 };
+
+#endif // __LOCAL_AUTHORITY_H

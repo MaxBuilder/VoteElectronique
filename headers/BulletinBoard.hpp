@@ -1,7 +1,10 @@
+#ifndef __BULLETIN_BOARD_H__
+#define __BULLETIN_BOARD_H__
+
 #include <vector>
 
-#include <Bulletin.hpp>
-#include <Verifier.hpp>
+#include "Bulletin.hpp"
+// #include <Verifier.hpp>
 
 /**
  * @class BulletinBoard
@@ -27,22 +30,26 @@ private:
     /**
      * @brief Objet Verifier pour la vérification des votes
      */
-    Verifier verifier;
+    // Verifier verifier;
 
 public:
+    
+    // Constructeur par défaut
+    BulletinBoard() {};
+
     /**
      * @brief Get the board object
      * 
      * @return std::vector<Bulletin> 
      */
-    std::vector<Bulletin> get_board();
+    std::vector<Bulletin> get_board() { return board; };
 
     /**
      * @brief Get the sums object
      * 
      * @return std::vector<cpp_int> 
      */
-    std::vector<cpp_int> get_sums();
+    std::vector<cpp_int> get_sums() { return sums; };
 
     /**
      * @brief Fait appel au Verifier pour vérifier que les votes sont corrects.
@@ -58,3 +65,5 @@ public:
      */
     void make_tally();
 };
+
+#endif // __BULLETIN_BOARD_H__
