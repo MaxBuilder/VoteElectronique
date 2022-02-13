@@ -19,7 +19,7 @@ set(HEADERS headers/CryptoUtils.hpp
             headers/RegionalBulletin.hpp
             headers/NationalBulletin.hpp
 
-            # headers/Verifier.hpp
+            # headers/Verifier.hpp # ToDo : problème verifier / bulletinboard
 
 			headers/Center.hpp
             headers/LocalAuthority.hpp

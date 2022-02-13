@@ -19,8 +19,9 @@ class BulletinBoard {
 private:
     /**
      * @brief Vecteur des bulletins qui constituent le tableau
+     * ToDo : Bulletins passés en pointeurs pour pouvoir les caster (en LocalBulletin / RegionalBulletin / NationalBulletin)
      */
-    std::vector<Bulletin> board;
+    std::vector<Bulletin*> board;
 
     /**
      * @brief Vecteur des résultats du décompte des lignes
@@ -29,6 +30,7 @@ private:
 
     /**
      * @brief Objet Verifier pour la vérification des votes
+     * // ToDo : réparer pour activer (ou passer en fonctions statiques (raph))
      */
     // Verifier verifier;
 
@@ -42,14 +44,14 @@ public:
      * 
      * @return std::vector<Bulletin> 
      */
-    std::vector<Bulletin> get_board() { return board; };
+    std::vector<Bulletin*>& get_board() { return board; };
 
     /**
      * @brief Get the sums object
      * 
      * @return std::vector<cpp_int> 
      */
-    std::vector<cpp_int> get_sums() { return sums; };
+    std::vector<cpp_int>& get_sums() { return sums; };
 
     /**
      * @brief Fait appel au Verifier pour vérifier que les votes sont corrects.
@@ -61,7 +63,7 @@ public:
 
     /**
      * @brief Effectue le décompte des votes du `board` et l'écrit dans `sums`.
-     * 
+     * ToDo : déplacer make_tally car diffère en fonction du type de bulletin (local ou régional) 
      */
     void make_tally();
 };

@@ -12,13 +12,14 @@ class Bulletin {
         cpp_int pseudonym;
 
     public:
-        Bulletin();
+        Bulletin(cpp_int pseudo) : pseudonym(pseudo) {};
 
 
         cpp_int get_pseudonym() { return pseudonym; };
 
+        virtual void cout_board() { std::cout << "non initialized board\n"; };
 
-        ~Bulletin() {}; 
+        virtual ~Bulletin() {}; 
     };
 
 #endif // __BULLETIN_H__

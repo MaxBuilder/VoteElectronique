@@ -1,9 +1,10 @@
 #ifndef __LOCAL_AUTHORITY_H
 #define __LOCAL_AUTHORITY_H
 
-#include <Center.hpp>
-#include <CryptoUtils.hpp>
-#include <../headers/RegionalAuthority.hpp>
+#include "Center.hpp"
+#include "CryptoUtils.hpp"
+#include "RegionalAuthority.hpp"
+#include "LocalBulletin.hpp"
 #include <boost/multiprecision/cpp_int.hpp>
 
 using namespace boost::multiprecision;
@@ -45,7 +46,12 @@ public:
     /**
     * @brief Transmet les résultats locaux à l'autorité supérieure.
     */
-    void transmit_results();
+    virtual void transmit_results();
+
+    /**
+     * @brief Affiche le BulletinBoard d'une autorité sur la sortie standard.
+     */
+    virtual void print_board(); 
 
 
     virtual ~LocalAuthority() {};

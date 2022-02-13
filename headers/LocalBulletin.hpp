@@ -17,5 +17,11 @@ public:
     std::tuple<cpp_int, cpp_int, cpp_int> get_reg_vote();
     std::tuple<cpp_int, cpp_int, cpp_int> get_nat_vote();
     cpp_int get_equ_proof();
+
+    virtual void cout_board() {
+        std::cout << " > LocalBulletin: " << get_pseudonym() << ", " << timestamp << ", " << std::get<0>(loc_vote) << std::endl;
+    }
+
+    virtual ~LocalBulletin() {};
 };
 

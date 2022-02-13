@@ -3,8 +3,8 @@
 
 #include <boost/multiprecision/cpp_int.hpp>
 
-#include <CryptoUtils.hpp>
-#include <BulletinBoard.hpp>
+#include "CryptoUtils.hpp"
+#include "BulletinBoard.hpp"
 
 
 /**
@@ -18,7 +18,7 @@ class Center {
 
 private:
     
-    BulletinBoard board;
+    BulletinBoard bulletin_board;
     PublicKey public_key;
     cpp_int private_key;
 
@@ -31,7 +31,7 @@ public:
      * 
      * @return BulletinBoard 
      */
-    BulletinBoard get_board() { return board; };
+    BulletinBoard& get_bulletin_board() { return bulletin_board; };
     
     PublicKey get_public_key() { return public_key; };
     cpp_int get_private_key() {return private_key; };
@@ -43,7 +43,7 @@ public:
      * @return false si non
      */
     bool check_vote() {
-        board.verify();
+        bulletin_board.verify();
         return 0; // ToDo
     };
 
@@ -52,6 +52,11 @@ public:
      * Publie le résultat du vote dans le cas de l'autorité nationale.
      */
     virtual void transmit_results() {};
+
+    /**
+     * @brief Affiche le BulletinBoard d'une autorité sur la sortie standard.
+     */
+    virtual void print_board() {};
 
     virtual ~Center() {};
 };
