@@ -63,7 +63,20 @@ int main(int argc, char const *argv[])  {
         reg_auths[i].print_board();
     }
 
-    
+    // Transmettre à la nationale
+    for (size_t i = 0; i < reg_auths.size(); i++)  {
+        reg_auths[i].transmit_results();
+    }
 
+    // Tally des sommes nationales
+    nat_auth.make_tally();
+    
+    // Print du tableau national pour vérifier 
+    std::cout << "\n\033[01;34mShowing national authority\n\033[00m";
+    nat_auth.print_board();
+
+
+    // ToDo : scénario sans chiffrement (simplement avec M^candidat)
+    
     return 0;
 }

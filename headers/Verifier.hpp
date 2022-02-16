@@ -5,12 +5,12 @@
 
 class Verifier {
 
-private:
-    BulletinBoard board;
+// private:
+//     BulletinBoard board;
 
 public:
 
-    Verifier(BulletinBoard _board) : board(_board) {}
+    // Verifier(BulletinBoard _board) : board(_board) {}
 
     /**
      * @brief L'autorité locale s'assure qu'un vote a été finalisé avant la date limite. 
@@ -18,7 +18,7 @@ public:
      * @return true 
      * @return false 
      */
-    bool check_timestamp();
+    static bool check_timestamp(BulletinBoard);
 
     /**
      * @brief L'autorité vérifie la signature de chacun des votes.
@@ -26,7 +26,7 @@ public:
      * @return true 
      * @return false 
      */
-    bool check_signature();
+    static bool check_signature(BulletinBoard);
 
     /**
      * @brief Vérifie que le vote d'un utilisateur est complet.
@@ -34,7 +34,7 @@ public:
      * @return true 
      * @return false 
      */
-    bool check_complete_vote();
+    static bool check_complete_vote(BulletinBoard);
 
     /**
      * @brief Vérifie la preuve que le chiffré est celui d'un vote correct (zero-knowledge proof 1).
@@ -42,7 +42,7 @@ public:
      * @return true 
      * @return false 
      */
-    bool check_legal_vote();
+    static bool check_legal_vote(BulletinBoard);
 
     /**
      * @brief Vérifie la preuve que les chiffrés correspondent au même clair (zero-knowledge proof 3).
@@ -50,7 +50,7 @@ public:
      * @return true 
      * @return false 
      */
-    bool check_same_vote();
+    static bool check_same_vote(BulletinBoard);
 
     /**
      * @brief Compare les résultats obtenus avec ceux fournis par les autorités inférieures.
@@ -58,9 +58,9 @@ public:
      * @return true 
      * @return false 
      */
-    bool compare_results();
+    static bool compare_results(BulletinBoard);
 
-    ~Verifier();
+    // ~Verifier();
 };
 
 #endif // __VERIFIER_H__
