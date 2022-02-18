@@ -9,36 +9,42 @@
 
 using namespace boost::multiprecision;
 
-
-
+/**
+* @brief Représente un centre d'autorité local.
+*/
 class LocalAuthority : public Center {
 
+
 private:
-    int id;
-    RegionalAuthority& regional_auth;
+
+    int id; // Identifiant de l'autorité locale
+
+    RegionalAuthority& regional_auth; // Référence sur l'autorité régionale dont on dépend
+
 
 public:
 
+    // Constructeur
     LocalAuthority(PublicKey _pkey, cpp_int _skey, int _id, RegionalAuthority& _regional_auth) : Center(_pkey, _skey), id(_id), regional_auth(_regional_auth) {};
 
     /**
     * @brief Accesseur sur l'attribut id.
     */
-    int get_id() { return id; };
+    int get_id();
 
 
     /**
      * @brief Retourne une référence vers l'autorité régionale qui gère l'autorité locale.
      * 
-     * @return RegionalAuthority& 
+     * @return Center& une référence vers l'autorité régionale qui gère l'autorité locale.
      */
-    RegionalAuthority& get_regional_auth() { return regional_auth; };
+    RegionalAuthority& get_sup_auth();
 
 
     /**
      * @brief Retourne les clés publiques de l'autorité locale et de ses deux autorités supérieures.
      * 
-     * @return std::array<PublicKey, 3> 
+     * @return std::array<PublicKey, 3> les clés publiques de l'autorité locale et de ses deux autorités supérieures.
      */
     std::array<PublicKey, 3> get_public_keys();
 
@@ -46,15 +52,17 @@ public:
     /**
     * @brief Transmet les résultats locaux à l'autorité supérieure.
     */
-    virtual void transmit_results();
+    void transmit_results() override;
 
     /**
      * @brief Affiche le BulletinBoard d'une autorité sur la sortie standard.
      */
-    virtual void print_board(); 
+    void cout_board() override; 
 
-
-    virtual ~LocalAuthority() {};
+    /**
+     * @brief Effectue le décompte des votes.
+     */
+    void make_tally() override;
 };
 
 #endif // __LOCAL_AUTHORITY_H

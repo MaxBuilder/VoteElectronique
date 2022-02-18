@@ -7,6 +7,11 @@ project("Electronic Vote")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/${CMAKE_BUILD_TYPE})
 
 set(SRCS	main.cpp
+            src/BulletinBoard.cpp
+            src/LocalBulletin.cpp
+            src/RegionalBulletin.cpp
+            src/NationalBulletin.cpp
+
             src/LocalAuthority.cpp
             src/RegionalAuthority.cpp
             src/NationalAuthority.cpp

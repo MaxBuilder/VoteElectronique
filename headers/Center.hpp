@@ -6,14 +6,13 @@
 #include "CryptoUtils.hpp"
 #include "BulletinBoard.hpp"
 
+using namespace boost::multiprecision;
+
 
 /**
  * @file Center.hpp
- * @brief Représente une autorité.
+ * @brief Représente une autorité abstraite.
  */
-
-using namespace boost::multiprecision;
-
 class Center {
 
 private:
@@ -24,41 +23,51 @@ private:
 
 public:
 
+    // Constructeur
     Center(PublicKey _pkey, cpp_int _skey) : public_key(_pkey), private_key(_skey) {}
     
+
     /**
-     * @brief Get the board object
+     * @brief Renvoie une référence sur le bulletin board.
      * 
-     * @return BulletinBoard 
+     * @return BulletinBoard& une référence sur le bulletin board.
      */
     BulletinBoard& get_bulletin_board() { return bulletin_board; };
     
-    PublicKey get_public_key() { return public_key; };
-    cpp_int get_private_key() {return private_key; };
 
     /**
-     * @brief Vérifie la justesse du vote sur le board d'une autorité.
-     * 
-     * @return true si le vote est juste
-     * @return false si non
-     */
-    bool check_vote() {
-        bulletin_board.verify();
-        return 0; // ToDo
-    };
+    * @brief Renvoie une copie de la clé publique.
+    * 
+    * @return une copie de la clé publique.
+    */
+    PublicKey get_public_key() { return public_key; };
+
+
+    /**
+    * @brief Renvoie la clé privée.
+    * 
+    * @return La clé privée.
+    */
+    cpp_int get_private_key() { return private_key; };
+
 
     /**
      * @brief Transmets le résultat du décompte d'une autorité à sa supérieure hiérarchique.
      * Publie le résultat du vote dans le cas de l'autorité nationale.
      */
-    virtual void transmit_results() {};
+    virtual void transmit_results() = 0; // Cette fonction est virtuelle pure et fait de la classe une classe abstraite (non-instanciable)
+
 
     /**
      * @brief Affiche le BulletinBoard d'une autorité sur la sortie standard.
      */
-    virtual void print_board() {};
+    virtual void cout_board() {};
 
-    virtual ~Center() {};
+
+    /**
+    * @brief Effectue le décompte des votes.
+    */
+    virtual void make_tally() = 0;
 };
 
 #endif // __CENTER_H__

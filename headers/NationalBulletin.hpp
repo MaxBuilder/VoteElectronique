@@ -3,25 +3,36 @@
 
 #include "Bulletin.hpp"
 
-
+/**
+* @brief Repr�sente un bulletin issu d'une autorit� r�gionale.
+*/
 class NationalBulletin : public Bulletin {
+
 private:
-    cpp_int reg_sum;
-    cpp_int nat_product;
+    cpp_int reg_sum; // La somme des votes locaux en clair.
+    
+    cpp_int nat_product; // Le produit des votes chiffr�s nationaux fournis par les autorit�s locales.
 
 public:
-    NationalBulletin(cpp_int pseudo, cpp_int a, cpp_int b) : Bulletin(pseudo), reg_sum(a), nat_product(b) {};
 
-    cpp_int get_reg_sum() { return reg_sum; };
-    cpp_int get_nat_product() { return nat_product; };
+    // Constructeur
+    NationalBulletin(cpp_int pseudo, cpp_int reg_sum_, cpp_int nat_product_) : Bulletin(pseudo), reg_sum(reg_sum_), nat_product(nat_product_) {}
 
-    virtual void cout_board() {
-        std::cout << "| " <<std::setfill(' ') << std::setw(5) << get_pseudonym() << " | " << std::setfill(' ') 
-        << std::setw(5) << reg_sum << " | " << std::setfill(' ') << std::setw(5) << nat_product << " | " 
-        << "     " << " |\n";
-    }
+    /**
+    * @brief Accesseur sur la somme des votes locaux en clair.
+    * @return cpp_int la somme des votes locaux en clair.
+    */
+    cpp_int get_reg_sum();
 
-    virtual ~NationalBulletin() {};
+
+    /**
+    * @brief Accesseur sur le produit des votes nationaux.
+    * @return cpp_int le produit des votes nationaux.
+    */
+    cpp_int get_nat_product();
+
+
+    void cout_board() override;
 };
 
 #endif // __NATIONAL_BULLETIN_H__

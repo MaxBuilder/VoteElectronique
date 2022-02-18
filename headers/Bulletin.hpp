@@ -6,20 +6,24 @@
 
 using namespace boost::multiprecision;
 
+/**
+* @brief Représente un bulletin générique.
+*/
 class Bulletin {
 
     private: 
-        cpp_int pseudonym;
+        cpp_int pseudonym;  // Le pseudonyme (clé publique) de l'utilisateur.
 
     public:
+        
         Bulletin(cpp_int pseudo) : pseudonym(pseudo) {};
-
 
         cpp_int get_pseudonym() { return pseudonym; };
 
-        virtual void cout_board() { std::cout << "non initialized board\n"; };
-
-        virtual ~Bulletin() {}; 
+        /**
+        * @brief Affichage du bulletin.
+        */
+        virtual void cout_board() {};
     };
 
 #endif // __BULLETIN_H__

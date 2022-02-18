@@ -39,8 +39,8 @@ int main(int argc, char const *argv[])  {
 
     // Print les tableaux locaux et vérifier 
     for (size_t i = 0; i < loc_auths.size(); i++)  {
-        std::cout << "\033[0;33mShowing loc authority " << loc_auths[i].get_regional_auth().get_id() << ", " << loc_auths[i].get_id() << "\n\033[00m";
-        loc_auths[i].print_board();
+        std::cout << "\033[0;33mShowing loc authority " << loc_auths[i].get_sup_auth().get_id() << ", " << loc_auths[i].get_id() << "\n\033[00m";
+        loc_auths[i].cout_board();
     }
 
     std::cout << "\n";
@@ -60,7 +60,7 @@ int main(int argc, char const *argv[])  {
     // Print les tableaux régionaux et vérifier 
     for (size_t i = 0; i < reg_auths.size(); i++)  {
         std::cout << "\033[0;33mShowing reg authority " << reg_auths[i].get_id() << "\n\033[00m";
-        reg_auths[i].print_board();
+        reg_auths[i].cout_board();
     }
 
     // Transmettre à la nationale
@@ -73,7 +73,7 @@ int main(int argc, char const *argv[])  {
     
     // Print du tableau national pour vérifier 
     std::cout << "\n\033[01;34mShowing national authority\n\033[00m";
-    nat_auth.print_board();
+    nat_auth.cout_board();
 
 
     // ToDo : scénario sans chiffrement (simplement avec M^candidat)

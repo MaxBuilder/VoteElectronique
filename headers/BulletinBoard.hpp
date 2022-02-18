@@ -2,7 +2,6 @@
 #define __BULLETIN_BOARD_H__
 
 #include <vector>
-
 #include "Bulletin.hpp"
 // #include <Verifier.hpp>
 
@@ -17,16 +16,11 @@
 class BulletinBoard {
 
 private:
-    /**
-     * @brief Vecteur des bulletins qui constituent le tableau
-     * ToDo : Bulletins passés en pointeurs pour pouvoir les caster (en LocalBulletin / RegionalBulletin / NationalBulletin)
-     */
-    std::vector<Bulletin*> board;
+    // La liste des bulletins de vote.
+    std::vector<Bulletin> board;
 
-    /**
-     * @brief Vecteur des résultats du décompte des lignes
-     */
-    std::vector<cpp_int> sums;
+    // Décompte de chaque colonne
+    std::vector<cpp_int> sums; 
 
     /**
      * @brief Objet Verifier pour la vérification des votes
@@ -35,37 +29,34 @@ private:
     // Verifier verifier;
 
 public:
-    
-    // Constructeur par défaut
-    BulletinBoard() {};
 
     /**
-     * @brief Get the board object
+     * @brief Retourne la référence du tableau des votes.
      * 
-     * @return std::vector<Bulletin> 
+     * @return std::vector<Bulletin> & la référence du tableau des votes.
      */
-    std::vector<Bulletin*>& get_board() { return board; };
+    std::vector<Bulletin>& get_board();
 
     /**
-     * @brief Get the sums object
+     * @brief Retourne la référence du vecteur des décomptes.
      * 
-     * @return std::vector<cpp_int> 
+     * @return std::vector<cpp_int> & la référence du vecteur des décomptes.
      */
-    std::vector<cpp_int>& get_sums() { return sums; };
+    std::vector<cpp_int>& get_sums();
 
     /**
-     * @brief Fait appel au Verifier pour vérifier que les votes sont corrects.
+     * @brief Fait appel au Verifier pour filtrer les votes non-valables.
      * 
-     * @return true 
-     * @return false 
+     * @return true si des votes incorrects ont été filtrés.
+     * @return false sinon.
      */
     bool verify();
 
+
     /**
-     * @brief Effectue le décompte des votes du `board` et l'écrit dans `sums`.
-     * ToDo : déplacer make_tally car diffère en fonction du type de bulletin (local ou régional) 
-     */
-    void make_tally();
+    * @brief Affiche le BulletinBoard.
+    */
+    void cout_board();
 };
 
 #endif // __BULLETIN_BOARD_H__
