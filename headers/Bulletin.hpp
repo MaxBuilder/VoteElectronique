@@ -7,12 +7,12 @@
 using namespace boost::multiprecision;
 
 /**
-* @brief ReprÃ©sente un bulletin gÃ©nÃ©rique.
+* @brief Représente un bulletin générique.
 */
 class Bulletin {
 
     private: 
-        cpp_int pseudonym;  // Le pseudonyme (clÃ© publique) de l'utilisateur.
+        cpp_int pseudonym;  // Le pseudonyme (clé publique) de l'utilisateur.
 
     public:
         
@@ -23,7 +23,7 @@ class Bulletin {
         /**
         * @brief Affichage du bulletin.
         */
-        virtual void cout_board() {};
+        virtual void cout_board() = 0;
     };
 
 #endif // __BULLETIN_H__

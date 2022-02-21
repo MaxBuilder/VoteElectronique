@@ -20,9 +20,10 @@ private:
     BulletinBoard bulletin_board;
     PublicKey public_key;
     cpp_int private_key;
+    // CryptoManager crypto;
 
 public:
-
+    
     // Constructeur
     Center(PublicKey _pkey, cpp_int _skey) : public_key(_pkey), private_key(_skey) {}
     
@@ -52,6 +53,14 @@ public:
 
 
     /**
+    * @brief Renvoie la référence du CryptoManager.
+    * 
+    * @return la référence du CryptoManager.
+    */
+    //CryptoManager& get_crypto() { return crypto; }
+
+
+    /**
      * @brief Transmets le résultat du décompte d'une autorité à sa supérieure hiérarchique.
      * Publie le résultat du vote dans le cas de l'autorité nationale.
      */
@@ -65,9 +74,9 @@ public:
 
 
     /**
-    * @brief Effectue le décompte des votes.
+    * @brief Effectue le décompte des votes. Suppose que les votes sont déjà triés : on a supprimé ceux qui étaient invalides.
     */
-    virtual void make_tally() = 0;
+    virtual void make_tally(cpp_int) = 0;
 };
 
 #endif // __CENTER_H__

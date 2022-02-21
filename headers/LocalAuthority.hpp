@@ -59,10 +59,8 @@ public:
      */
     void cout_board() override; 
 
-    /**
-     * @brief Effectue le décompte des votes.
-     */
-    void make_tally() override;
+
+    void make_tally(cpp_int) override;
 };
 
 #endif // __LOCAL_AUTHORITY_H

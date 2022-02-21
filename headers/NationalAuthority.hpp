@@ -25,12 +25,10 @@ public:
      * @brief Affiche le BulletinBoard d'une autorité sur la sortie standard.
      */
     void cout_board() override;
-    
 
-    /**
-     * @brief Effectue le décompte des votes.
-     */
-    void make_tally() override;
+
+
+    void make_tally(cpp_int) override;
 };
 
 #endif // __NATIONAL_AUTHORITY_H__

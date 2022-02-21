@@ -1,17 +1,15 @@
-#ifndef __NATIONAL_BULLETIN_H__
-#define __NATIONAL_BULLETIN_H__
 
 #include "Bulletin.hpp"
 
 /**
-* @brief Reprï¿½sente un bulletin issu d'une autoritï¿½ rï¿½gionale.
+* @brief Représente un bulletin issu d'une autorité régionale.
 */
 class NationalBulletin : public Bulletin {
 
 private:
     cpp_int reg_sum; // La somme des votes locaux en clair.
     
-    cpp_int nat_product; // Le produit des votes chiffrï¿½s nationaux fournis par les autoritï¿½s locales.
+    cpp_int nat_product; // Le produit des votes chiffrés nationaux fournis par les autorités locales.
 
 public:
 
@@ -34,5 +32,3 @@ public:
 
     void cout_board() override;
 };
-
-#endif // __NATIONAL_BULLETIN_H__

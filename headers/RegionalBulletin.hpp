@@ -4,7 +4,7 @@
 #include "Bulletin.hpp"
 
 /**
-* @brief ReprÃ©sente un bulletin issu d'une autoritÃ© rÃ©gionale.
+* @brief Représente un bulletin issu d'une autorité régionale.
 */
 class RegionalBulletin : public Bulletin {
 
@@ -12,7 +12,7 @@ class RegionalBulletin : public Bulletin {
 private:
     cpp_int loc_sum; // La somme des votes locaux en clair.
 
-    cpp_int reg_product; // Le produit des votes rï¿½gionaux.
+    cpp_int reg_product; // Le produit des votes régionaux.
 
     cpp_int nat_product; // Le produit des votes nationaux.
 

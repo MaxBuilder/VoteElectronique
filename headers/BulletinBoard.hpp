@@ -16,11 +16,11 @@
 class BulletinBoard {
 
 private:
-    // La liste des bulletins de vote.
-    std::vector<Bulletin> board;
+    
+    std::vector<Bulletin *> board; // La liste des bulletins de vote.
 
-    // Décompte de chaque colonne
-    std::vector<cpp_int> sums; 
+    
+    std::vector<cpp_int> sums; // Décompte de chaque colonne
 
     /**
      * @brief Objet Verifier pour la vérification des votes
@@ -35,7 +35,7 @@ public:
      * 
      * @return std::vector<Bulletin> & la référence du tableau des votes.
      */
-    std::vector<Bulletin>& get_board();
+    std::vector<Bulletin *>& get_board();
 
     /**
      * @brief Retourne la référence du vecteur des décomptes.

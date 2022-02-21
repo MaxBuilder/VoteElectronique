@@ -1,3 +1,5 @@
+#include <tuple>
+
 #include "../headers/LocalAuthority.hpp"
 #include "../headers/RegionalBulletin.hpp"
 
@@ -20,7 +22,7 @@ std::array<PublicKey, 3> LocalAuthority::get_public_keys() {
 
 void LocalAuthority::transmit_results() {
 
-	std::vector<Bulletin> regional_board = get_sup_auth().get_bulletin_board().get_board();
+	std::vector<Bulletin *> regional_board = get_sup_auth().get_bulletin_board().get_board();
 	
 	int id = get_id();
 	cpp_int loc_sum = get_bulletin_board().get_sums()[0];
@@ -29,36 +31,47 @@ void LocalAuthority::transmit_results() {
 	
 	RegionalBulletin votes(id, loc_sum, reg_prod, nat_prod);
 
-	regional_board.push_back(votes);
+	regional_board.push_back(&votes);
 }
 
-/**
- * @brief Affiche le BulletinBoard d'une autorité sur la sortie standard.
- */
+
 void LocalAuthority::cout_board() {
-	std::cout << "Board de l'autorité locale n°" << get_id() << " : " << std::endl;
+	std::cout << "Board de l'autorité régionale n°" << get_id() << " : " << std::endl;
 	get_bulletin_board().cout_board();
 }
 
-void LocalAuthority::make_tally() {
-	// ToDo
+
+void LocalAuthority::make_tally(cpp_int N) {
+	
+	cpp_int N2; // Le modulo auquel on fait les calculs de chiffrement
+	boost::multiprecision::multiply(N2, N, N);
+
+	// Définition des variables contenant les produits des colonnes.
+	cpp_int loc_res = 1;
+	cpp_int reg_res = 1;
+	cpp_int nat_res = 1;
+
+	for (Bulletin * b : get_bulletin_board().get_board()) {
+		
+		LocalBulletin * pt_b = (LocalBulletin*) b;
+		
+		cpp_int loc_vote = std::get<0>(pt_b -> get_loc_vote());
+		boost::multiprecision::multiply(loc_res, loc_res, loc_vote);
+		boost::multiprecision::powm(loc_res, 1, N2);
+
+		cpp_int reg_vote = std::get<0>(pt_b -> get_reg_vote());
+		boost::multiprecision::multiply(reg_res, reg_res, reg_vote);
+		boost::multiprecision::powm(reg_res, 1, N2);
+
+		cpp_int nat_vote = std::get<0>(pt_b -> get_nat_vote());
+		boost::multiprecision::multiply(nat_res, nat_res, nat_vote);
+		boost::multiprecision::powm(nat_res, 1, N2);
+
+	}
+
+	//cpp_int decrypted_loc_res = get_crypto().decrypt(loc_res);		// Une fois la classe CryptoManager créée
+
+	//get_bulletin_board().get_sums().push_back(decrypted_loc_res);
+	get_bulletin_board().get_sums().push_back(reg_res);
+	get_bulletin_board().get_sums().push_back(nat_res);
 }
-
-// void LocalAuthority::cout_board() {
-//         if (get_bulletin_board().get_board().size() > 0) {
-//             std::cout << " > Local board: ("<< get_bulletin_board().get_board().size() << " entries)\n";
-//             for (size_t i = 0; i < get_bulletin_board().get_board().size(); i++)  {
-//                 LocalBulletin *casted_bulletin = (LocalBulletin*) get_bulletin_board().get_board()[i];  
-//                 casted_bulletin->cout_board();
-//             }
-//         }
-//         else {
-//             std::cout << " > Local board empty\n";
-//         }
-
-//         std::cout << "| Sums. | ";
-//         for (size_t i = 0; i < get_bulletin_board().get_sums().size(); i++)  {
-//             std::cout << std::setfill(' ') << std::setw(5) << get_bulletin_board().get_sums()[i] << " | ";
-//         }
-//         std::cout << "\n";
-//     }

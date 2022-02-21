@@ -5,21 +5,21 @@
 #include "Bulletin.hpp"
 
 /**
-* ReprÃ©sente le bulletin de vote au niveau local.
+* Représente le bulletin de vote au niveau local.
 */
 class LocalBulletin : public Bulletin {
 
 private:
 
-    // Le timestamp qui doit Ãªtre apposÃ© par l'autoritÃ© lors de la finalisation du vote.
+    // Le timestamp qui doit être apposé par l'autorité lors de la finalisation du vote.
     time_t timestamp;
 
-    // Description du tuple : (chiffrÃ© du vote, signature, preuve de validitÃ©)
+    // Description du tuple : (chiffré du vote, signature, preuve de validité)
     std::tuple<cpp_int, cpp_int, cpp_int> loc_vote;
     std::tuple<cpp_int, cpp_int, cpp_int> reg_vote;
     std::tuple<cpp_int, cpp_int, cpp_int> nat_vote;
     
-    // La preuve d'Ã©galitÃ© des chiffrÃ©s
+    // La preuve d'égalité des chiffrés
     cpp_int equ_proof;
 
 
@@ -38,28 +38,28 @@ public:
     
 
     /**
-    * @brief Accesseur sur le vote chiffrÃ© avec la clÃ© publique locale.
-    * @return le vote chiffrÃ© avec la clÃ© publique locale.
+    * @brief Accesseur sur le vote chiffré avec la clé publique locale.
+    * @return le vote chiffré avec la clé publique locale.
     */
     std::tuple<cpp_int, cpp_int, cpp_int> get_loc_vote();
 
 
     /**
-    * @brief Accesseur sur le vote chiffrÃ© avec la clÃ© publique rÃ©gionale.
-    * @return le vote chiffrÃ© avec la clÃ© publique rÃ©gionale.
+    * @brief Accesseur sur le vote chiffré avec la clé publique régionale.
+    * @return le vote chiffré avec la clé publique régionale.
     */
     std::tuple<cpp_int, cpp_int, cpp_int> get_reg_vote();
     
     
     /**
-    * @brief Accesseur sur le vote chiffrÃ© avec la clÃ© publique nationale.
-    * @return le vote chiffrÃ© avec la clÃ© publique nationale.
+    * @brief Accesseur sur le vote chiffré avec la clé publique nationale.
+    * @return le vote chiffré avec la clé publique nationale.
     */
     std::tuple<cpp_int, cpp_int, cpp_int> get_nat_vote();
     
 
     /**
-    * @brief Accesseur sur la preuve d'Ã©galitÃ© des chiffrÃ©s.
+    * @brief Accesseur sur la preuve d'égalité des chiffrés.
     */
     cpp_int get_equ_proof();
 
