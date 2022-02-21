@@ -9,13 +9,15 @@ int main(int argc, char const *argv[])  {
     int nb_reg = 3; // 3 régionales
     int nb_loc_per_reg = 2; // 2 locales par régionales
 
+    // variables à fixer pour scénario
     PublicKey _pkey = {};
+    cpp_int mod_N = 90; 
     cpp_int _skey = 8;
+
     NationalAuthority nat_auth(_pkey, _skey);
         // Génère ses clés publiques
         // Lis le fichier config
         // Génère le nombre de régionales qu'il faut
-            // 
 
     std::vector<RegionalAuthority> reg_auths;
     for (int i = 0; i < nb_reg; i++)  {
@@ -30,16 +32,23 @@ int main(int argc, char const *argv[])  {
     }
     
     // Tester de remplir les sums des locales, puis de les écrire dans regionale puis de les écrire dans nationale
+    std::tuple<cpp_int, cpp_int, cpp_int> fake_vote;
     for (size_t i = 0; i < loc_auths.size(); i++)  {
-        // Remplissage des tableaux sums avec 3 valeurs aléatoires 
+        // Remplissage des tableaux boards avec 3 votes aléatoires pour chaque autorité
         for (size_t j = 0; j < 3; j++)  {
-            loc_auths[i].get_bulletin_board().get_sums().push_back(rand() % 100 + 1);
+            fake_vote = {rand() % 100 + 1, rand() % 100 + 1, rand() % 100 + 1};
+            loc_auths[i].get_bulletin_board().get_board().push_back( 
+                new LocalBulletin(j, time(nullptr), fake_vote, fake_vote, fake_vote) );
         }
+    }
+
+    // Tally des sommes locales
+    for (size_t i = 0; i < loc_auths.size(); i++)  {
+        loc_auths[i].make_tally(mod_N);
     }
 
     // Print les tableaux locaux et vérifier 
     for (size_t i = 0; i < loc_auths.size(); i++)  {
-        std::cout << "\033[0;33mShowing loc authority " << loc_auths[i].get_sup_auth().get_id() << ", " << loc_auths[i].get_id() << "\n\033[00m";
         loc_auths[i].cout_board();
     }
 
@@ -52,14 +61,13 @@ int main(int argc, char const *argv[])  {
 
     // Tally des sommes régionales
     for (size_t i = 0; i < reg_auths.size(); i++)  {
-        reg_auths[i].make_tally();
+        reg_auths[i].make_tally(mod_N);
     }
 
     std::cout << "\n";
 
     // Print les tableaux régionaux et vérifier 
     for (size_t i = 0; i < reg_auths.size(); i++)  {
-        std::cout << "\033[0;33mShowing reg authority " << reg_auths[i].get_id() << "\n\033[00m";
         reg_auths[i].cout_board();
     }
 
@@ -69,7 +77,7 @@ int main(int argc, char const *argv[])  {
     }
 
     // Tally des sommes nationales
-    nat_auth.make_tally();
+    nat_auth.make_tally(mod_N);
     
     // Print du tableau national pour vérifier 
     std::cout << "\n\033[01;34mShowing national authority\n\033[00m";

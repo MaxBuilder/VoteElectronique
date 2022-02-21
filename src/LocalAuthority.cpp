@@ -22,22 +22,30 @@ std::array<PublicKey, 3> LocalAuthority::get_public_keys() {
 
 void LocalAuthority::transmit_results() {
 
-	std::vector<Bulletin *> regional_board = get_sup_auth().get_bulletin_board().get_board();
+	// std::vector<Bulletin *> regional_board = get_sup_auth().get_bulletin_board().get_board();
 	
 	int id = get_id();
 	cpp_int loc_sum = get_bulletin_board().get_sums()[0];
 	cpp_int reg_prod = get_bulletin_board().get_sums()[1];
 	cpp_int nat_prod = get_bulletin_board().get_sums()[2];
 	
-	RegionalBulletin votes(id, loc_sum, reg_prod, nat_prod);
+	// RegionalBulletin votes(id, loc_sum, reg_prod, nat_prod);
+	// regional_board.push_back(&votes);
 
-	regional_board.push_back(&votes);
+	get_sup_auth().get_bulletin_board().get_board().push_back( 
+		new RegionalBulletin(id, loc_sum, reg_prod, nat_prod) );
 }
 
 
 void LocalAuthority::cout_board() {
-	std::cout << "Board de l'autorité régionale n°" << get_id() << " : " << std::endl;
+	std::cout << "\033[;33mBoard de l'autorité locale n°[" << get_sup_auth().get_id() << "," << get_id() << "] :\033[00m\n";
 	get_bulletin_board().cout_board();
+
+	std::cout << "| Sums. | ";
+	for (size_t i = 0; i < get_bulletin_board().get_sums().size(); i++)  {
+		std::cout << std::setfill(' ') << std::setw(5) << get_bulletin_board().get_sums()[i] << " | ";
+	}
+	std::cout << "\n";
 }
 
 
@@ -72,6 +80,7 @@ void LocalAuthority::make_tally(cpp_int N) {
 	//cpp_int decrypted_loc_res = get_crypto().decrypt(loc_res);		// Une fois la classe CryptoManager créée
 
 	//get_bulletin_board().get_sums().push_back(decrypted_loc_res);
+	get_bulletin_board().get_sums().push_back(-1); // temporaire pour l'affichage du board
 	get_bulletin_board().get_sums().push_back(reg_res);
 	get_bulletin_board().get_sums().push_back(nat_res);
 }

@@ -3,14 +3,20 @@
 
 
 void NationalAuthority::transmit_results() {
-    // TO DO
+    // ToDo
     return;
 }
 
 
 void NationalAuthority::cout_board() {
-    std::cout << "Board de l'autorité nationale : " << std::endl;
+    std::cout << "Board de l'autoritÃ© nationale :\n";
     get_bulletin_board().cout_board();
+
+    std::cout << "| Sums. | ";
+	for (size_t i = 0; i < get_bulletin_board().get_sums().size(); i++)  {
+		std::cout << std::setfill(' ') << std::setw(5) << get_bulletin_board().get_sums()[i] << " | ";
+	}
+	std::cout << "\n";
 }
 
 
