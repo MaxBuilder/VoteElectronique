@@ -5,11 +5,11 @@
 
 using namespace boost::multiprecision;
 
-
-struct PublicKey {
+typedef struct PublicKey
+{
     cpp_int g;
     cpp_int N;
-    cpp_int tetha;      
-};
+    cpp_int tetha;
+} PKey;
 
 #endif // __CRYPTO_UTILS_H
