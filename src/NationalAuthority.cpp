@@ -34,11 +34,11 @@ void NationalAuthority::make_tally(cpp_int N) {
 
         cpp_int reg_vote = pt_b -> get_reg_sum();
         boost::multiprecision::add(reg_sum, reg_sum, reg_vote);
-        boost::multiprecision::powm(reg_sum, 1, N2);
+        reg_sum = boost::multiprecision::powm(reg_sum, 1, N2);
 
         cpp_int nat_vote = pt_b -> get_nat_product();
         boost::multiprecision::multiply(nat_prod, nat_prod, nat_vote);
-        boost::multiprecision::powm(nat_prod, 1, N2);
+        nat_prod = boost::multiprecision::powm(nat_prod, 1, N2);
 
     }
 

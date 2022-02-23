@@ -33,9 +33,17 @@ public:
     /**
      * @brief Retourne la référence du tableau des votes.
      * 
-     * @return std::vector<Bulletin> & la référence du tableau des votes.
+     * @return std::vector<Bulletin *> & la référence du tableau des votes.
      */
     std::vector<Bulletin *>& get_board();
+
+
+    /**
+    * @brief Retourne une copie du board.
+    * 
+    * @return std::vector<Bulletin *> une copie du board.
+    */
+    std::vector<Bulletin *> get_board_copy();
 
     /**
      * @brief Retourne la référence du vecteur des décomptes.

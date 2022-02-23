@@ -15,7 +15,7 @@ std::array<PublicKey, 3> LocalAuthority::get_public_keys() {
 	PublicKey p2 = get_sup_auth().get_public_key();
 	PublicKey p3 = get_sup_auth().get_sup_auth().get_public_key();
 
-	std::array<PublicKey, 3> res {p1, p2, p3};
+	std::array<PublicKey, 3> res { p1, p2, p3 };
 	return res;
 }
 
@@ -59,21 +59,21 @@ void LocalAuthority::make_tally(cpp_int N) {
 	cpp_int reg_res = 1;
 	cpp_int nat_res = 1;
 
-	for (Bulletin * b : get_bulletin_board().get_board()) {
+	for (Bulletin * b : get_bulletin_board().get_board_copy()) {
 		
 		LocalBulletin * pt_b = (LocalBulletin*) b;
 		
 		cpp_int loc_vote = std::get<0>(pt_b -> get_loc_vote());
 		boost::multiprecision::multiply(loc_res, loc_res, loc_vote);
-		boost::multiprecision::powm(loc_res, 1, N2);
+		loc_res = boost::multiprecision::powm(loc_res, 1, N2);
 
 		cpp_int reg_vote = std::get<0>(pt_b -> get_reg_vote());
 		boost::multiprecision::multiply(reg_res, reg_res, reg_vote);
-		boost::multiprecision::powm(reg_res, 1, N2);
+		reg_res = boost::multiprecision::powm(reg_res, 1, N2);
 
 		cpp_int nat_vote = std::get<0>(pt_b -> get_nat_vote());
 		boost::multiprecision::multiply(nat_res, nat_res, nat_vote);
-		boost::multiprecision::powm(nat_res, 1, N2);
+		nat_res = boost::multiprecision::powm(nat_res, 1, N2);
 
 	}
 
