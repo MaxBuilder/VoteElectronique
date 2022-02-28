@@ -2,9 +2,26 @@
 #include "../headers/NationalBulletin.hpp"
 
 
+std::vector<cpp_int> NationalAuthority::calculate_results(cpp_int M, int p) {
+    
+    cpp_int final_tally = get_bulletin_board().get_sums().at(0);
+    std::vector<cpp_int> res;
+
+    for (int i = 0; i < p; i++) {
+        cpp_int q;
+        cpp_int r;
+        boost::multiprecision::divide_qr(final_tally, M, q, r);
+        final_tally = q;
+        boost::multiprecision::subtract(final_tally, final_tally, r);
+        res.push_back(r);
+    }
+
+    return res;
+}
+
+
 void NationalAuthority::transmit_results() {
     // ToDo
-    return;
 }
 
 

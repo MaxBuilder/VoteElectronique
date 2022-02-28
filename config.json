@@ -1,0 +1,9 @@
+{
+    "nbVoters": 5,
+
+    "nbRegionalAuth": 1,
+
+    "nbLocalPerRegionalAuth": 3,
+    
+    "nbServersPerCombiner": 5
+}

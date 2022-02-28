@@ -29,6 +29,12 @@ public:
 
 
     void make_tally(cpp_int) override;
+
+
+    /**
+    * @brief Calcule et renvoie le vecteur du nombre de votes pour chaque candidat.
+    */
+    std::vector<cpp_int> calculate_results(cpp_int M, int p);
 };
 
 #endif // __NATIONAL_AUTHORITY_H__

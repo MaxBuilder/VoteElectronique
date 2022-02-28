@@ -33,7 +33,7 @@ public:
 	Combiner & getCombiner();
 
 
-	//Verifier & getVerifier
+	//ToDo : Verifier & getVerifier
 };
 
 #endif
