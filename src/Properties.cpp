@@ -16,6 +16,7 @@ Properties::Properties() {
 	nbVoters = obj["nbVoters"].asInt();
 	nbRegionalAuth = obj["nbRegionalAuth"].asInt();
 	nbLocalPerRegionalAuth = obj["nbLocalPerRegionalAuth"].asInt();
+	nbCandidats = obj["nbCandidats"].asInt();
 	nbServersPerCombiner = obj["nbServersPerCombiner"].asInt();
 
 	// Calcul de la factorielle pour delta (on le fait une seule fois pour toute l'appli)

@@ -18,7 +18,13 @@ public:
      * @return true 
      * @return false 
      */
-    static bool check_timestamp(BulletinBoard);
+    static bool check_timestamp(BulletinBoard) {
+        // ToDo :
+        // Lit la durée du vote dans le fichier de configuration
+        // La transforme en timestamp
+        // Parcourt le board
+        // board.remove les votes incorrects
+    };
 
     /**
      * @brief L'autorité vérifie la signature de chacun des votes.

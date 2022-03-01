@@ -14,10 +14,11 @@ class Properties {
 private:
 
 	int nbVoters; // Le nombre de votants.
-	int nbRegionalAuth; // Le nombre d'autorités régionales.
-	int nbLocalPerRegionalAuth; // Le nombre d'autorités locales par autorité régionale.
+	int nbRegionalAuth; // Le nombre d'autoritÃ©s rÃ©gionales.
+	int nbLocalPerRegionalAuth; // Le nombre d'autoritÃ©s locales par autoritÃ© rÃ©gionale.
+	int nbCandidats; // Le nombre de candidats prÃ©sentÃ©s au vote
 
-	int nbServersPerCombiner; // Le nombre de serveurs de déchiffrement par combineur.
+	int nbServersPerCombiner; // Le nombre de serveurs de dÃ©chiffrement par combineur.
 	cpp_int delta; // (nbServersPerCombiner)!
 
 
@@ -38,12 +39,12 @@ public:
 
 	/**
 	* @brief Met en place le DP singleton. S'assure qu'il y a toujours une unique instance de la classe.
-	* Renvoie la référence vers l'objet s'il existe, ou bien le crée dans le cas contraire.
+	* Renvoie la rÃ©fÃ©rence vers l'objet s'il existe, ou bien le crÃ©e dans le cas contraire.
 	*/
 	static Properties* getProperties();
 
 
-	// A la suite se trouvent les différents accesseurs sur les propriétés.
+	// A la suite se trouvent les diffÃ©rents accesseurs sur les propriÃ©tÃ©s.
 
 	int get_nbVoters();
 

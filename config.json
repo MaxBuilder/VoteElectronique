@@ -4,6 +4,10 @@
     "nbRegionalAuth": 1,
 
     "nbLocalPerRegionalAuth": 3,
+
+    "nbCandidats": 3,
     
-    "nbServersPerCombiner": 5
+    "nbServersPerCombiner": 5,
+
+    "voteDuration": "86400000"
 }
