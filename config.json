@@ -9,5 +9,7 @@
     
     "nbServersPerCombiner": 5,
 
-    "voteDuration": "86400000"
+    "__DuréeDuVoteEnMilliSecondes": -1,
+    "__voteDuration": 7200000,
+    "voteDuration": 8000
 }

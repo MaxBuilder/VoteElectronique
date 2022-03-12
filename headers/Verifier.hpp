@@ -2,6 +2,9 @@
 #define __VERIFIER_H__
 
 #include "BulletinBoard.hpp"
+#include "Properties.hpp"
+#include "LocalBulletin.hpp"
+#include <ctime>
 
 class Verifier {
 
@@ -18,13 +21,7 @@ public:
      * @return true 
      * @return false 
      */
-    static bool check_timestamp(BulletinBoard) {
-        // ToDo :
-        // Lit la durée du vote dans le fichier de configuration
-        // La transforme en timestamp
-        // Parcourt le board
-        // board.remove les votes incorrects
-    };
+    static bool check_timestamp(std::vector<Bulletin*>& board);
 
     /**
      * @brief L'autorité vérifie la signature de chacun des votes.

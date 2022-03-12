@@ -24,7 +24,7 @@ private:
 
     /**
      * @brief Objet Verifier pour la vérification des votes
-     * // ToDo : réparer pour activer (ou passer en fonctions statiques (raph))
+     * // ToDo : Confirmer le passage du Verifier en fonctions statiques
      */
     // Verifier verifier;
 

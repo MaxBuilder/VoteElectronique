@@ -5,16 +5,33 @@
 #include "headers/LocalAuthority.hpp"
 
 // Config de base (nombre de régionales et locales)
-
 #define nb_candidats 3
 
-int main(int argc, char const *argv[])  {
+#include "headers/Verifier.hpp"
+#include <chrono>
+#include <ctime>
+int main(int argc, char const *argv[])
+{
+    std::cout << "\033[0;32mTest de la gestion des durées\033[0m\n";
+
+    Properties *prop = Properties::getProperties();
+    auto start = std::chrono::system_clock::now();
+    std::time_t start_time = std::chrono::system_clock::to_time_t(start);
+    prop->setVoteStart(start_time);
+
+    // Calcule le timestamp de fin de vote
+    double voteDuration = prop->getVoteDuration();
+    std::time_t end_time = start_time + voteDuration/1000;
+    prop->setVoteEnd(end_time);
+    std::cout << "Durée du vote: " << voteDuration/1000 << "s | " << voteDuration/1000/60 << "mn | " << voteDuration/1000/60/60 << "h\n";
+    std::cout << "Début: " << start_time << " | " << std::ctime(&(start_time))
+              << "Fin  : " << end_time << " | " << std::ctime(&end_time) << "\n";
+    
+
     std::cout << "\033[0;32mSimulation de transmission d'un (faux) tableau Sums des autorités locales vers les régionales\033[0m\n";
 
-    Properties prop = Properties::getProperties();
-
-    int nb_voters = prop.get_nbRegionalAuth() * prop.get_nbLocalPerRegionalAuth() * 3; // 3 électeurs par autorité locale 
-    cpp_int M = pow( cpp_int(2), ceil(log2(nb_voters)) ); // 2^ln(l)
+    int nb_voters = prop->get_nbRegionalAuth() * prop->get_nbLocalPerRegionalAuth() * 3; // 3 électeurs par autorité locale
+    cpp_int M = pow(cpp_int(2), ceil(log2(nb_voters)));                                  // 2^ln(l)
 
     // Fausses clés pour la création
     PublicKey _pkey = { 0, 90, 0 };
@@ -22,30 +39,38 @@ int main(int argc, char const *argv[])  {
 
     // Création de l'autorité nationale
     NationalAuthority nat_auth(_pkey, _skey);
-        
+
     // Génération des autorités régionales
     std::vector<RegionalAuthority> reg_auths;
-    for (int i = 0; i < prop.get_nbRegionalAuth(); i++)  {
-        reg_auths.push_back( RegionalAuthority(_pkey, _skey, i+1, nat_auth) );
+    for (int i = 0; i < prop->get_nbRegionalAuth(); i++)  {
+        reg_auths.push_back(RegionalAuthority(_pkey, _skey, i + 1, nat_auth));
     }
-    
+
     // Génération des autorités locales
     std::vector<LocalAuthority> loc_auths;
     for (size_t i = 0; i < reg_auths.size(); i++)  {
-        for (int j = 0; j < prop.get_nbLocalPerRegionalAuth(); j++)  {
-            loc_auths.push_back( LocalAuthority(_pkey, _skey, j+1, reg_auths[i]) );
+        for (int j = 0; j < prop->get_nbLocalPerRegionalAuth(); j++)  {
+            loc_auths.push_back(LocalAuthority(_pkey, _skey, j + 1, reg_auths[i]));
         }
     }
-    
+
     // Générations de votes aléatoires non chiffrés dans les boards des autorités locales
     cpp_int fake_vote;
     std::tuple<cpp_int, cpp_int, cpp_int> fake_vote_tuple;
     for (size_t i = 0; i < loc_auths.size(); i++)  {
-        for (size_t j = 0; j < 3; j++)  { // 3 électeurs par autorité locale
-            fake_vote = pow(M, rand() % nb_candidats + 1); // Vote: M^mi
+        for (size_t j = 0; j < 3; j++)  {   
+            sleep(1);                                             // 3 électeurs par autorité locale
+            fake_vote = pow(M, rand() % nb_candidats + 1);       // Vote: M^mi
             fake_vote_tuple = {fake_vote, fake_vote, fake_vote}; // ToDo: chiffrement, signature et preuve de validité du vote
-            loc_auths[i].get_bulletin_board().get_board().push_back( 
-                new LocalBulletin(j, time(nullptr), fake_vote_tuple, fake_vote_tuple, fake_vote_tuple, cpp_int(0) ) );
+            loc_auths[i].get_bulletin_board().get_board().push_back(
+                new LocalBulletin(j, time(nullptr), fake_vote_tuple, fake_vote_tuple, fake_vote_tuple, cpp_int(0)));
+        }
+    }
+
+    // Filtrage des boards par timestamp
+    for  (size_t i = 0; i < loc_auths.size(); i++) {
+        if (Verifier::check_timestamp(loc_auths[i].get_bulletin_board().get_board())) {
+            std::cout << "Vote frauduleux sur le board de l'autorité locale " << i+1 << "\n";
         }
     }
 
@@ -82,6 +107,6 @@ int main(int argc, char const *argv[])  {
 
 
     // ToDo : scénario sans chiffrement (simplement avec M^candidat)
-    
+
     return 0;
 }

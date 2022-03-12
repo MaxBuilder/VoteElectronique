@@ -21,7 +21,9 @@ private:
 	int nbServersPerCombiner; // Le nombre de serveurs de déchiffrement par combineur.
 	cpp_int delta; // (nbServersPerCombiner)!
 
-
+	double voteDuration;		// Durée du vote en millisecondes
+	time_t voteStart;			// Timestamp du début de vote
+	time_t voteEnd;				// Timestamp de fin de vote
 protected:
 
 	static Properties* reference;	// Le pointeur sur l'unique objet (DP Singleton)
@@ -55,6 +57,13 @@ public:
 	int get_nbServersPerCombiner();
 
 	cpp_int get_delta();
+
+	double getVoteDuration();
+	time_t getVoteStart();
+	time_t getVoteEnd();
+
+	void setVoteStart(time_t);
+	void setVoteEnd(time_t);
 };
 
 #endif

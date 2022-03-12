@@ -18,7 +18,8 @@ cpp_int LocalBulletin::get_equ_proof() { return equ_proof; }
 
 
 void LocalBulletin::cout_board() {
-	std::cout << "| " << std::setfill(' ') << std::setw(5) << get_pseudonym() << " | " << std::setfill(' ')
+	std::cout << timestamp << " | " << std::ctime(&timestamp) 
+        << "| " << std::setfill(' ') << std::setw(5) << get_pseudonym() << " | " << std::setfill(' ')
         << std::setw(5) << std::get<0>(loc_vote) << " | " << std::setfill(' ') << std::setw(5) << std::get<1>(loc_vote) << " | "
         << std::setfill(' ') << std::setw(5) << std::get<2>(loc_vote) << " |\n";
 }
