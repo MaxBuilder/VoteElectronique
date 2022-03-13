@@ -4,4 +4,9 @@
 #include <boost/random.hpp>
 #include "CryptoUtils.hpp"
 
-std::tuple<PKey, cpp_int> KeyGeneration();
+class KeyGeneration {
+
+public:
+    static std::tuple<PKey, cpp_int> generate_keys();
+
+};

@@ -4,6 +4,7 @@
 #include <boost/multiprecision/cpp_int.hpp>
 
 #include "CryptoUtils.hpp"
+#include "KeyGeneration.hpp"
 #include "BulletinBoard.hpp"
 
 using namespace boost::multiprecision;
@@ -25,7 +26,11 @@ private:
 public:
     
     // Constructeur
-    Center(PublicKey _pkey, cpp_int _skey) : public_key(_pkey), private_key(_skey) {}
+    Center() {
+        std::tuple<PKey, cpp_int> keys = KeyGeneration::generate_keys();
+        public_key = std::get<0>(keys);
+        private_key = std::get<1>(keys);
+    }
     
 
     /**

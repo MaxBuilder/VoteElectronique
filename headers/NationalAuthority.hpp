@@ -12,7 +12,7 @@ class NationalAuthority : public Center {
 public:
 
     // Constructeur
-    NationalAuthority(PublicKey _pkey, cpp_int _skey) : Center(_pkey, _skey) {}
+    NationalAuthority() : Center() {}
     
 
     /**

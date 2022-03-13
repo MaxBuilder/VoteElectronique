@@ -14,6 +14,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/${CMAKE_BUILD_TYPE})
 
 set(SRCS	main.cpp
             src/Properties.cpp
+            src/KeyGeneration.cpp
+
             src/BulletinBoard.cpp
             src/LocalBulletin.cpp
             src/RegionalBulletin.cpp
@@ -29,6 +31,8 @@ set(SRCS	main.cpp
 set(HEADERS 
             headers/Properties.hpp
             headers/CryptoUtils.hpp
+            headers/KeyGeneration.hpp
+
             headers/Bulletin.hpp
 			headers/BulletinBoard.hpp
             headers/LocalBulletin.hpp

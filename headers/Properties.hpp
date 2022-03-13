@@ -54,6 +54,8 @@ public:
 
 	int get_nbLocalPerRegionalAuth();
 
+	int get_nbCandidats();
+
 	int get_nbServersPerCombiner();
 
 	cpp_int get_delta();

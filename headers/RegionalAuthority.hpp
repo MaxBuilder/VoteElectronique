@@ -22,8 +22,8 @@ private:
 public:
     
     // Constructeur
-    RegionalAuthority(PublicKey _pkey, cpp_int _skey, int _id, NationalAuthority& _national_auth) : 
-                      Center(_pkey, _skey), id(_id), national_auth(_national_auth) {};
+    RegionalAuthority(int _id, NationalAuthority& _national_auth) : 
+                      Center(), id(_id), national_auth(_national_auth) {};
 
 
     /**

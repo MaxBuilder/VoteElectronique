@@ -25,7 +25,7 @@ private:
 public:
 
     // Constructeur
-    LocalAuthority(PublicKey _pkey, cpp_int _skey, int _id, RegionalAuthority& _regional_auth) : Center(_pkey, _skey), id(_id), regional_auth(_regional_auth) {};
+    LocalAuthority(int _id, RegionalAuthority& _regional_auth) : Center(), id(_id), regional_auth(_regional_auth) {};
 
     /**
     * @brief Accesseur sur l'attribut id.

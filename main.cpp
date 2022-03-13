@@ -1,11 +1,8 @@
-#include "../headers/Properties.hpp"
+#include "headers/Properties.hpp"
 #include "headers/Center.hpp"
 #include "headers/NationalAuthority.hpp"
 #include "headers/RegionalAuthority.hpp"
 #include "headers/LocalAuthority.hpp"
-
-// Config de base (nombre de régionales et locales)
-#define nb_candidats 3
 
 #include "headers/Verifier.hpp"
 #include <chrono>
@@ -33,26 +30,23 @@ int main(int argc, char const *argv[])
     int nb_voters = prop->get_nbRegionalAuth() * prop->get_nbLocalPerRegionalAuth() * 3; // 3 électeurs par autorité locale
     cpp_int M = pow(cpp_int(2), ceil(log2(nb_voters)));                                  // 2^ln(l)
 
-    // Fausses clés pour la création
-    PublicKey _pkey = { 0, 90, 0 };
-    cpp_int _skey = 8;
 
     // Création de l'autorité nationale
-    NationalAuthority nat_auth(_pkey, _skey);
-
+    NationalAuthority nat_auth;
     // Génération des autorités régionales
     std::vector<RegionalAuthority> reg_auths;
     for (int i = 0; i < prop->get_nbRegionalAuth(); i++)  {
-        reg_auths.push_back(RegionalAuthority(_pkey, _skey, i + 1, nat_auth));
+        reg_auths.push_back(RegionalAuthority(i + 1, nat_auth));
     }
 
     // Génération des autorités locales
     std::vector<LocalAuthority> loc_auths;
     for (size_t i = 0; i < reg_auths.size(); i++)  {
         for (int j = 0; j < prop->get_nbLocalPerRegionalAuth(); j++)  {
-            loc_auths.push_back(LocalAuthority(_pkey, _skey, j + 1, reg_auths[i]));
+            loc_auths.push_back(LocalAuthority(j + 1, reg_auths[i]));
         }
     }
+
 
     // Générations de votes aléatoires non chiffrés dans les boards des autorités locales
     cpp_int fake_vote;
@@ -60,7 +54,7 @@ int main(int argc, char const *argv[])
     for (size_t i = 0; i < loc_auths.size(); i++)  {
         for (size_t j = 0; j < 3; j++)  {   
             sleep(1);                                             // 3 électeurs par autorité locale
-            fake_vote = pow(M, rand() % nb_candidats + 1);       // Vote: M^mi
+            fake_vote = pow(M, rand() % prop->get_nbCandidats() + 1);       // Vote: M^mi
             fake_vote_tuple = {fake_vote, fake_vote, fake_vote}; // ToDo: chiffrement, signature et preuve de validité du vote
             loc_auths[i].get_bulletin_board().get_board().push_back(
                 new LocalBulletin(j, time(nullptr), fake_vote_tuple, fake_vote_tuple, fake_vote_tuple, cpp_int(0)));
@@ -76,7 +70,7 @@ int main(int argc, char const *argv[])
 
     // Tally des sommes locales et cout des tableaux locaux pour vérification
     for (size_t i = 0; i < loc_auths.size(); i++)  {
-        loc_auths[i].make_tally(_pkey.N);
+        loc_auths[i].make_tally(loc_auths[i].get_public_key().N);
         loc_auths[i].cout_board();
     }
 
@@ -89,7 +83,7 @@ int main(int argc, char const *argv[])
 
     // Tally des sommes régionales et cout des tableaux régionaux pour vérification
     for (size_t i = 0; i < reg_auths.size(); i++)  {
-        reg_auths[i].make_tally(_pkey.N);
+        reg_auths[i].make_tally(reg_auths[i].get_public_key().N);
         reg_auths[i].cout_board();
     }
 
@@ -99,7 +93,7 @@ int main(int argc, char const *argv[])
     }
 
     // Tally des sommes nationales
-    nat_auth.make_tally(_pkey.N);
+    nat_auth.make_tally(nat_auth.get_public_key().N);
     
     // Print du tableau national pour vérifier 
     std::cout << "\n\033[01;34mShowing national authority\n\033[00m";

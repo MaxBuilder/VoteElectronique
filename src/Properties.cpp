@@ -46,6 +46,7 @@ int Properties::get_nbRegionalAuth() { return nbRegionalAuth; }
 
 int Properties::get_nbLocalPerRegionalAuth() { return nbLocalPerRegionalAuth; }
 
+int Properties::get_nbCandidats() { return nbCandidats; }
 
 int Properties::get_nbServersPerCombiner() { return nbServersPerCombiner; }
 
