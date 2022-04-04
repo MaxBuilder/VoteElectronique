@@ -17,9 +17,9 @@ Projet TER
 
 - [x] Lecture du fichier config
 - [x] `check_timestamp`
-- [ ] Confirmer le passage du Verifier en fonctions statiques (et non plus en tant qu'objet à instancier)
+- [x] Confirmer le passage du Verifier en fonctions statiques
 - [ ] `check_complete_vote`
-- [ ] Publication des résultats (`transmit_results` de la nationale pour séparer les votes de la somme claire)
+- [x] Publication des résultats (`transmit_results` de la nationale pour séparer les votes de la somme claire)
 - [ ] Vérification des signatures des votes
 
 ### Partie chiffrement
@@ -37,7 +37,7 @@ Projet TER
 - [ ] Premier déchiffrement (sans shares ni combiner pour un scénario test)
 - [ ] Déchiffrement partagé (§ 10.2.1)
   - [ ] Génération d'une preuve de bon déchiffrement (Vk)
-- [ ] Algorithme de combinaison 
+- [ ] Algorithme de combinaison
 
 ### Plus tard
 
@@ -45,4 +45,4 @@ Projet TER
   - [ ] Ajouter la clé publique de l'utilisateur au bulletin local
 - [ ] Génération de certificats pour les pseudos de chaque votant(§ 10.4)
 - [ ] Receipt-free property (§ 10.5)
-- [ ] Rendre notre dossier exécutable statiquement (la librairie `jsoncpp` doit être avec le projet) 
+- [ ] Rendre notre dossier exécutable statiquement (la librairie `jsoncpp` doit être avec le projet)
