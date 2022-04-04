@@ -12,8 +12,7 @@ endif (WIN32)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/${CMAKE_BUILD_TYPE})
 
-add_subdirectory(src/authorities)
-add_subdirectory(src/bulletins)
+add_subdirectory(src)
 
 set(SRCS
         main.cpp
@@ -32,10 +31,11 @@ set(HEADERS
 
 add_compile_options(-Wall -g)
 
+
+include_directories(src/bulletins)
+include_directories(src/authorities)
 # Ajoutez une source à l'exécutable de ce projet.
 add_executable (${PROJECT_NAME}  ${SRCS} ${HEADERS})
-
-target_include_directories(${PROJECT_NAME} PRIVATE headers)
 
 # find_package(boost REQUIRED)
 find_package(jsoncpp CONFIG REQUIRED)
