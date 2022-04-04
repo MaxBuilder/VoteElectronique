@@ -1,4 +1,4 @@
-#include "../headers/CryptoManager.hpp"
+#include "CryptoManager.hpp"
 
 
 /*std::tuple<PKey, boost::multiprecision::cpp_int> CryptoManager::KeyGeneration() {

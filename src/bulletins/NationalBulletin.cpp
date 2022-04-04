@@ -1,4 +1,4 @@
-#include "../headers/NationalBulletin.hpp"
+#include "NationalBulletin.hpp"
 
 cpp_int NationalBulletin::get_reg_sum() { return reg_sum; }
 

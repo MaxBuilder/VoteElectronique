@@ -1,4 +1,4 @@
-#include "../headers/RegionalBulletin.hpp"
+#include "RegionalBulletin.hpp"
 
 
 cpp_int RegionalBulletin::get_loc_sum() { return loc_sum; }

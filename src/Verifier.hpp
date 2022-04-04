@@ -1,9 +1,9 @@
 #ifndef __VERIFIER_H__
 #define __VERIFIER_H__
 
-#include "BulletinBoard.hpp"
 #include "Properties.hpp"
-#include "LocalBulletin.hpp"
+#include "authorities/BulletinBoard.hpp"
+#include "bulletins/LocalBulletin.hpp"
 #include <ctime>
 
 class Verifier {

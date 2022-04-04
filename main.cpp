@@ -1,10 +1,10 @@
-#include "headers/Properties.hpp"
-#include "headers/Center.hpp"
-#include "headers/NationalAuthority.hpp"
-#include "headers/RegionalAuthority.hpp"
-#include "headers/LocalAuthority.hpp"
+#include "src/Properties.hpp"
+#include "src/authorities/Center.hpp"
+#include "src/authorities/NationalAuthority.hpp"
+#include "src/authorities/RegionalAuthority.hpp"
+#include "src/authorities/LocalAuthority.hpp"
 
-#include "headers/Verifier.hpp"
+#include "src/Verifier.hpp"
 #include <chrono>
 #include <ctime>
 int main(int argc, char const *argv[])

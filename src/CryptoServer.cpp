@@ -1,4 +1,4 @@
-#include "../headers/CryptoServer.hpp"
+#include "CryptoServer.hpp"
 
 
 int CryptoServer::getId() { return id; }

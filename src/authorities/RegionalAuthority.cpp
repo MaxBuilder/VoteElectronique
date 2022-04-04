@@ -1,7 +1,4 @@
-#include "../headers/RegionalAuthority.hpp"
-#include "../headers/NationalBulletin.hpp"
-#include "../headers/RegionalBulletin.hpp"
-
+#include "RegionalAuthority.hpp"
 
 int RegionalAuthority::get_id() { return id; }
 

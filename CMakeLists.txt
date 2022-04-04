@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.0)
 
 project("EVote")
 
@@ -12,48 +12,51 @@ endif (WIN32)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/${CMAKE_BUILD_TYPE})
 
-set(SRCS	main.cpp
-            src/Properties.cpp
-            src/KeyGeneration.cpp
+# add_subdirectory(src)
 
-            src/BulletinBoard.cpp
-            src/LocalBulletin.cpp
-            src/RegionalBulletin.cpp
-            src/NationalBulletin.cpp
+set(SRCS
+        main.cpp
+        src/Properties.cpp
+        src/KeyGeneration.cpp
+        src/Verifier.cpp  
+        
+        src/authorities/LocalAuthority.cpp
+        src/authorities/RegionalAuthority.cpp
+        src/authorities/NationalAuthority.cpp
+        src/authorities/BulletinBoard.cpp
 
-            src/Verifier.cpp
-
-            src/LocalAuthority.cpp
-            src/RegionalAuthority.cpp
-            src/NationalAuthority.cpp
+        src/bulletins/LocalBulletin.cpp
+        src/bulletins/RegionalBulletin.cpp
+        src/bulletins/NationalBulletin.cpp
     )
 
 set(HEADERS 
-            headers/Properties.hpp
-            headers/CryptoUtils.hpp
-            headers/KeyGeneration.hpp
+        src/Properties.hpp
+        src/CryptoUtils.hpp
+        src/KeyGeneration.hpp
+        src/Verifier.hpp
 
-            headers/Bulletin.hpp
-			headers/BulletinBoard.hpp
-            headers/LocalBulletin.hpp
-            headers/RegionalBulletin.hpp
-            headers/NationalBulletin.hpp
+        src/authorities/Center.hpp
+        src/authorities/LocalAuthority.hpp
+        src/authorities/RegionalAuthority.hpp
+        src/authorities/NationalAuthority.hpp
+        src/authorities/BulletinBoard.hpp
 
-            headers/Verifier.hpp
-
-			headers/Center.hpp
-            headers/LocalAuthority.hpp
-            headers/RegionalAuthority.hpp
-            headers/NationalAuthority.hpp
+        src/bulletins/Bulletin.hpp
+        src/bulletins/LocalBulletin.hpp
+        src/bulletins/RegionalBulletin.hpp
+        src/bulletins/NationalBulletin.hpp
     )
 
 
 add_compile_options(-Wall -g)
 
+# include_directories(src/)
+# include_directories(src/bulletins)
+# include_directories(src/authorities)
+
 # Ajoutez une source à l'exécutable de ce projet.
 add_executable (${PROJECT_NAME}  ${SRCS} ${HEADERS})
-
-target_include_directories(${PROJECT_NAME} PRIVATE headers)
 
 # find_package(boost REQUIRED)
 find_package(jsoncpp CONFIG REQUIRED)
