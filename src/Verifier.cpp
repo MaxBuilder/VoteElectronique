@@ -23,4 +23,4 @@ bool Verifier::check_timestamp(std::vector<Bulletin*>& board) {
 	}
     
     return fraud;
-};
+}

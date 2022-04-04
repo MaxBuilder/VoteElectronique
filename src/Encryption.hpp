@@ -5,4 +5,4 @@
 
 using namespace boost::multiprecision;
 
-cpp_int Encrypt(PKey PK);
+cpp_int Encrypt(PKey PK, cpp_int);

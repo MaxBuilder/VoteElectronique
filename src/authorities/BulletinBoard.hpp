@@ -3,7 +3,6 @@
 
 #include <vector>
 #include "../bulletins/Bulletin.hpp"
-// #include <Verifier.hpp>
 
 /**
  * @class BulletinBoard
