@@ -1,8 +1,15 @@
-# VoteElectronique
+ VoteElectronique
 
 Projet TER
 
 ***
+
+## Deadlines 
+
+- Scénario complet de votes, chiffrement, déchiffrement et publication des résultats au **15/04/2022** 
+- Passage en déchiffrement à seuil (secrets partagés et algorithme de combinaison)
+- Scénario complet présentable (avec ~10k votes) sans modèle client/serveur au **29/04/2022**
+- Modèle client/serveur pour la simulation complète au **29/04/2022**
 
 ## 🔴 ToDo
 
@@ -13,7 +20,6 @@ Projet TER
 - [ ] Confirmer le passage du Verifier en fonctions statiques (et non plus en tant qu'objet à instancier)
 - [ ] `check_complete_vote`
 - [ ] Publication des résultats (`transmit_results` de la nationale pour séparer les votes de la somme claire)
-- [ ] Implémenter DSA pour la signature des votes (bibliothèque Crypto. à inclure)
 - [ ] Vérification des signatures des votes
 
 ### Partie chiffrement
@@ -35,6 +41,8 @@ Projet TER
 
 ### Plus tard
 
+- [ ] Implémenter DSA pour la signature des votes (bibliothèque Crypto. à inclure)
+  - [ ] Ajouter la clé publique de l'utilisateur au bulletin local
 - [ ] Génération de certificats pour les pseudos de chaque votant(§ 10.4)
+- [ ] Receipt-free property (§ 10.5)
 - [ ] Rendre notre dossier exécutable statiquement (la librairie `jsoncpp` doit être avec le projet) 
-
