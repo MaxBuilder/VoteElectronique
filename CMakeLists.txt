@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.0)
 
 project("EVote")
 
@@ -12,39 +12,21 @@ endif (WIN32)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/${CMAKE_BUILD_TYPE})
 
-set(SRCS	main.cpp
-            src/Properties.cpp
-            src/KeyGeneration.cpp
+add_subdirectory(src/authorities)
+add_subdirectory(src/bulletins)
 
-            src/BulletinBoard.cpp
-            src/LocalBulletin.cpp
-            src/RegionalBulletin.cpp
-            src/NationalBulletin.cpp
-
-            src/Verifier.cpp
-
-            src/LocalAuthority.cpp
-            src/RegionalAuthority.cpp
-            src/NationalAuthority.cpp
+set(SRCS
+        main.cpp
+        src/Properties.cpp
+        src/KeyGeneration.cpp
+        src/Verifier.cpp     
     )
 
 set(HEADERS 
-            headers/Properties.hpp
-            headers/CryptoUtils.hpp
-            headers/KeyGeneration.hpp
-
-            headers/Bulletin.hpp
-			headers/BulletinBoard.hpp
-            headers/LocalBulletin.hpp
-            headers/RegionalBulletin.hpp
-            headers/NationalBulletin.hpp
-
-            headers/Verifier.hpp
-
-			headers/Center.hpp
-            headers/LocalAuthority.hpp
-            headers/RegionalAuthority.hpp
-            headers/NationalAuthority.hpp
+        src/Properties.hpp
+        src/CryptoUtils.hpp
+        src/KeyGeneration.hpp
+        src/Verifier.hpp
     )
 
 

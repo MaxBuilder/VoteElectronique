@@ -2,7 +2,7 @@
 #define __BULLETIN_BOARD_H__
 
 #include <vector>
-#include "Bulletin.hpp"
+#include "../bulletins/Bulletin.hpp"
 // #include <Verifier.hpp>
 
 /**

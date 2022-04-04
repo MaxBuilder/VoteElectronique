@@ -1,4 +1,4 @@
-#include "../headers/LocalBulletin.hpp"
+#include "LocalBulletin.hpp"
 
 
 

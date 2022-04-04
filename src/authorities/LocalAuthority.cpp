@@ -1,7 +1,6 @@
 #include <tuple>
 
-#include "../headers/LocalAuthority.hpp"
-#include "../headers/RegionalBulletin.hpp"
+#include "LocalAuthority.hpp"
 
 
 int LocalAuthority::get_id() { return id; }

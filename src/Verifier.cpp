@@ -1,4 +1,4 @@
-#include "../headers/Verifier.hpp"
+#include "Verifier.hpp"
 
 
 bool Verifier::check_timestamp(std::vector<Bulletin*>& board) {

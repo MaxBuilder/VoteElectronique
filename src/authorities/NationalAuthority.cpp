@@ -1,5 +1,4 @@
-#include "../headers/NationalAuthority.hpp"
-#include "../headers/NationalBulletin.hpp"
+#include "NationalAuthority.hpp"
 
 
 std::vector<cpp_int> NationalAuthority::calculate_results(cpp_int M, int p) {

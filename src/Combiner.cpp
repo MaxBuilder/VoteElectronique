@@ -1,4 +1,4 @@
-#include "../headers/Combiner.hpp"
+#include "Combiner.hpp"
 
 
 Combiner::Combiner(cpp_int sk_, cpp_int delta_, cpp_int modulus, int nb_servers, cpp_int m) {

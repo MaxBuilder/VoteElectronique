@@ -1,4 +1,4 @@
-#include "../headers/Properties.hpp"
+#include "Properties.hpp"
 
 
 Properties * Properties::reference = nullptr;

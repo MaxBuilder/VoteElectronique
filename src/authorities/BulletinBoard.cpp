@@ -1,4 +1,4 @@
-#include "../headers/BulletinBoard.hpp"
+#include "BulletinBoard.hpp"
 
 
 std::vector<Bulletin *>& BulletinBoard::get_board() { return board; }

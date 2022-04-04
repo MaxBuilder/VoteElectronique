@@ -2,6 +2,7 @@
 #define __NATIONAL_AUTHORITY_H__
 
 #include "Center.hpp"
+#include "../bulletins/NationalBulletin.hpp"
 
 /**
 * @brief Représente le centre national d'autorité.
