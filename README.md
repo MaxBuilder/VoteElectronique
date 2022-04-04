@@ -13,17 +13,20 @@ Projet TER
 - [ ] Confirmer le passage du Verifier en fonctions statiques (et non plus en tant qu'objet à instancier)
 - [ ] `check_complete_vote`
 - [ ] `transmit_results` de la nationale pour séparer les votes de la somme claire
-- [ ] Partie client : génération de clés de signature des votants (certificats), DSA ?
+- [ ] Implémenter DSA pour la signature des votes 
 
-### Partie chiffrement pour débloquer le reste
+### Partie chiffrement
 
 - [ ] Génération des clés
   - [ ] Génération prime et safe prime test
 - [ ] Chiffrement
-- [ ] Into preuves, vérifications, déchiffrement, etc.
+- [ ] Preuve de validité d'un vote
+- [ ] Preuve d'égalité entre chiffrés
+- [ ] Vérifications des preuves (méthodes statiques Verifier)
+- [ ] Déchiffrement (à seuil via Combiner)
+- [ ] Publication des résultats (`transmit_results`)
 
-### Partie BulletinBoard – Version 18.02.22
+### Plus tard
 
-- [ ] Revérifier que la clé publique de Bulletin est dans le bon format (selon l'algo de signature).
-- [ ] Inclure Verifier dans BulletinBoard.
-- [x] MakeTally dans les différents centres.
+- [ ] Génération de certificats pour les pseudos de chaque votant(§ 10.4)
+
