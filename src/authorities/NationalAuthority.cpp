@@ -1,4 +1,5 @@
 #include "NationalAuthority.hpp"
+#include "Properties.hpp"
 
 
 std::vector<cpp_int> NationalAuthority::calculate_results(cpp_int M, int p) {
@@ -20,7 +21,15 @@ std::vector<cpp_int> NationalAuthority::calculate_results(cpp_int M, int p) {
 
 
 void NationalAuthority::transmit_results() {
-    // ToDo
+    
+    Properties * props = Properties::getProperties();
+    auto pow = boost::multiprecision::msb(props -> get_nbVoters()) + 2;
+	cpp_int M = boost::multiprecision::pow(cpp_int(2), pow);
+    std::vector<cpp_int> res = calculate_results(M, props -> get_nbCandidats());
+
+    for (auto i = 0; i < res.size(); i++) {
+        std::cout << "Candidat n°" << i << " : " << res[i] << " votes.\n";
+    }
 }
 
 
