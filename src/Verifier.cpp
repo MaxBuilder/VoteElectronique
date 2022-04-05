@@ -24,3 +24,26 @@ bool Verifier::check_timestamp(std::vector<Bulletin*>& board) {
     
     return fraud;
 }
+
+bool Verifier::check_equality_proof(std::vector<Bulletin*>& board, std::array<PublicKey, 3> pkeys) {
+    bool fraud = false;
+
+    // Parcours des bulletins du board
+    LocalBulletin *lb;
+    EqProof proof;
+    for (size_t i = 0; i < board.size(); i++) {
+        lb = (LocalBulletin*) board[i];
+        proof = lb->get_equ_proof();
+        
+        // ToDo: Check si proof.z appartient à [0, 2^k]
+       
+        // ToDo: Calculer 3 termes gauche: pkeys[i].g^proof.z * proof.v_j[i]^pkeys[i].N
+        // ToDo: Calculer terme droit pour chaque vote: 
+            // proof.u_j[0] * lb->get_loc_vote()^proof.e
+            // proof.u_j[1] * lb->get_reg_vote()^proof.e
+            // proof.u_j[2] * lb->get_nat_vote()^proof.e
+        // ToDo: Check égalité entre les termes gauches et droit
+    }
+
+    return fraud;
+}

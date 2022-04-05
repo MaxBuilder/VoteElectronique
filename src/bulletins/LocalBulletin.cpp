@@ -14,7 +14,7 @@ std::tuple<cpp_int, cpp_int, cpp_int>  LocalBulletin::get_reg_vote() { return re
 std::tuple<cpp_int, cpp_int, cpp_int> LocalBulletin::get_nat_vote() { return nat_vote; }
 
 
-cpp_int LocalBulletin::get_equ_proof() { return equ_proof; }
+EqProof LocalBulletin::get_equ_proof() { return equ_proof; }
 
 
 void LocalBulletin::cout_board() {

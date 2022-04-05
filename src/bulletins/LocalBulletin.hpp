@@ -2,6 +2,7 @@
 #define __LOCALBULLETIN_H__
 
 #include <tuple>
+#include "../CryptoUtils.hpp"
 #include "Bulletin.hpp"
 
 /**
@@ -20,13 +21,18 @@ private:
     std::tuple<cpp_int, cpp_int, cpp_int> nat_vote;
     
     // La preuve d'�galit� des chiffr�s
-    cpp_int equ_proof = -1;
+    EqProof equ_proof;
 
 
 public:
 
     // Constructeur
-    LocalBulletin(cpp_int pseudo, time_t timestamp_, std::tuple<cpp_int, cpp_int, cpp_int> loc_vote_, std::tuple<cpp_int, cpp_int, cpp_int> reg_vote_, std::tuple<cpp_int, cpp_int, cpp_int> nat_vote_, cpp_int equ_proof_) :
+    LocalBulletin(cpp_int pseudo, 
+                  time_t timestamp_, 
+                  std::tuple<cpp_int, cpp_int, cpp_int> loc_vote_, 
+                  std::tuple<cpp_int, cpp_int, cpp_int> reg_vote_, 
+                  std::tuple<cpp_int, cpp_int, cpp_int> nat_vote_, 
+                  EqProof equ_proof_) :
         Bulletin(pseudo), timestamp(timestamp_), loc_vote(loc_vote_), reg_vote(reg_vote_), nat_vote(nat_vote_), equ_proof(equ_proof_) {}
 
 
@@ -61,7 +67,7 @@ public:
     /**
     * @brief Accesseur sur la preuve d'�galit� des chiffr�s.
     */
-    cpp_int get_equ_proof();
+    EqProof get_equ_proof();
 
 
     /**

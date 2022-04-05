@@ -8,13 +8,7 @@
 
 class Verifier {
 
-// private:
-//     BulletinBoard board;
-
 public:
-
-    // Verifier(BulletinBoard _board) : board(_board) {}
-
     /**
      * @brief L'autorité locale s'assure qu'un vote a été finalisé avant la date limite. 
      * 
@@ -32,15 +26,7 @@ public:
     static bool check_signature(BulletinBoard);
 
     /**
-     * @brief Vérifie que le vote d'un utilisateur est complet.
-     * 
-     * @return true 
-     * @return false 
-     */
-    static bool check_complete_vote(BulletinBoard);
-
-    /**
-     * @brief Vérifie la preuve que le chiffré est celui d'un vote correct (zero-knowledge proof 1).
+     * @brief Vérifie la preuve que le chiffré est celui d'un vote correct (zero-knowledge proof 2).
      * 
      * @return true 
      * @return false 
@@ -48,12 +34,12 @@ public:
     static bool check_legal_vote(BulletinBoard);
 
     /**
-     * @brief Vérifie la preuve que les chiffrés correspondent au même clair (zero-knowledge proof 3).
+     * @brief Vérifie la preuve que les 3 chiffrés correspondent au même clair (zero-knowledge proof 3).
      * 
      * @return true 
      * @return false 
      */
-    static bool check_same_vote(BulletinBoard);
+    static bool check_equality_proof(std::vector<Bulletin*>& board);
 
     /**
      * @brief Compare les résultats obtenus avec ceux fournis par les autorités inférieures.
@@ -62,8 +48,6 @@ public:
      * @return false 
      */
     static bool compare_results(BulletinBoard);
-
-    // ~Verifier();
 };
 
 #endif // __VERIFIER_H__

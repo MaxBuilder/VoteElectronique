@@ -16,7 +16,7 @@ public:
      * @param M
      * @return cpp_int 
      */
-    static cpp_int encrypt(PKey PK, cpp_int M);
+    static CipherStruct encrypt(PKey PK, cpp_int M);
 
 };
 
