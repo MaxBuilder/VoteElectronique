@@ -1,13 +1,12 @@
 #include "KeyGeneration.hpp"
 
-namespace mp = boost::multiprecision;
 
 /*
  * Return value tuple <>
  *  PKey : public key struct (N,g,thetha)
  *  cpp_int : Secret key m = m*beta.
  */
-std::tuple<PKey, cpp_int> KeyGeneration::generate_keys()
+std::tuple<PKey, mp::cpp_int> KeyGeneration::generate_keys()
 {
     // Temporary example of 2 valid safe prime numbers.
     // ToDo safe prime test and prime generation.

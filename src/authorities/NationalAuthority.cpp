@@ -26,7 +26,7 @@ void NationalAuthority::transmit_results() {
 	cpp_int M = boost::multiprecision::pow(cpp_int(2), pow);
     std::vector<cpp_int> res = calculate_results(M, props -> get_nbCandidats());
 
-    for (auto i = 0; i < res.size(); i++) {
+    for (size_t i = 0; i < res.size(); i++) {
         std::cout << "Candidat n°" << i << " : " << res[i] << " votes.\n";
     }
 }

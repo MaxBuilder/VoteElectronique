@@ -18,6 +18,7 @@ set(SRCS
         main.cpp
         src/Properties.cpp
         src/KeyGeneration.cpp
+        src/Encryption.cpp
         src/Verifier.cpp  
         
         src/authorities/LocalAuthority.cpp
@@ -34,6 +35,7 @@ set(HEADERS
         src/Properties.hpp
         src/CryptoUtils.hpp
         src/KeyGeneration.hpp
+        src/Encryption.hpp
         src/Verifier.hpp
 
         src/authorities/Center.hpp

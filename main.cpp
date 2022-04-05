@@ -5,6 +5,7 @@
 #include "src/authorities/LocalAuthority.hpp"
 
 #include "src/Verifier.hpp"
+#include "src/Encryption.hpp"
 #include <chrono>
 #include <ctime>
 int main(int argc, char const *argv[])
@@ -49,15 +50,29 @@ int main(int argc, char const *argv[])
 
 
     // Générations de votes aléatoires non chiffrés dans les boards des autorités locales
-    cpp_int fake_vote;
-    std::tuple<cpp_int, cpp_int, cpp_int> fake_vote_tuple;
+    cpp_int vote;
+    std::array<PublicKey, 3> pkeys;
+    std::tuple<cpp_int, cpp_int, cpp_int> loc_vote_tuple;
+    std::tuple<cpp_int, cpp_int, cpp_int> reg_vote_tuple;
+    std::tuple<cpp_int, cpp_int, cpp_int> nat_vote_tuple;
+    cpp_int eq_proof;
     for (size_t i = 0; i < loc_auths.size(); i++)  {
-        for (size_t j = 0; j < 3; j++)  {   
+        for (size_t j = 3; j > 0; j--)  {   
             sleep(1);                                             // 3 électeurs par autorité locale
-            fake_vote = pow(M, rand() % prop->get_nbCandidats() + 1);       // Vote: M^mi
-            fake_vote_tuple = {fake_vote, fake_vote, fake_vote}; // ToDo: chiffrement, signature et preuve de validité du vote
+            vote = pow(M, rand() % prop->get_nbCandidats() + 1);       // Vote: M^mi
+            
+            pkeys = loc_auths[i].get_public_keys();
+            
+            // ToDo: Signature et preuve de validité du vote
+            loc_vote_tuple = {vote, vote, vote}; 
+            reg_vote_tuple = {vote, vote, vote}; 
+            nat_vote_tuple = {vote, vote, vote}; 
+            
+            // ToDo: preuve d'égalité des votes
+            eq_proof = cpp_int(0);
+
             loc_auths[i].get_bulletin_board().get_board().push_back(
-                new LocalBulletin(j, time(nullptr), fake_vote_tuple, fake_vote_tuple, fake_vote_tuple, cpp_int(0)));
+                new LocalBulletin(j, time(nullptr), loc_vote_tuple, reg_vote_tuple, nat_vote_tuple, eq_proof));
         }
     }
 
