@@ -38,13 +38,14 @@ void LocalAuthority::transmit_results() {
 
 void LocalAuthority::cout_board() {
 	std::cout << "\033[;33mBoard de l'autorité locale n°[" << get_sup_auth().get_id() << "," << get_id() << "] :\033[00m\n";
+	std::cout << "| Timest.  | Sig.  | LocV. | RegV. | NatV. | Validity\n";
 	get_bulletin_board().cout_board();
 
-	std::cout << "| Sums. | ";
+	std::cout << "\033[1;m           | Sums. | ";
 	for (size_t i = 0; i < get_bulletin_board().get_sums().size(); i++)  {
 		std::cout << std::setfill(' ') << std::setw(5) << get_bulletin_board().get_sums()[i] << " | ";
 	}
-	std::cout << "\n";
+	std::cout << "\033[0m\n";
 }
 
 
@@ -61,6 +62,9 @@ void LocalAuthority::make_tally(cpp_int N) {
 	for (Bulletin * b : get_bulletin_board().get_board_copy()) {
 		
 		LocalBulletin * pt_b = (LocalBulletin*) b;
+
+		if (pt_b->get_validity() != 0)
+			continue;
 		
 		cpp_int loc_vote = std::get<0>(pt_b -> get_loc_vote());
 		boost::multiprecision::multiply(loc_res, loc_res, loc_vote);

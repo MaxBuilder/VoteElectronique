@@ -6,7 +6,6 @@
 #include <json/json.h>
 #include <boost/multiprecision/cpp_int.hpp>
 
-using namespace std;
 using namespace boost::multiprecision;
 
 class Properties {

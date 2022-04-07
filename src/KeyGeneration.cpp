@@ -49,6 +49,7 @@ std::tuple<PKey, mp::cpp_int> KeyGeneration::generate_keys()
     // SecretKey result
     mp::cpp_int Skey = beta * m;
 
+    /*
     std::cout << "Test de la génération de clé:\n" 
               << "p: " << p << " | q: " << q << " | N: " << N << " | N^2 = " << Ntwo << "\n"
               << "m = p'*q' = " << m << "\n"
@@ -57,6 +58,7 @@ std::tuple<PKey, mp::cpp_int> KeyGeneration::generate_keys()
               << " > SK = beta*m = " << Skey << "\n" 
               << "tetha = a*m*beta mod N = " << tetha << "\n"  
               << " > PK = {g, N, tetha} = {" << g << ", " << N << ", " << tetha << "}\n\n";
+    */
 
     return std::make_tuple(return_value, Skey);
 }

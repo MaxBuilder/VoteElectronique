@@ -2,7 +2,8 @@
 
 CipherStruct Encryption::encrypt(PKey PK, cpp_int M) {
 
-    cpp_int N2 = boost::multiprecision::multiply(N2, PK.N, PK.N);
+    cpp_int N2;
+    boost::multiprecision::multiply(N2, PK.N, PK.N);
     cpp_int x = CryptoUtils::getRandomZnZ(PK);
     CipherStruct res;
     res.x = x;

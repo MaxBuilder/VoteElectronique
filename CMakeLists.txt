@@ -17,8 +17,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/${CMAKE_BUILD_TYPE})
 set(SRCS
         main.cpp
         src/Properties.cpp
+
         src/KeyGeneration.cpp
         src/Encryption.cpp
+        
+        src/Prover.cpp
         src/Verifier.cpp  
         
         src/authorities/LocalAuthority.cpp
@@ -33,9 +36,12 @@ set(SRCS
 
 set(HEADERS 
         src/Properties.hpp
+
         src/CryptoUtils.hpp
         src/KeyGeneration.hpp
         src/Encryption.hpp
+
+        src/Prover.hpp
         src/Verifier.hpp
 
         src/authorities/Center.hpp

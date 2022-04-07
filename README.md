@@ -18,8 +18,8 @@ Projet TER : Implémentation C++ d'un ensemble de protocoles sécurisés pour un
 - [x] Confirmer le passage du Verifier en fonctions statiques
 - [x] Publication des résultats (`transmit_results` de la nationale pour séparer les votes de la somme claire)
 - [ ] Vérification des signatures des votes
-- [ ] Ajouter un `int` pour la validité du vote dans le bulletin local
-- [ ] Modifier les sommes et produits de votes locaux pour ne pas prendre en compte les votes invalides
+- [x] Ajouter un `int` pour la validité du vote dans le bulletin local
+- [x] Modifier les sommes et produits de votes locaux pour ne pas prendre en compte les votes invalides
 - [ ] Modifier l'affichage des bulletins locaux pour avoir cet aperçu :
 
 ```
@@ -29,7 +29,8 @@ Board de l'autorité locale n°[1,2] :
 |  2 | 15:08:34 | 2983 | ✅
 |  3 | 15:09:02 | 3434 | ❌ Invalid timestamp
 |  4 | 15:09:49 | 0421 | ✅
-|  5 | 15:10:38 | 3823 | ❌ Invalid vote proof```
+|  5 | 15:10:38 | 3823 | ❌ Invalid vote proof
+```
 
 
 ### Partie chiffrement

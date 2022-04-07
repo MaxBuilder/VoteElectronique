@@ -18,8 +18,27 @@ EqProof LocalBulletin::get_equ_proof() { return equ_proof; }
 
 
 void LocalBulletin::cout_board() {
-	std::cout << timestamp << " | " << std::ctime(&timestamp) 
-        << "| " << std::setfill(' ') << std::setw(5) << get_pseudonym() << " | " << std::setfill(' ')
-        << std::setw(5) << std::get<0>(loc_vote) << " | " << std::setfill(' ') << std::setw(5) << std::get<1>(loc_vote) << " | "
-        << std::setfill(' ') << std::setw(5) << std::get<2>(loc_vote) << " |\n";
+	// std::cout << timestamp << " | " << std::ctime(&timestamp) 
+        // << "| " << std::setfill(' ') << std::setw(5) << get_pseudonym() << " | " << std::setfill(' ')
+        // << std::setw(5) << std::get<0>(loc_vote) << " | " << std::setfill(' ') << std::setw(5) << std::get<1>(loc_vote) << " | "
+        // << std::setfill(' ') << std::setw(5) << std::get<2>(loc_vote) << " |\n";
+
+        std::tm *tm = std::localtime(&timestamp);
+        std::cout << "| " << tm->tm_hour << ':' << tm->tm_min << ':' << std::setfill('0') << std::setw(2) << tm->tm_sec
+        << " | " << std::setfill(' ') << std::setw(5) << get_pseudonym() << " | " << std::setfill(' ');
+        
+        
+
+        std::cout << std::setw(5) << std::get<0>(loc_vote) << " | "
+        << std::setw(5) << std::get<0>(reg_vote) << " | "
+        << std::setw(5) << std::get<0>(nat_vote) << " | ";
+
+        if (!valid)
+                std::cout << "✅";
+        else if (valid == 1)
+                std::cout << "❌ Invalid timestamp";
+        else
+                std::cout << "❌ Invalid";
+
+        std::cout << "\n";
 }

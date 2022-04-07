@@ -1,16 +1,21 @@
 #include "src/Properties.hpp"
+#include "src/CryptoUtils.hpp"
+#include "src/Encryption.hpp"
+
 #include "src/authorities/Center.hpp"
 #include "src/authorities/NationalAuthority.hpp"
 #include "src/authorities/RegionalAuthority.hpp"
 #include "src/authorities/LocalAuthority.hpp"
 
 #include "src/Verifier.hpp"
-#include "src/Encryption.hpp"
+#include "src/Prover.hpp"
+
 #include <chrono>
 #include <ctime>
 int main(int argc, char const *argv[])
 {
     std::cout << "\033[0;32mTest de la gestion des durées\033[0m\n";
+    srand(clock());
 
     Properties *prop = Properties::getProperties();
     auto start = std::chrono::system_clock::now();
@@ -52,27 +57,36 @@ int main(int argc, char const *argv[])
     // Générations de votes aléatoires non chiffrés dans les boards des autorités locales
     cpp_int vote;
     std::array<PublicKey, 3> pkeys;
+    CipherStruct loc_vote, reg_vote, nat_vote;
     std::tuple<cpp_int, cpp_int, cpp_int> loc_vote_tuple;
     std::tuple<cpp_int, cpp_int, cpp_int> reg_vote_tuple;
     std::tuple<cpp_int, cpp_int, cpp_int> nat_vote_tuple;
-    cpp_int eq_proof;
+    EqProof eq_proof;
     for (size_t i = 0; i < loc_auths.size(); i++)  {
-        for (size_t j = 3; j > 0; j--)  {   
-            sleep(1);                                             // 3 électeurs par autorité locale
+        for (size_t j = 0; j < 3; j++)  {   // 3 électeurs par autorité locale
+            sleep(1);                                         
             vote = pow(M, rand() % prop->get_nbCandidats() + 1);       // Vote: M^mi
-            
             pkeys = loc_auths[i].get_public_keys();
             
+            // Chiffrement du vote pour chacune des autorités
+            loc_vote = Encryption::encrypt(pkeys[0], vote);
+            reg_vote = Encryption::encrypt(pkeys[1], vote);
+            nat_vote = Encryption::encrypt(pkeys[2], vote);
+
             // ToDo: Signature et preuve de validité du vote
-            loc_vote_tuple = {vote, vote, vote}; 
-            reg_vote_tuple = {vote, vote, vote}; 
-            nat_vote_tuple = {vote, vote, vote}; 
+            loc_vote_tuple = {loc_vote.cipher, cpp_int(0), cpp_int(0)}; 
+            reg_vote_tuple = {reg_vote.cipher, cpp_int(0), cpp_int(0)}; 
+            nat_vote_tuple = {nat_vote.cipher, cpp_int(0), cpp_int(0)}; 
             
-            // ToDo: preuve d'égalité des votes
-            eq_proof = cpp_int(0);
+            // ToDo: preuve d'égalité des votes (en test)
+            // eq_proof = Prover::generate_equality_proof(vote, std::array<CipherStruct, 3> {loc_vote, reg_vote, nat_vote }, pkeys, Verifier::get_challenge());
 
             loc_auths[i].get_bulletin_board().get_board().push_back(
-                new LocalBulletin(j, time(nullptr), loc_vote_tuple, reg_vote_tuple, nat_vote_tuple, eq_proof));
+                new LocalBulletin(j, time(nullptr), 
+                                loc_vote_tuple, 
+                                reg_vote_tuple, 
+                                nat_vote_tuple, 
+                                eq_proof));
         }
     }
 

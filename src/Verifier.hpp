@@ -2,6 +2,7 @@
 #define __VERIFIER_H__
 
 #include "Properties.hpp"
+#include "Prover.hpp"
 #include "authorities/BulletinBoard.hpp"
 #include "bulletins/LocalBulletin.hpp"
 #include <ctime>
@@ -9,6 +10,14 @@
 class Verifier {
 
 public:
+
+    /**
+     * @brief Renvoie un challenge au Prover pour les preuves zero-knowledge
+     * 
+     * @return cpp_int appartenant à l'ensemble [0, A[
+     */
+    static cpp_int get_challenge();
+
     /**
      * @brief L'autorité locale s'assure qu'un vote a été finalisé avant la date limite. 
      * 
@@ -39,7 +48,7 @@ public:
      * @return true 
      * @return false 
      */
-    static bool check_equality_proof(std::vector<Bulletin*>& board);
+    static bool check_equality_proof(std::vector<Bulletin*>& board, std::array<PublicKey, 3> pkeys);
 
     /**
      * @brief Compare les résultats obtenus avec ceux fournis par les autorités inférieures.

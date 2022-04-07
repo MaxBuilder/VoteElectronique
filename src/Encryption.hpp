@@ -6,6 +6,12 @@
 
 using namespace boost::multiprecision;
 
+typedef struct CipherStruct
+{
+    cpp_int x;
+    cpp_int cipher;
+} CipherStruct;
+
 class Encryption {
 public:
 

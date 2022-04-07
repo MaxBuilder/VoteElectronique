@@ -7,7 +7,7 @@ Properties * Properties::reference = nullptr;
 Properties::Properties() {
 
 	// Lecture et parsing du fichier de configuration
-	ifstream ifs("config.json");
+	std::ifstream ifs("config.json");
 	Json::Reader reader;
 	Json::Value obj;
 	reader.parse(ifs, obj);

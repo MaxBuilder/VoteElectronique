@@ -1,5 +1,9 @@
 #include "Verifier.hpp"
 
+cpp_int Verifier::get_challenge() {
+    // ToDo: générer challenge
+    return cpp_int(0);
+}
 
 bool Verifier::check_timestamp(std::vector<Bulletin*>& board) {
     bool fraud = false;
@@ -13,12 +17,12 @@ bool Verifier::check_timestamp(std::vector<Bulletin*>& board) {
     for (size_t i = 0; i < board.size(); i++) {
         lb = (LocalBulletin*) board[i];
         if (lb->get_timestamp() > end_time) {
+            // Suppression du vote frauduleux
+            lb->set_validity(1);
+
             std::cout << "Vote frauduleux supprimé: ";
             lb->cout_board();
             fraud = true;
-            
-            // Suppresion du vote frauduleux
-            board.erase(board.begin()+i);
         }
 	}
     
