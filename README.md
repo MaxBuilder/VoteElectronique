@@ -11,37 +11,29 @@ Projet TER : Implémentation C++ d'un ensemble de protocoles sécurisés pour un
 
 ## 🔴 ToDo
 
-### Non dépendants de la partie chiffrement
+### Hors chiffrement
 
 - [x] Lecture du fichier config
 - [x] `check_timestamp`
 - [x] Confirmer le passage du Verifier en fonctions statiques
 - [x] Publication des résultats (`transmit_results` de la nationale pour séparer les votes de la somme claire)
-- [ ] Vérification des signatures des votes
 - [x] Ajouter un `int` pour la validité du vote dans le bulletin local
 - [x] Modifier les sommes et produits de votes locaux pour ne pas prendre en compte les votes invalides
-- [ ] Modifier l'affichage des bulletins locaux pour avoir cet aperçu :
-
-```
-Board de l'autorité locale n°[1,2] :
-|    | Timest.  | Sig. | Validité
-|  1 | 15:08:22 | 2297 | ✅
-|  2 | 15:08:34 | 2983 | ✅
-|  3 | 15:09:02 | 3434 | ❌ Invalid timestamp
-|  4 | 15:09:49 | 0421 | ✅
-|  5 | 15:10:38 | 3823 | ❌ Invalid vote proof
-```
+- [x] Modifier l'affichage des bulletins locaux 
+- [ ] Vérification des signatures des votes
 
 
-### Partie chiffrement
+### Partie chiffrement et preuves
 
 - [ ] Génération des clés
   - [ ] Génération prime et safe prime test
   - [x] Génération de PK et SK
 - [x] Chiffrement (§ 10.2.1)
-- [ ] Preuve de validité d'un vote (§ 10.3.2)
-- [ ] 🔴 Preuve d'égalité entre chiffrés (§ 10.3.3) (En cours)
-- [ ] Vérifications des preuves (méthodes statiques Verifier)
+- [x] Preuve / vérification d'égalité des messages clairs (Zero-knowledge proof 3, § 10.3.3)
+- [ ] Génération du challenge aléatoire e dans `[0, A[` (méthode `Verifier::get_challenge()`)
+- [ ] Preuve de validité d'un vote (Zero-knowledge proof 2, § 10.3.2)
+- [ ] Vérifications des preuves
+- [ ] Méthode de comparaison des résultats après tally des autorités
 
 ### Déchiffrement
 
