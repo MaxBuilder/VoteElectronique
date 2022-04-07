@@ -12,6 +12,11 @@
 
 #include <chrono>
 #include <ctime>
+
+void create_local_vote(cpp_int vote)  {
+
+}
+
 int main(int argc, char const *argv[])
 {
     std::cout << "\033[0;32mTest de la gestion des durées\033[0m\n";
@@ -62,9 +67,24 @@ int main(int argc, char const *argv[])
     std::tuple<cpp_int, cpp_int, cpp_int> reg_vote_tuple;
     std::tuple<cpp_int, cpp_int, cpp_int> nat_vote_tuple;
     EqProof eq_proof;
+
+    // Test d'un vote avec différents clairs
+    vote = pow(M, rand() % prop->get_nbCandidats() + 1);
+    pkeys = loc_auths[1].get_public_keys();
+
+    loc_vote = Encryption::encrypt(pkeys[0], vote);
+    reg_vote = Encryption::encrypt(pkeys[1], vote+cpp_int(3972));
+    nat_vote = Encryption::encrypt(pkeys[2], vote);
+    loc_vote_tuple = {loc_vote.cipher, cpp_int(0), cpp_int(0)}; 
+    reg_vote_tuple = {reg_vote.cipher, cpp_int(0), cpp_int(0)}; 
+    nat_vote_tuple = {nat_vote.cipher, cpp_int(0), cpp_int(0)};
+    eq_proof = Prover::generate_equality_proof(vote, std::array<CipherStruct, 3> {loc_vote, reg_vote, nat_vote }, pkeys, Verifier::get_challenge());
+    loc_auths[1].get_bulletin_board().get_board().push_back(new LocalBulletin(3, time(nullptr), loc_vote_tuple, reg_vote_tuple, nat_vote_tuple, eq_proof));
+
+    // Générations de votes aléatoires
     for (size_t i = 0; i < loc_auths.size(); i++)  {
         for (size_t j = 0; j < 3; j++)  {   // 3 électeurs par autorité locale
-            sleep(1);                                         
+            sleep(1);                                       
             vote = pow(M, rand() % prop->get_nbCandidats() + 1);       // Vote: M^mi
             pkeys = loc_auths[i].get_public_keys();
             
@@ -78,21 +98,23 @@ int main(int argc, char const *argv[])
             reg_vote_tuple = {reg_vote.cipher, cpp_int(0), cpp_int(0)}; 
             nat_vote_tuple = {nat_vote.cipher, cpp_int(0), cpp_int(0)}; 
             
-            // ToDo: preuve d'égalité des votes (en test)
-            // eq_proof = Prover::generate_equality_proof(vote, std::array<CipherStruct, 3> {loc_vote, reg_vote, nat_vote }, pkeys, Verifier::get_challenge());
+            // Génération de la preuve d'égalité des votes (zero-knowledge proof 3)
+            eq_proof = Prover::generate_equality_proof(vote, std::array<CipherStruct, 3> {loc_vote, reg_vote, nat_vote}, pkeys, Verifier::get_challenge());
 
-            loc_auths[i].get_bulletin_board().get_board().push_back(
-                new LocalBulletin(j, time(nullptr), 
-                                loc_vote_tuple, 
-                                reg_vote_tuple, 
-                                nat_vote_tuple, 
-                                eq_proof));
+            loc_auths[i].get_bulletin_board().get_board().push_back(new LocalBulletin(j, time(nullptr), loc_vote_tuple, reg_vote_tuple, nat_vote_tuple, eq_proof));
         }
     }
 
     // Filtrage des boards par timestamp
     for  (size_t i = 0; i < loc_auths.size(); i++) {
         if (Verifier::check_timestamp(loc_auths[i].get_bulletin_board().get_board())) {
+            std::cout << "Vote frauduleux sur le board de l'autorité locale " << i+1 << "\n";
+        }
+    }
+
+    // Filtrage des boards par preuve d'égalité des textes clairs
+    for  (size_t i = 0; i < loc_auths.size(); i++) {
+        if (Verifier::check_equality_proof(loc_auths[i].get_bulletin_board().get_board(), loc_auths[i].get_public_keys())) {
             std::cout << "Vote frauduleux sur le board de l'autorité locale " << i+1 << "\n";
         }
     }

@@ -37,6 +37,12 @@ void LocalBulletin::cout_board() {
                 std::cout << "✅";
         else if (valid == 1)
                 std::cout << "❌ Invalid timestamp";
+        else if (valid == 2)
+                std::cout << "❌ Invalid vote signature";
+        else if (valid == 3)
+                std::cout << "❌ Invalid vote proof";
+        else if (valid == 4)
+                std::cout << "❌ Invalid equality proof";
         else
                 std::cout << "❌ Invalid";
 
