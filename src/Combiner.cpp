@@ -1,16 +1,13 @@
 #include "Combiner.hpp"
 
 
-Combiner::Combiner(cpp_int sk_, cpp_int delta_, cpp_int modulus, int nb_servers, cpp_int m) {
+Combiner::Combiner(cpp_int sk_, PKey pk_, cpp_int delta_, cpp_int modulus, int nb_servers, cpp_int m) {
 	sk = sk_;
+	pk = pk_;
 	delta = delta_;
-	std::cout << "Combiner: Delta: " << delta_ << "\n";
-
 	std::vector<cpp_int> secret_shares = generateSecretShares(nb_servers, modulus, m);
 
 	for (int i = 1; i <= nb_servers; i++) {
-		// CryptoServer serv(i, delta_, secret_shares.at(i - 1), modulus);
-		// servers.push_back(&serv);
 		servers.push_back(new CryptoServer(i, delta_, secret_shares.at(i - 1), modulus));
 	}
 }
@@ -64,11 +61,12 @@ void Combiner::calculateResults(cpp_int c)
 
 cpp_int Combiner::calculateMu(int j)
 {
-	std::cout << "calculateMu func\n";
+	std::cout << "\ncalculateMu func\n";
 	cpp_int res;
 	double res_tmp = 1.;
 	int nb_servers = servers.size();
-	
+
+	// ToDo: passer les j de 1 à nb_servers+1 
 	for (int j_prime = 0; j_prime < nb_servers; j_prime++)
 	{
 		if (j_prime == j)
@@ -76,10 +74,12 @@ cpp_int Combiner::calculateMu(int j)
 		std::cout << "j: " << j << ", j_prime: " << j_prime << ", j_prime-j: " << j_prime-j << "\n";
 		res_tmp = res_tmp * (j_prime / (j_prime - j));
 	}
-	long long delta_ = (long long)delta; // En pratique delta devrait mesurer moins de 128 bits
-	std::cout << "calculateMu out of loop\n delta_: " << delta_ << "\n res_tmp: " << res_tmp << "\n";
-	res = cpp_int(delta_ * res_tmp);
-	std::cout << "calculateMu end";
+	// En pratique delta devrait mesurer moins de 128 bits
+	std::cout << "calculateMu out of loop\n delta: " << delta << "\n res_tmp: " << res_tmp << "\n";
+	
+	multiply(res, (cpp_int) res_tmp, delta);
+	
+	std::cout << "calculateMu end, res: " << res << "\n";
 	return res;
 }
 
@@ -94,17 +94,24 @@ cpp_int Combiner::Lfunction(cpp_int u, cpp_int N)
 
 cpp_int Combiner::combine()
 {
+	// ToDo: vérifier d'abord si t decryption shares sont valides
 	std::cout << "Combine func\n";
 	cpp_int res = 1;
 	cpp_int N2;
 	multiply(N2, pk.N, pk.N);
 
+	cpp_int power;
 	for (size_t j = 0; j < servers.size(); j++)
 	{
-		cpp_int power;
+		std::cout << "\n   Serveur " << j << ":\n";
 		cpp_int mu = calculateMu(j);
-		multiply(power, mu, cpp_int(2));
-		cpp_int tmp = powm(results[j], power, N2);
+		std::cout << "mu: " << mu << "\n";
+
+		multiply(power, mu, cpp_int(2)); // mu*2
+		std::cout << "c_j: " << results[j] << ", N²: " << N2 <<"\n";
+		// ToDo: calcul du powm avec mu négatif
+		cpp_int tmp = powm(results[j], power, N2); // c_j ^ 2*mu
+		std::cout << "c_j ^ 2*mu: " << tmp  << "\n";
 		multiply(res, res, tmp);
 	}
 	std::cout << "Before LFunc:\n res:" << res << "\n";

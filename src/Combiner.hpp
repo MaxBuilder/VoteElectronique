@@ -51,7 +51,7 @@ private:
 public:
 
 	// Constructeur
-	Combiner(cpp_int sk_, cpp_int delta_, cpp_int modulus, int nb_servers, cpp_int m);
+	Combiner(cpp_int sk_, PKey pk_, cpp_int delta_, cpp_int modulus, int nb_servers, cpp_int m);
 
 	/*
 	* @brief Génère les d�chiffrements partiels.
