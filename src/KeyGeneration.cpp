@@ -44,7 +44,7 @@ std::tuple<PKey, mp::cpp_int> KeyGeneration::generate_keys()
     mp::cpp_int tetha = powm(a * m * beta, 1, N);
 
     // PublicKey result
-    PKey return_value{g, N, tetha};
+    PKey return_value{g, N, tetha, beta, m};
 
     // SecretKey result
     mp::cpp_int Skey = beta * m;

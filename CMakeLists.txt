@@ -20,6 +20,8 @@ set(SRCS
 
         src/KeyGeneration.cpp
         src/Encryption.cpp
+        src/Combiner.cpp
+        src/CryptoServer.cpp
         
         src/Prover.cpp
         src/Verifier.cpp  
@@ -40,6 +42,8 @@ set(HEADERS
         src/CryptoUtils.hpp
         src/KeyGeneration.hpp
         src/Encryption.hpp
+        src/Combiner.hpp
+        src/CryptoServer.hpp
 
         src/Prover.hpp
         src/Verifier.hpp

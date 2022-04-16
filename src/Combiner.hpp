@@ -14,27 +14,27 @@ class Combiner {
 
 private:
 	
-	std::vector<CryptoServer *> servers;	// Les serveurs de déchiffrement
+	std::vector<CryptoServer *> servers;	// Les serveurs de dï¿½chiffrement
 
-	cpp_int sk; // La clé secrète de l'autorité.
+	cpp_int sk; // La clï¿½ secrï¿½te de l'autoritï¿½.
 
-	cpp_int delta; // Le paramètre delta (nombre de serveurs factoriel) 
+	cpp_int delta; // Le paramï¿½tre delta (nombre de serveurs factoriel) 
 
-	PublicKey pk; // La clé publique de l'autorité. Nécessaire pour obtenir les paramètres dans les méthodes suivantes.
+	PublicKey pk; // La clï¿½ publique de l'autoritï¿½. Nï¿½cessaire pour obtenir les paramï¿½tres dans les mï¿½thodes suivantes.
 
-	std::vector<cpp_int> results; // Vecteur qui contient les déchiffrements partiels provenant des CryptoServers. 
+	std::vector<cpp_int> results; // Vecteur qui contient les dï¿½chiffrements partiels provenant des CryptoServers. 
 
 
 	/**
-	* @brief Utilisée dans le constructeur du combiner afin de donner les "secrets shares" de la cle privee aux serveurs.
+	* @brief Utilisï¿½e dans le constructeur du combiner afin de donner les "secrets shares" de la cle privee aux serveurs.
 	*/
 	std::vector<cpp_int> generateSecretShares(int nb_servers, cpp_int N, cpp_int m);
 
 
 	/**
-	* @Brief Algorithme de Horner permettant l'évaluation rapide d'un polynôme.
+	* @Brief Algorithme de Horner permettant l'ï¿½valuation rapide d'un polynï¿½me.
 	*
-	* @return cpp_int l'évaluation du polynôme P avec la valeur x.
+	* @return cpp_int l'ï¿½valuation du polynï¿½me P avec la valeur x.
 	*/
 	cpp_int horner(std::vector<cpp_int> poly, cpp_int x);
 
@@ -44,7 +44,7 @@ private:
 	cpp_int calculateMu(int j);
 
 	/*
-	* La fonction L du cryptosystème de Paillier.
+	* La fonction L du cryptosystï¿½me de Paillier.
 	*/
 	cpp_int Lfunction(cpp_int u, cpp_int N);
 
@@ -54,12 +54,18 @@ public:
 	Combiner(cpp_int sk_, cpp_int delta_, cpp_int modulus, int nb_servers, cpp_int m);
 
 	/*
-	* @brief Récupère les déchiffrements partiels.
+	* @brief GÃ©nÃ¨re les dï¿½chiffrements partiels.
 	*/
-	std::vector<cpp_int> getResults(cpp_int c);
+	void calculateResults(cpp_int c);
+	void printResults() {
+		std::cout << "Partial decryptions (results):\n";
+		for (size_t i = 0; i < results.size(); i++)  {
+			std::cout << " > " << results[i] << "\n";
+		}
+	};
 
 	/*
-	* @Brief La combinason des déchiffrés partiels.
+	* @Brief La combinason des dï¿½chiffrï¿½s partiels.
 	*/
 	cpp_int combine();
 

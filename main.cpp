@@ -68,24 +68,14 @@ int main(int argc, char const *argv[])
     std::tuple<cpp_int, cpp_int, cpp_int> nat_vote_tuple;
     EqProof eq_proof;
 
-    // Test d'un vote avec différents clairs
-    vote = pow(M, rand() % prop->get_nbCandidats() + 1);
-    pkeys = loc_auths[1].get_public_keys();
-
-    loc_vote = Encryption::encrypt(pkeys[0], vote);
-    reg_vote = Encryption::encrypt(pkeys[1], vote+cpp_int(3972));
-    nat_vote = Encryption::encrypt(pkeys[2], vote);
-    loc_vote_tuple = {loc_vote.cipher, cpp_int(0), cpp_int(0)}; 
-    reg_vote_tuple = {reg_vote.cipher, cpp_int(0), cpp_int(0)}; 
-    nat_vote_tuple = {nat_vote.cipher, cpp_int(0), cpp_int(0)};
-    eq_proof = Prover::generate_equality_proof(vote, std::array<CipherStruct, 3> {loc_vote, reg_vote, nat_vote }, pkeys, Verifier::get_challenge());
-    loc_auths[1].get_bulletin_board().get_board().push_back(new LocalBulletin(3, time(nullptr), loc_vote_tuple, reg_vote_tuple, nat_vote_tuple, eq_proof));
+    std::vector<cpp_int> clear_local_votes;
 
     // Générations de votes aléatoires
     for (size_t i = 0; i < loc_auths.size(); i++)  {
         for (size_t j = 0; j < 3; j++)  {   // 3 électeurs par autorité locale
-            sleep(1);                                       
+            // sleep(1);                                       
             vote = pow(M, rand() % prop->get_nbCandidats() + 1);       // Vote: M^mi
+            clear_local_votes.push_back(vote);
             pkeys = loc_auths[i].get_public_keys();
             
             // Chiffrement du vote pour chacune des autorités
@@ -125,8 +115,18 @@ int main(int argc, char const *argv[])
         loc_auths[i].cout_board();
     }
 
-    std::cout << "\n\n";
+    // Test du déchiffrement
+    std::cout << "\nVotes clairs:\n";
+    cpp_int sum = 0;
+    for (size_t i = 0; i < clear_local_votes.size(); i++)  {
+        std::cout << "  > " << clear_local_votes[i] << "\n";
+        sum += clear_local_votes[i];
+    }
+    std::cout << "Total: " << sum << "\n";
 
+
+
+    /*
     // Transmettre aux régionales
     for (size_t i = 0; i < loc_auths.size(); i++)  {
         loc_auths[i].transmit_results();
@@ -149,9 +149,7 @@ int main(int argc, char const *argv[])
     // Print du tableau national pour vérifier 
     std::cout << "\n\033[01;34mShowing national authority\n\033[00m";
     nat_auth.cout_board();
-
-
-    // ToDo : scénario sans chiffrement (simplement avec M^candidat)
+    */
 
     return 0;
 }
