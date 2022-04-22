@@ -5,6 +5,7 @@
 #include <array>
 #include <boost/random.hpp>
 #include <boost/multiprecision/cpp_bin_float.hpp>
+#include <boost/integer/mod_inverse.hpp>
 
 #include "CryptoServer.hpp"
 #include "CryptoUtils.hpp"
