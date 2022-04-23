@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "src/Properties.hpp"
 #include "src/CryptoUtils.hpp"
 #include "src/Encryption.hpp"
@@ -9,6 +11,7 @@
 
 #include "src/Verifier.hpp"
 #include "src/Prover.hpp"
+#include "src/KeyGeneration.hpp"
 
 #include <chrono>
 #include <ctime>

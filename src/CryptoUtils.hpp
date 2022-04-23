@@ -23,9 +23,7 @@ class CryptoUtils
 {
 public:
     /**
-     * @brief Renvoie un cpp_int aléatoire dans Z/NZ*
-     *
-     * @return cpp_int un cpp_int aléatoire dans Z/NZ*.
+     * @brief Renvoie un cpp_int aléatoire dans Z/NZ \ {0}.
      */
     static cpp_int getRandomZnZ(cpp_int N)
     {
@@ -41,6 +39,20 @@ public:
             if (r != 0 && res != 1)
                 break;
             res = ui(mt);
+        }
+        return res;
+    }
+
+
+    /*
+    * @Brief Génère le vecteur représentant Z/NZ*.
+    */
+    static std::vector<cpp_int> getInversibleGroup(cpp_int N)
+    {
+        std::vector<cpp_int> res;
+        for (int i = 0; i < N; i++) {
+            if (gcd(N, i) == 1)
+                res.push_back(i);
         }
         return res;
     }

@@ -35,7 +35,8 @@ std::vector<cpp_int> Combiner::generateSecretShares(int nb_servers, cpp_int N, c
 
 	std::vector<cpp_int> res;
 
-	boost::random::mt19937 mt;
+	boost::random_device rn;
+	boost::random::mt19937 mt(rn) ;
 	boost::random::uniform_int_distribution<cpp_int> rand_gen(0, Nm - 1);
 
 	std::vector<cpp_int> ai;
@@ -135,8 +136,6 @@ cpp_int Combiner::combine()
 	std::cout << "tetha: " << pk.tetha << "\n";
 	std::cout << "divider (4*Tetha*Delta^2): " << divider << "\n";
 
-	// ToDo: inverse modulaire de 4*Tetha*Delta^2 
-	//		(/!\ l'inverse donne 0 actuellement !!)
 	divider = powm(divider, 1, pk.N); // divider mod N
 	invDivider = boost::integer::mod_inverse(divider, pk.N);
 	if (invDivider == 0)  {

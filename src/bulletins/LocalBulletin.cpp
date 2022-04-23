@@ -1,6 +1,6 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "LocalBulletin.hpp"
-
-
 
 time_t LocalBulletin::get_timestamp() { return timestamp; }
 
