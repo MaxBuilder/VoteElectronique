@@ -80,14 +80,10 @@ void LocalAuthority::make_tally(cpp_int N) {
 
 	}
 
-	// Déchiffrement de la somme 
+	// Déchiffrement de la somme locale
 	get_combiner().calculateResults(loc_res);
-	get_combiner().printResults();
-	cpp_int decrypted_loc_res = get_combiner().combine();
-	
-	//cpp_int decrypted_loc_res = get_crypto().decrypt(loc_res);		// Une fois la classe CryptoManager créée
+	get_bulletin_board().get_sums().push_back(get_combiner().combine());
 
-	get_bulletin_board().get_sums().push_back(decrypted_loc_res);
 	get_bulletin_board().get_sums().push_back(reg_res);
 	get_bulletin_board().get_sums().push_back(nat_res);
 }

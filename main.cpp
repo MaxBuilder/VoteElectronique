@@ -96,6 +96,17 @@ int main(int argc, char const *argv[])
 
             loc_auths[i].get_bulletin_board().get_board().push_back(new LocalBulletin(j, time(nullptr), loc_vote_tuple, reg_vote_tuple, nat_vote_tuple, eq_proof));
         }
+
+
+        // Affichage des votes clairs (test du déchiffrement)
+        std::cout << "Votes clairs sur l'autorité "<<i+1<<" :\n > ";
+        cpp_int sum = 0;
+        for (size_t i = 0; i < clear_local_votes.size(); i++)  {
+            std::cout << clear_local_votes[i] << ", ";
+            sum += clear_local_votes[i];
+        }
+        std::cout << "\nTotal: " << sum << " (mod N = " << boost::multiprecision::powm(sum,1,pkeys[0].N) << ")\n\n";
+        clear_local_votes.clear();
     }
 
     // Filtrage des boards par timestamp
@@ -118,23 +129,14 @@ int main(int argc, char const *argv[])
         loc_auths[i].cout_board();
     }
 
-    // Test du déchiffrement
-    std::cout << "\nVotes clairs:\n";
-    cpp_int sum = 0;
-    for (size_t i = 0; i < clear_local_votes.size(); i++)  {
-        std::cout << "  > " << clear_local_votes[i] << "\n";
-        sum += clear_local_votes[i];
-    }
-    std::cout << "Total: " << sum << "\n";
+    // ToDo: je crois qu'il y a un bug en passant le nombre d'autorités locales à 2 au lieu d'une, pas eu le temps d'investiguer
 
-
-
-    /*
     // Transmettre aux régionales
     for (size_t i = 0; i < loc_auths.size(); i++)  {
         loc_auths[i].transmit_results();
     }
 
+    std::cout << "\n";
     // Tally des sommes régionales et cout des tableaux régionaux pour vérification
     for (size_t i = 0; i < reg_auths.size(); i++)  {
         reg_auths[i].make_tally(reg_auths[i].get_public_key().N);
@@ -146,13 +148,15 @@ int main(int argc, char const *argv[])
         reg_auths[i].transmit_results();
     }
 
-    // Tally des sommes nationales
+    std::cout << "\n";
+    // Tally des sommes nationales et cout du tableau national pour vérification
     nat_auth.make_tally(nat_auth.get_public_key().N);
-    
-    // Print du tableau national pour vérifier 
-    std::cout << "\n\033[01;34mShowing national authority\n\033[00m";
     nat_auth.cout_board();
-    */
+
+    // Publication des résultats du vote
+    // ToDo: extraction des résultats non fonctionnelle
+    std::cout << "\n\033[01;34mVote results:\n\033[00m";
+    nat_auth.transmit_results();
 
     return 0;
 }

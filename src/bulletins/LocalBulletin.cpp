@@ -24,7 +24,10 @@ void LocalBulletin::cout_board() {
         // << std::setfill(' ') << std::setw(5) << std::get<2>(loc_vote) << " |\n";
 
         std::tm *tm = std::localtime(&timestamp);
-        std::cout << "| " << tm->tm_hour << ':' << tm->tm_min << ':' << std::setfill('0') << std::setw(2) << tm->tm_sec
+        std::cout << "| " 
+        << std::setfill('0') << std::setw(2) << tm->tm_hour
+        << ':' << std::setfill('0') << std::setw(2) << tm->tm_min 
+        << ':' << std::setfill('0') << std::setw(2) << tm->tm_sec
         << " | " << std::setfill(' ') << std::setw(5) << get_pseudonym() << " | " << std::setfill(' ');
         
         

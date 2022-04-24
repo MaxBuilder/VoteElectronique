@@ -58,12 +58,6 @@ public:
 	* @brief Génère les d�chiffrements partiels.
 	*/
 	void calculateResults(cpp_int c);
-	void printResults() {
-		std::cout << "Partial decryptions (results):\n";
-		for (size_t i = 0; i < results.size(); i++)  {
-			std::cout << " > " << results[i] << "\n";
-		}
-	};
 
 	/*
 	* @Brief La combinason des d�chiffr�s partiels.

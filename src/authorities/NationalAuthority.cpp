@@ -33,7 +33,7 @@ void NationalAuthority::transmit_results() {
 
 
 void NationalAuthority::cout_board() {
-    std::cout << "Board de l'autorité nationale :\n";
+    std::cout << "\033[;33mBoard de l'autorité nationale :\033[00m\n";
     get_bulletin_board().cout_board();
 
     std::cout << "| Sums. | ";
@@ -66,8 +66,10 @@ void NationalAuthority::make_tally(cpp_int N) {
 
     }
 
-    //cpp_int decrypted_nat_prod = get_crypto().decrypt(nat_prod);
-
+    // Somme des résultats régionaux
     get_bulletin_board().get_sums().push_back(reg_sum);
-    //get_bulletin_board().get_sums().push_back(decrypted_nat_prod);
+
+    // Déchiffrement de la somme nationale
+	get_combiner().calculateResults(nat_prod);
+	get_bulletin_board().get_sums().push_back(get_combiner().combine());
 }
