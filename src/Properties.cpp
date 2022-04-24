@@ -18,6 +18,7 @@ Properties::Properties() {
 	nbLocalPerRegionalAuth = obj["nbLocalPerRegionalAuth"].asInt();
 	nbCandidats = obj["nbCandidats"].asInt();
 	nbServersPerCombiner = obj["nbServersPerCombiner"].asInt();
+	t = obj["t"].asInt();
 	voteDuration = obj["voteDuration"].asDouble();
 
 	// Calcul de la factorielle pour delta (on le fait une seule fois pour toute l'appli)
@@ -49,6 +50,7 @@ int Properties::get_nbLocalPerRegionalAuth() { return nbLocalPerRegionalAuth; }
 int Properties::get_nbCandidats() { return nbCandidats; }
 
 int Properties::get_nbServersPerCombiner() { return nbServersPerCombiner; }
+int Properties::get_t() { return t; }
 
 cpp_int Properties::get_delta() { return delta; };
 

@@ -8,6 +8,7 @@
     "nbCandidats": 3,
     
     "nbServersPerCombiner": 2,
+    "t": 1,
 
     "__DuréeDuVoteEnMilliSecondes": -1,
     "__voteDuration": 7200000,

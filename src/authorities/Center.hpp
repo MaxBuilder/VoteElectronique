@@ -36,7 +36,7 @@ public:
 
         // Génération des serveurs et partage de la clé privée entre ces serveurs
         Properties *prop = Properties::getProperties();
-        combiner = new Combiner(private_key, public_key, prop->get_delta(), public_key.N, prop->get_nbServersPerCombiner(), public_key.m);
+        combiner = new Combiner(private_key, public_key, prop->get_delta(), public_key.N, prop->get_nbServersPerCombiner(), prop->get_t(), public_key.m);
     }
     
 

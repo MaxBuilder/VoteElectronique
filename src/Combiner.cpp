@@ -1,11 +1,12 @@
 #include "Combiner.hpp"
 
 
-Combiner::Combiner(cpp_int sk_, PKey pk_, cpp_int delta_, cpp_int modulus, int nb_servers, cpp_int m) {
+Combiner::Combiner(cpp_int sk_, PKey pk_, cpp_int delta_, cpp_int modulus, int nb_servers, int t, cpp_int m) {
 	sk = sk_;
 	pk = pk_;
 	delta = delta_;
-	std::vector<cpp_int> secret_shares = generateSecretShares(nb_servers, modulus, m);
+	
+	std::vector<cpp_int> secret_shares = generateSecretShares(nb_servers, t, modulus, m);
 
 	for (int i = 1; i <= nb_servers; i++) {
 		servers.push_back(new CryptoServer(i, delta_, secret_shares.at(i - 1), modulus));
@@ -26,7 +27,7 @@ cpp_int Combiner::horner(std::vector<cpp_int> poly, cpp_int x)
 }
 
 
-std::vector<cpp_int> Combiner::generateSecretShares(int nb_servers, cpp_int N, cpp_int m) {
+std::vector<cpp_int> Combiner::generateSecretShares(int nb_servers, int t, cpp_int N, cpp_int m) {
 
 	cpp_int Nm;
 	boost::multiprecision::multiply(Nm, N, m);
@@ -35,18 +36,48 @@ std::vector<cpp_int> Combiner::generateSecretShares(int nb_servers, cpp_int N, c
 
 	std::vector<cpp_int> res;
 
-	boost::random_device rn;
-	boost::random::mt19937 mt(rn) ;
+	// boost::random_device rn;
+	boost::random::mt19937 mt(clock()) ;
 	boost::random::uniform_int_distribution<cpp_int> rand_gen(0, Nm - 1);
 
 	std::vector<cpp_int> ai;
 	ai.push_back(sk);	// a0 = sk
-	for (int i = 0; i < nb_servers; i++)
+
+	// Génération de t ai aléatoires
+	for (int i = 0; i < t; i++) 
 		ai.push_back(rand_gen(mt));
+	
+	// std::cout << "Génération des ai pour t = " << t << ":\n";
+	// for (size_t i = 0; i < ai.size(); i++)  {
+	// 	std::cout << "a["<<i<<"] = " << ai[i] << "\n";
+	// }
+	
 
-	for (int i = 1; i <= nb_servers; i++)
-		res.push_back(boost::multiprecision::powm(horner(ai, i), 1, Nm));
+	// Pour chaque serveur
+	cpp_int share;
+	cpp_int mult_res;
+	for (int s = 1; s <= nb_servers; s++) {
 
+		share = 0;
+		// Somme de 0 à t des (ai * s^i) mod Nm
+		for (int i = 0; i <= t; i++) {
+			boost::multiprecision::multiply(mult_res, ai[i], cpp_int(pow(s, i)));
+			std::cout << "a"<<i<< " ("<<ai[i]<<") * "<< s<<"^"<<i<< " = " << mult_res << "\n";
+			share += mult_res;
+			share = powm(share, 1, Nm);
+		}
+		res.push_back(share);
+		
+	}
+
+	// for (int i = 1; i <= nb_servers; i++)
+	// 	res.push_back(boost::multiprecision::powm(horner(ai, i), 1, Nm));
+
+	std::cout << "Servers secret shares:\n";
+	for (size_t i = 0; i < res.size(); i++)  {
+		std::cout << " *P"<<i+1<<": " << res[i] << "\n";
+	}
+	
 	return res;
 }
 
@@ -145,6 +176,7 @@ cpp_int Combiner::combine()
 
 	std::cout << "inverse de (4*Tetha*Delta^2) mod N: " << invDivider << "\n\n";
 	multiply(res, res, invDivider);
+	res = powm(res, 1, pk.N);
 	std::cout << "Résultat de combinaison: " << res << "\n";
 	return res;
 }

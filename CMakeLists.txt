@@ -15,7 +15,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/${CMAKE_BUILD_TYPE})
 # add_subdirectory(src)
 
 set(SRCS
-        main.cpp
+        main_decryption.cpp
         src/Properties.cpp
 
         src/KeyGeneration.cpp

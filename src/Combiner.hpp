@@ -29,7 +29,7 @@ private:
 	/**
 	* @brief Utilis�e dans le constructeur du combiner afin de donner les "secrets shares" de la cle privee aux serveurs.
 	*/
-	std::vector<cpp_int> generateSecretShares(int nb_servers, cpp_int N, cpp_int m);
+	std::vector<cpp_int> generateSecretShares(int nb_servers, int t, cpp_int N, cpp_int m);
 
 
 	/**
@@ -52,7 +52,7 @@ private:
 public:
 
 	// Constructeur
-	Combiner(cpp_int sk_, PKey pk_, cpp_int delta_, cpp_int modulus, int nb_servers, cpp_int m);
+	Combiner(cpp_int sk_, PKey pk_, cpp_int delta_, cpp_int modulus, int nb_servers, int t, cpp_int m);
 
 	/*
 	* @brief Génère les d�chiffrements partiels.
