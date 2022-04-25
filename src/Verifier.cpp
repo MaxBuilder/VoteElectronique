@@ -84,3 +84,46 @@ bool Verifier::check_equality_proof(std::vector<Bulletin*>& board, std::array<Pu
 
     return fraud;
 }
+
+
+bool Verifier::verifySignatureRSA(cpp_int message, cpp_int sign, CryptoUtils::PKeyRSA pk)
+{
+    cpp_int mustBe = CryptoUtils::sha256(to_string(message));
+    mustBe = powm(mustBe, 1, pk.n);
+
+    cpp_int test = powm(sign, pk.e, pk.n);
+
+    if (mustBe == test)
+        return true;
+    return false;
+}
+
+
+bool Verifier::check_signature(std::vector<Bulletin*>& board)
+{
+    bool fraud = false;
+
+    LocalBulletin* loc;
+    for (size_t i = 0; i < board.size(); i++) {
+        loc = (LocalBulletin*)board[i];
+        
+        std::tuple<cpp_int, cpp_int, cpp_int> loc_vote = loc->get_loc_vote();
+        std::tuple<cpp_int, cpp_int, cpp_int> reg_vote = loc->get_reg_vote();
+        std::tuple<cpp_int, cpp_int, cpp_int> nat_vote = loc->get_nat_vote();
+        CryptoUtils::PKeyRSA pk = loc->get_pkey_RSA();
+
+
+        if (!verifySignatureRSA(std::get<0>(loc_vote), std::get<1>(loc_vote), pk) ||
+            !verifySignatureRSA(std::get<0>(reg_vote), std::get<1>(reg_vote), pk) ||
+            !verifySignatureRSA(std::get<0>(nat_vote), std::get<1>(nat_vote), pk)
+           )
+        {
+            loc->set_validity(1);
+            std::cout << "Vote frauduleux supprimé: ";
+            loc->cout_board();
+            fraud = true;
+        }
+    }
+
+    return fraud;
+}

@@ -32,7 +32,7 @@ public:
      * @return true 
      * @return false 
      */
-    static bool check_signature(BulletinBoard);
+    static bool check_signature(std::vector<Bulletin*>& board);
 
     /**
      * @brief Vérifie la preuve que le chiffré est celui d'un vote correct (zero-knowledge proof 2).
@@ -57,6 +57,8 @@ public:
      * @return false 
      */
     static bool compare_results(BulletinBoard);
+
+    static bool verifySignatureRSA(cpp_int message, cpp_int sign, CryptoUtils::PKeyRSA pk);
 };
 
 #endif // __VERIFIER_H__

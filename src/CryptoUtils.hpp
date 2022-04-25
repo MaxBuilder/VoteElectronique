@@ -7,6 +7,12 @@
 #include <boost/integer/mod_inverse.hpp>
 #include <boost/multiprecision/miller_rabin.hpp>
 #include <boost/random/random_device.hpp>
+#include <iostream>
+#include <iomanip>
+#include <sstream>
+#include <string>
+#include <openssl/sha.h>
+#include <boost/integer/mod_inverse.hpp>
 
 using namespace boost::multiprecision;
 
@@ -56,6 +62,56 @@ public:
         }
         return res;
     }
+
+
+    static cpp_int sha256(const std::string str)
+    {
+        unsigned char hash[32];
+        SHA256_CTX sha256;
+        SHA256_Init(&sha256);
+        SHA256_Update(&sha256, str.c_str(), str.size());
+        SHA256_Final(hash, &sha256);
+        std::stringstream ss;
+        for (int i = 0; i < 32; i++)
+        {
+            ss << std::hex << std::setw(2) << std::setfill('0') << (int)hash[i];
+        }
+
+        std::string pre_res = ss.str();
+        cpp_int res = 0;
+        for (int i = pre_res.length() - 1; i >= 0; i--)
+        {
+            cpp_int tmp;
+            char c = pre_res.at(i);
+            if (c >= '0' && c <= '9')
+                tmp = cpp_int(c - 48);
+            else if (c >= 'a' && c <= 'f')
+                tmp = cpp_int(c - 87);
+
+            cpp_int tmp2 = powm(cpp_int(16), pre_res.length() - 1 - i, cpp_int(1) << 257);
+            multiply(tmp, tmp, tmp2);
+            add(res, res, tmp);
+        }
+        return res;
+    }
+
+
+    typedef struct PublicKeyRSA
+    {
+        cpp_int e;
+        cpp_int n;
+
+    } PKeyRSA;
+
+
+    typedef struct SecretKeyRSA
+    {
+        PKeyRSA pkey;
+        cpp_int p;
+        cpp_int q;
+        cpp_int d;
+
+    } SKeyRSA;
 };
 
 #endif // __CRYPTO_UTILS_H

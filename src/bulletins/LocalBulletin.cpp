@@ -14,6 +14,9 @@ std::tuple<cpp_int, cpp_int, cpp_int>  LocalBulletin::get_reg_vote() { return re
 std::tuple<cpp_int, cpp_int, cpp_int> LocalBulletin::get_nat_vote() { return nat_vote; }
 
 
+CryptoUtils::PKeyRSA LocalBulletin::get_pkey_RSA() { return pk; }
+
+
 EqProof LocalBulletin::get_equ_proof() { return equ_proof; }
 
 
