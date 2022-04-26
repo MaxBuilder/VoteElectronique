@@ -59,7 +59,7 @@ cpp_int Client::signRSA(cpp_int message, CryptoUtils::SKeyRSA sk)
 {
     cpp_int sign;
 
-    cpp_int hash = CryptoUtils::sha256(to_string(message));
+    cpp_int hash = CryptoUtils::sha256(boost::to_string(message));
     sign = powm(hash, sk.d, sk.pkey.n);
     return sign;
 }
@@ -67,32 +67,32 @@ cpp_int Client::signRSA(cpp_int message, CryptoUtils::SKeyRSA sk)
 
 void Client::vote(int vote)
 {
-    // Création du message M
-    cpp_int nbVoters = props->get_nbVoters();
-    int bitsize = (int) boost::multiprecision::msb(nbVoters) + 1;
-    cpp_int M = boost::multiprecision::pow(cpp_int(2), bitsize);
-    M = boost::multiprecision::pow(M, vote);
+    // Crï¿½ation du message M
+    // cpp_int nbVoters = props->get_nbRegionalAuth() * props->get_nbLocalPerRegionalAuth() * props->get_nbVoters();
+    // int bitsize = (int) boost::multiprecision::msb(nbVoters) + 1;
+    // cpp_int M = boost::multiprecision::pow(cpp_int(2), bitsize);
+    cpp_int M_pow_vote = boost::multiprecision::pow(M, vote);
 
-    // Récupération des clés publiques des autorités locales, régionales et nationales
+    // Rï¿½cupï¿½ration des clï¿½s publiques des autoritï¿½s locales, rï¿½gionales et nationales
     std::array<PublicKey, 3> pkeys = loc -> get_public_keys();
 
-    // Création du vote local
-    CipherStruct locVote = Encryption::encrypt(pkeys[0], M);
-    cpp_int locSign = signRSA(M, sk);
-    std::tuple<cpp_int, cpp_int, cpp_int> localVote = { locVote.cipher, locSign, cpp_int(0) }; // ToDO : La troisième preuve
+    // Crï¿½ation du vote local
+    CipherStruct locVote = Encryption::encrypt(pkeys[0], M_pow_vote);
+    cpp_int locSign = signRSA(M_pow_vote, sk);
+    std::tuple<cpp_int, cpp_int, cpp_int> localVote = { locVote.cipher, locSign, cpp_int(0) }; // ToDo : La troisiï¿½me preuve
 
-    // Création du vote régional
-    CipherStruct regVote = Encryption::encrypt(pkeys[1], M);
-    cpp_int regSign = signRSA(M, sk);
+    // Crï¿½ation du vote rï¿½gional
+    CipherStruct regVote = Encryption::encrypt(pkeys[1], M_pow_vote);
+    cpp_int regSign = signRSA(M_pow_vote, sk);
     std::tuple<cpp_int, cpp_int, cpp_int> regionalVote = { regVote.cipher, regSign, cpp_int(0) };
 
-    // Création du vote national
-    CipherStruct natVote = Encryption::encrypt(pkeys[2], M);
-    cpp_int natSign = signRSA(M, sk);
+    // Crï¿½ation du vote national
+    CipherStruct natVote = Encryption::encrypt(pkeys[2], M_pow_vote);
+    cpp_int natSign = signRSA(M_pow_vote, sk);
     std::tuple<cpp_int, cpp_int, cpp_int> nationalVote = { natVote.cipher, natSign, cpp_int(0) };
     
-    // La preuve d'égalité des chiffrés
-    EqProof eq_proof = Prover::generate_equality_proof(vote, std::array<CipherStruct, 3> {locVote, regVote, natVote}, pkeys, Verifier::get_challenge());
+    // GÃ©nÃ©ration de la preuve d'Ã©galitÃ© des votes (zero-knowledge proof 3)
+    EqProof eq_proof = Prover::generate_equality_proof(M_pow_vote, std::array<CipherStruct, 3> {locVote, regVote, natVote}, pkeys, Verifier::get_challenge());
 
     // Ajout du bulletin au BulletinBoard
     loc->get_bulletin_board().get_board().push_back(new LocalBulletin(client_id, sk.pkey, time(nullptr), localVote, regionalVote, nationalVote, eq_proof));

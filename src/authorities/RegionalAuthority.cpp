@@ -50,7 +50,7 @@ void RegionalAuthority::make_tally(cpp_int N)
 
         cpp_int loc_vote = pt_b -> get_loc_sum();
         boost::multiprecision::add(loc_sum, loc_sum, loc_vote);
-        loc_sum = boost::multiprecision::powm(loc_sum, 1, N2);
+        loc_sum = boost::multiprecision::powm(loc_sum, 1, N); // Somme des déchiffrements en mod N
 
         cpp_int reg_vote = pt_b -> get_reg_product();
         boost::multiprecision::multiply(reg_prod, reg_vote, reg_prod);

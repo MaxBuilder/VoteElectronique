@@ -19,16 +19,17 @@ class Client {
 
 private:
 	int client_id;
-	Properties* props;
+	cpp_int M;
+	// Properties* props;
 	CryptoUtils::SKeyRSA sk;
 	LocalAuthority* loc;
 
 public:
 
-	Client(int id_, LocalAuthority* loc_) : client_id(id_), loc(loc_)
+	Client(int id_, cpp_int M_, LocalAuthority* loc_) : client_id(id_), M(M_), loc(loc_)
 	{
 		sk = generateKeys();
-		props = Properties::getProperties();
+		// props = Properties::getProperties();
 	};
 
 
