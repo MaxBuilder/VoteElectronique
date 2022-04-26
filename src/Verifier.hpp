@@ -5,6 +5,7 @@
 #include "Prover.hpp"
 #include "authorities/BulletinBoard.hpp"
 #include "bulletins/LocalBulletin.hpp"
+#include <boost/exception/to_string.hpp>
 #include <ctime>
 
 class Verifier {

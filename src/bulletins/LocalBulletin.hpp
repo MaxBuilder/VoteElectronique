@@ -13,11 +13,11 @@ class LocalBulletin : public Bulletin {
 
 private:
 
-    // Le timestamp qui doit être apposé par l'autorité lors de la finalisation du vote.
-    time_t timestamp;
-
     // La clé publique RSA de l'utilisateur
     CryptoUtils::PKeyRSA pk;
+
+    // Le timestamp qui doit être apposé par l'autorité lors de la finalisation du vote.
+    time_t timestamp;
 
     // Description du tuple : (chiffré du vote, signature, preuve de validité)
     std::tuple<cpp_int, cpp_int, cpp_int> loc_vote;

@@ -88,7 +88,7 @@ bool Verifier::check_equality_proof(std::vector<Bulletin*>& board, std::array<Pu
 
 bool Verifier::verifySignatureRSA(cpp_int message, cpp_int sign, CryptoUtils::PKeyRSA pk)
 {
-    cpp_int mustBe = CryptoUtils::sha256(to_string(message));
+    cpp_int mustBe = CryptoUtils::sha256(boost::to_string(message));
     mustBe = powm(mustBe, 1, pk.n);
 
     cpp_int test = powm(sign, pk.e, pk.n);
@@ -118,7 +118,7 @@ bool Verifier::check_signature(std::vector<Bulletin*>& board)
             !verifySignatureRSA(std::get<0>(nat_vote), std::get<1>(nat_vote), pk)
            )
         {
-            loc->set_validity(1);
+            loc->set_validity(2);
             std::cout << "Vote frauduleux supprimé: ";
             loc->cout_board();
             fraud = true;

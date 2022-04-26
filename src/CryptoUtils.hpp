@@ -11,7 +11,7 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
-#include <openssl/sha.h>
+#include "sha256.hpp"
 #include <boost/integer/mod_inverse.hpp>
 
 using namespace boost::multiprecision;
@@ -64,13 +64,16 @@ public:
     }
 
 
-    static cpp_int sha256(const std::string str)
+    static cpp_int sha256(const std::string& str)
     {
-        unsigned char hash[32];
-        SHA256_CTX sha256;
-        SHA256_Init(&sha256);
-        SHA256_Update(&sha256, str.c_str(), str.size());
-        SHA256_Final(hash, &sha256);
+        // unsigned char hash[32];
+        // SHA256_CTX sha256;
+        // SHA256_Init(&sha256);
+        // SHA256_Update(&sha256, str.c_str(), str.size());
+        // SHA256_Final(hash, &sha256);
+        
+        std::string hash = sha256_stack(str);
+
         std::stringstream ss;
         for (int i = 0; i < 32; i++)
         {
