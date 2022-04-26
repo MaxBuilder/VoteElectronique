@@ -1,6 +1,6 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "LocalBulletin.hpp"
-
-
 
 time_t LocalBulletin::get_timestamp() { return timestamp; }
 
@@ -14,6 +14,9 @@ std::tuple<cpp_int, cpp_int, cpp_int>  LocalBulletin::get_reg_vote() { return re
 std::tuple<cpp_int, cpp_int, cpp_int> LocalBulletin::get_nat_vote() { return nat_vote; }
 
 
+CryptoUtils::PKeyRSA LocalBulletin::get_pkey_RSA() { return pk; }
+
+
 EqProof LocalBulletin::get_equ_proof() { return equ_proof; }
 
 
@@ -24,7 +27,10 @@ void LocalBulletin::cout_board() {
         // << std::setfill(' ') << std::setw(5) << std::get<2>(loc_vote) << " |\n";
 
         std::tm *tm = std::localtime(&timestamp);
-        std::cout << "| " << tm->tm_hour << ':' << tm->tm_min << ':' << std::setfill('0') << std::setw(2) << tm->tm_sec
+        std::cout << "| " 
+        << std::setfill('0') << std::setw(2) << tm->tm_hour
+        << ':' << std::setfill('0') << std::setw(2) << tm->tm_min 
+        << ':' << std::setfill('0') << std::setw(2) << tm->tm_sec
         << " | " << std::setfill(' ') << std::setw(5) << get_pseudonym() << " | " << std::setfill(' ');
         
         

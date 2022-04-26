@@ -13,6 +13,9 @@ class LocalBulletin : public Bulletin {
 
 private:
 
+    // La clé publique RSA de l'utilisateur
+    CryptoUtils::PKeyRSA pk;
+
     // Le timestamp qui doit être apposé par l'autorité lors de la finalisation du vote.
     time_t timestamp;
 
@@ -34,13 +37,14 @@ private:
 public:
 
     // Constructeur
-    LocalBulletin(cpp_int pseudo, 
+    LocalBulletin(cpp_int pseudo,
+                  CryptoUtils::PKeyRSA pk_,
                   time_t timestamp_, 
                   std::tuple<cpp_int, cpp_int, cpp_int> loc_vote_, 
                   std::tuple<cpp_int, cpp_int, cpp_int> reg_vote_, 
                   std::tuple<cpp_int, cpp_int, cpp_int> nat_vote_, 
                   EqProof equ_proof_) :
-        Bulletin(pseudo), timestamp(timestamp_), loc_vote(loc_vote_), reg_vote(reg_vote_), nat_vote(nat_vote_), equ_proof(equ_proof_), valid(0) {}
+        Bulletin(pseudo), pk(pk_), timestamp(timestamp_), loc_vote(loc_vote_), reg_vote(reg_vote_), nat_vote(nat_vote_), equ_proof(equ_proof_), valid(0) {}
 
 
     /**
@@ -70,6 +74,11 @@ public:
     */
     std::tuple<cpp_int, cpp_int, cpp_int> get_nat_vote();
     
+
+    /**
+    * @brief Accesseur sur la clé publique RSA de l'utilisateur qui a émit le vote.
+    */
+    CryptoUtils::PKeyRSA get_pkey_RSA();
 
     /**
     * @brief Accesseur sur la preuve d'égalité des chiffrés.

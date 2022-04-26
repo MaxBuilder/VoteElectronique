@@ -20,6 +20,8 @@ set(SRCS
 
         src/KeyGeneration.cpp
         src/Encryption.cpp
+        src/Combiner.cpp
+        src/CryptoServer.cpp
         
         src/Prover.cpp
         src/Verifier.cpp  
@@ -32,6 +34,9 @@ set(SRCS
         src/bulletins/LocalBulletin.cpp
         src/bulletins/RegionalBulletin.cpp
         src/bulletins/NationalBulletin.cpp
+
+        src/sha256.cpp
+        src/Client.cpp
     )
 
 set(HEADERS 
@@ -40,6 +45,8 @@ set(HEADERS
         src/CryptoUtils.hpp
         src/KeyGeneration.hpp
         src/Encryption.hpp
+        src/Combiner.hpp
+        src/CryptoServer.hpp
 
         src/Prover.hpp
         src/Verifier.hpp
@@ -54,10 +61,13 @@ set(HEADERS
         src/bulletins/LocalBulletin.hpp
         src/bulletins/RegionalBulletin.hpp
         src/bulletins/NationalBulletin.hpp
+
+        src/sha256.hpp
+        src/Client.hpp
     )
 
 
-add_compile_options(-Wall -g)
+add_compile_options(-Wall -g -lboost_random)
 
 # include_directories(src/)
 # include_directories(src/bulletins)
@@ -67,5 +77,10 @@ add_compile_options(-Wall -g)
 add_executable (${PROJECT_NAME}  ${SRCS} ${HEADERS})
 
 # find_package(boost REQUIRED)
+find_package(Boost 1.71 COMPONENTS random REQUIRED)
+if(Boost_FOUND)
+    include_directories(${Boost_INCLUDE_DIRS}) 
+endif()
+
 find_package(jsoncpp CONFIG REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE jsoncpp_object jsoncpp_static JsonCpp::JsonCpp)
+target_link_libraries(${PROJECT_NAME} PRIVATE jsoncpp_object jsoncpp_static JsonCpp::JsonCpp ${Boost_LIBRARIES})

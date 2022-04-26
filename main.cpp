@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "src/Properties.hpp"
 #include "src/CryptoUtils.hpp"
 #include "src/Encryption.hpp"
@@ -9,13 +11,12 @@
 
 #include "src/Verifier.hpp"
 #include "src/Prover.hpp"
+#include "src/KeyGeneration.hpp"
+
+#include "src/Client.hpp"
 
 #include <chrono>
 #include <ctime>
-
-void create_local_vote(cpp_int vote)  {
-
-}
 
 int main(int argc, char const *argv[])
 {
@@ -38,9 +39,10 @@ int main(int argc, char const *argv[])
 
     std::cout << "\033[0;32mSimulation de transmission d'un (faux) tableau Sums des autorités locales vers les régionales\033[0m\n";
 
-    int nb_voters = prop->get_nbRegionalAuth() * prop->get_nbLocalPerRegionalAuth() * 3; // 3 électeurs par autorité locale
-    cpp_int M = pow(cpp_int(2), ceil(log2(nb_voters)));                                  // 2^ln(l)
-
+    int nb_voters = prop->get_nbRegionalAuth() * prop->get_nbLocalPerRegionalAuth() * prop->get_nbVoters(); // 3 électeurs par autorité locale
+    // cpp_int M = pow(cpp_int(2), ceil(log2(nb_voters)));                                  // 2^ln(l)
+    int bitsize = (int) boost::multiprecision::msb(nb_voters) + 1;
+    cpp_int M = boost::multiprecision::pow(cpp_int(2), bitsize);
 
     // Création de l'autorité nationale
     NationalAuthority nat_auth;
@@ -60,6 +62,7 @@ int main(int argc, char const *argv[])
 
 
     // Générations de votes aléatoires non chiffrés dans les boards des autorités locales
+    int choix;
     cpp_int vote;
     std::array<PublicKey, 3> pkeys;
     CipherStruct loc_vote, reg_vote, nat_vote;
@@ -68,41 +71,32 @@ int main(int argc, char const *argv[])
     std::tuple<cpp_int, cpp_int, cpp_int> nat_vote_tuple;
     EqProof eq_proof;
 
-    // Test d'un vote avec différents clairs
-    vote = pow(M, rand() % prop->get_nbCandidats() + 1);
-    pkeys = loc_auths[1].get_public_keys();
-
-    loc_vote = Encryption::encrypt(pkeys[0], vote);
-    reg_vote = Encryption::encrypt(pkeys[1], vote+cpp_int(3972));
-    nat_vote = Encryption::encrypt(pkeys[2], vote);
-    loc_vote_tuple = {loc_vote.cipher, cpp_int(0), cpp_int(0)}; 
-    reg_vote_tuple = {reg_vote.cipher, cpp_int(0), cpp_int(0)}; 
-    nat_vote_tuple = {nat_vote.cipher, cpp_int(0), cpp_int(0)};
-    eq_proof = Prover::generate_equality_proof(vote, std::array<CipherStruct, 3> {loc_vote, reg_vote, nat_vote }, pkeys, Verifier::get_challenge());
-    loc_auths[1].get_bulletin_board().get_board().push_back(new LocalBulletin(3, time(nullptr), loc_vote_tuple, reg_vote_tuple, nat_vote_tuple, eq_proof));
+    std::vector<cpp_int> clear_local_votes;
+    std::vector<Client*> clients;
 
     // Générations de votes aléatoires
     for (size_t i = 0; i < loc_auths.size(); i++)  {
-        for (size_t j = 0; j < 3; j++)  {   // 3 électeurs par autorité locale
-            sleep(1);                                       
-            vote = pow(M, rand() % prop->get_nbCandidats() + 1);       // Vote: M^mi
+        for (int j = 0; j < prop->get_nbVoters(); j++)  {   // 3 électeurs par autorité locale
+            // sleep(1);
             pkeys = loc_auths[i].get_public_keys();
+            choix = rand() % prop->get_nbCandidats() + 1;
             
-            // Chiffrement du vote pour chacune des autorités
-            loc_vote = Encryption::encrypt(pkeys[0], vote);
-            reg_vote = Encryption::encrypt(pkeys[1], vote);
-            nat_vote = Encryption::encrypt(pkeys[2], vote);
-
-            // ToDo: Signature et preuve de validité du vote
-            loc_vote_tuple = {loc_vote.cipher, cpp_int(0), cpp_int(0)}; 
-            reg_vote_tuple = {reg_vote.cipher, cpp_int(0), cpp_int(0)}; 
-            nat_vote_tuple = {nat_vote.cipher, cpp_int(0), cpp_int(0)}; 
-            
-            // Génération de la preuve d'égalité des votes (zero-knowledge proof 3)
-            eq_proof = Prover::generate_equality_proof(vote, std::array<CipherStruct, 3> {loc_vote, reg_vote, nat_vote}, pkeys, Verifier::get_challenge());
-
-            loc_auths[i].get_bulletin_board().get_board().push_back(new LocalBulletin(j, time(nullptr), loc_vote_tuple, reg_vote_tuple, nat_vote_tuple, eq_proof));
+            vote = pow(M, choix);       // Vote: M^mi
+            clear_local_votes.push_back(vote);
+            clients.push_back(new Client(j, M, &loc_auths[i]));
+            clients.back()->vote(choix);
         }
+
+
+        // Affichage des votes clairs (test du déchiffrement)
+        std::cout << "Votes clairs sur l'autorité "<<i+1<<" :\n > ";
+        cpp_int sum = 0;
+        for (size_t i = 0; i < clear_local_votes.size(); i++)  {
+            std::cout << clear_local_votes[i] << ", ";
+            sum += clear_local_votes[i];
+        }
+        std::cout << "\nTotal: " << sum << " (mod N = " << boost::multiprecision::powm(sum,1,pkeys[0].N) << ")\n\n";
+        clear_local_votes.clear();
     }
 
     // Filtrage des boards par timestamp
@@ -111,6 +105,13 @@ int main(int argc, char const *argv[])
             std::cout << "Vote frauduleux sur le board de l'autorité locale " << i+1 << "\n";
         }
     }
+
+    // ToDo: Filtrage des boards par signature
+    // for  (size_t i = 0; i < loc_auths.size(); i++) {
+    //     if (Verifier::check_signature(loc_auths[i].get_bulletin_board().get_board())) {
+    //         std::cout << "Vote frauduleux sur le board de l'autorité locale " << i+1 << "\n";
+    //     }
+    // }
 
     // Filtrage des boards par preuve d'égalité des textes clairs
     for  (size_t i = 0; i < loc_auths.size(); i++) {
@@ -125,13 +126,14 @@ int main(int argc, char const *argv[])
         loc_auths[i].cout_board();
     }
 
-    std::cout << "\n\n";
+    // ToDo: je crois qu'il y a un bug en passant le nombre d'autorités locales à 2 au lieu d'une, pas eu le temps d'investiguer
 
     // Transmettre aux régionales
     for (size_t i = 0; i < loc_auths.size(); i++)  {
         loc_auths[i].transmit_results();
     }
 
+    std::cout << "\n";
     // Tally des sommes régionales et cout des tableaux régionaux pour vérification
     for (size_t i = 0; i < reg_auths.size(); i++)  {
         reg_auths[i].make_tally(reg_auths[i].get_public_key().N);
@@ -143,15 +145,15 @@ int main(int argc, char const *argv[])
         reg_auths[i].transmit_results();
     }
 
-    // Tally des sommes nationales
+    std::cout << "\n";
+    // Tally des sommes nationales et cout du tableau national pour vérification
     nat_auth.make_tally(nat_auth.get_public_key().N);
-    
-    // Print du tableau national pour vérifier 
-    std::cout << "\n\033[01;34mShowing national authority\n\033[00m";
     nat_auth.cout_board();
 
-
-    // ToDo : scénario sans chiffrement (simplement avec M^candidat)
+    // Publication des résultats du vote
+    // ToDo: extraction des résultats non fonctionnelle
+    std::cout << "\n\033[01;34mVote results:\n\033[00m";
+    nat_auth.transmit_results();
 
     return 0;
 }

@@ -11,8 +11,8 @@ void RegionalAuthority::transmit_results() {
     // std::vector<Bulletin *> national_board = get_sup_auth().get_bulletin_board().get_board();
 
     int id = get_id();
-    cpp_int reg_sum = get_bulletin_board().get_sums()[0];
-    cpp_int nat_prod = get_bulletin_board().get_sums()[1];
+    cpp_int reg_sum = get_bulletin_board().get_sums()[1];
+    cpp_int nat_prod = get_bulletin_board().get_sums()[2];
 
     // NationalBulletin votes(id, reg_sum, nat_prod);
 
@@ -50,7 +50,7 @@ void RegionalAuthority::make_tally(cpp_int N)
 
         cpp_int loc_vote = pt_b -> get_loc_sum();
         boost::multiprecision::add(loc_sum, loc_sum, loc_vote);
-        loc_sum = boost::multiprecision::powm(loc_sum, 1, N2);
+        loc_sum = boost::multiprecision::powm(loc_sum, 1, N); // Somme des déchiffrements en mod N
 
         cpp_int reg_vote = pt_b -> get_reg_product();
         boost::multiprecision::multiply(reg_prod, reg_vote, reg_prod);
@@ -62,10 +62,12 @@ void RegionalAuthority::make_tally(cpp_int N)
 
     }
 
-    //cpp_int decrypted_reg_prod = get_crypto().decrypt(reg_prod);		// Une fois la classe CryptoManager cr��e
-
+    // Somme des résultats locaux
     get_bulletin_board().get_sums().push_back(loc_sum);
-    //get_bulletin_board().get_sums().push_back(decrypted_reg_prod);
-    get_bulletin_board().get_sums().push_back(-1); // temporaire pour l'affichage du board
+    
+    // Déchiffrement de la somme régionale
+	get_combiner().calculateResults(reg_prod);
+	get_bulletin_board().get_sums().push_back(get_combiner().combine());
+    
     get_bulletin_board().get_sums().push_back(nat_prod);
 }

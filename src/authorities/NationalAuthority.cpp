@@ -33,7 +33,7 @@ void NationalAuthority::transmit_results() {
 
 
 void NationalAuthority::cout_board() {
-    std::cout << "Board de l'autorité nationale :\n";
+    std::cout << "\033[;33mBoard de l'autorité nationale :\033[00m\n";
     get_bulletin_board().cout_board();
 
     std::cout << "| Sums. | ";
@@ -58,7 +58,7 @@ void NationalAuthority::make_tally(cpp_int N) {
 
         cpp_int reg_vote = pt_b -> get_reg_sum();
         boost::multiprecision::add(reg_sum, reg_sum, reg_vote);
-        reg_sum = boost::multiprecision::powm(reg_sum, 1, N2);
+        reg_sum = boost::multiprecision::powm(reg_sum, 1, N); // Somme des déchiffrements en mod N
 
         cpp_int nat_vote = pt_b -> get_nat_product();
         boost::multiprecision::multiply(nat_prod, nat_prod, nat_vote);
@@ -66,8 +66,10 @@ void NationalAuthority::make_tally(cpp_int N) {
 
     }
 
-    //cpp_int decrypted_nat_prod = get_crypto().decrypt(nat_prod);
-
+    // Somme des résultats régionaux
     get_bulletin_board().get_sums().push_back(reg_sum);
-    //get_bulletin_board().get_sums().push_back(decrypted_nat_prod);
+
+    // Déchiffrement de la somme nationale
+	get_combiner().calculateResults(nat_prod);
+	get_bulletin_board().get_sums().push_back(get_combiner().combine());
 }

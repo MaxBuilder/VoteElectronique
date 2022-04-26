@@ -5,6 +5,8 @@
 
 #include "../CryptoUtils.hpp"
 #include "../KeyGeneration.hpp"
+#include "../Properties.hpp"
+#include "../Combiner.hpp"
 #include "BulletinBoard.hpp"
 
 using namespace boost::multiprecision;
@@ -21,6 +23,7 @@ private:
     BulletinBoard bulletin_board;
     PublicKey public_key;
     cpp_int private_key;
+    Combiner *combiner;
     // CryptoManager crypto;
 
 public:
@@ -30,6 +33,10 @@ public:
         std::tuple<PKey, cpp_int> keys = KeyGeneration::generate_keys();
         public_key = std::get<0>(keys);
         private_key = std::get<1>(keys);
+
+        // Génération des serveurs et partage de la clé privée entre ces serveurs
+        Properties *prop = Properties::getProperties();
+        combiner = new Combiner(private_key, public_key, prop->get_delta(), public_key.N, prop->get_nbServersPerCombiner(), prop->get_t(), public_key.m);
     }
     
 
@@ -63,6 +70,7 @@ public:
     * @return la référence du CryptoManager.
     */
     //CryptoManager& get_crypto() { return crypto; }
+    Combiner& get_combiner() { return *combiner; };
 
 
     /**

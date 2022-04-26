@@ -4,7 +4,14 @@ CipherStruct Encryption::encrypt(PKey PK, cpp_int M) {
 
     cpp_int N2;
     boost::multiprecision::multiply(N2, PK.N, PK.N);
-    cpp_int x = CryptoUtils::getRandomZnZ(PK);
+    std::vector<cpp_int> group = CryptoUtils::getInversibleGroup(PK.N);
+    int group_order = group.size();
+    
+    boost::random_device rn;
+    boost::random::mt19937 mt(rn);
+    boost::random::uniform_int_distribution<cpp_int> ui(cpp_int(1), group_order - 1);
+
+    cpp_int x = group[(int)ui(mt)];
     CipherStruct res;
     res.x = x;
     

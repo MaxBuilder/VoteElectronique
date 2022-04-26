@@ -18,6 +18,7 @@ private:
 	int nbCandidats; // Le nombre de candidats présentés au vote
 
 	int nbServersPerCombiner; // Le nombre de serveurs de déchiffrement par combineur.
+	int t; // Sachant t-1 le nombre minimum de serveurs qui doivent réussir leur déchiffrement partiel pour la combinaison
 	cpp_int delta; // (nbServersPerCombiner)!
 
 	double voteDuration;		// Durée du vote en millisecondes
@@ -56,6 +57,7 @@ public:
 	int get_nbCandidats();
 
 	int get_nbServersPerCombiner();
+	int get_t();
 
 	cpp_int get_delta();
 
