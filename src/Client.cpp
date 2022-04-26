@@ -59,7 +59,7 @@ cpp_int Client::signRSA(cpp_int message, CryptoUtils::SKeyRSA sk)
 {
     cpp_int sign;
 
-    cpp_int hash = CryptoUtils::sha256(boost::to_string(message));
+    cpp_int hash = CryptoUtils::sha256(boost::multiprecision::to_string(message));
     sign = powm(hash, sk.d, sk.pkey.n);
     return sign;
 }

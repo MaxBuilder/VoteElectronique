@@ -74,27 +74,21 @@ public:
         
         std::string hash = sha256_stack(str);
 
-        std::stringstream ss;
-        for (int i = 0; i < 32; i++)
-        {
-            ss << std::hex << std::setw(2) << std::setfill('0') << (int)hash[i];
-        }
-
-        std::string pre_res = ss.str();
         cpp_int res = 0;
-        for (int i = pre_res.length() - 1; i >= 0; i--)
+        for (int i = hash.length() - 1; i >= 0; i--)
         {
             cpp_int tmp;
-            char c = pre_res.at(i);
+            char c = hash.at(i);
             if (c >= '0' && c <= '9')
                 tmp = cpp_int(c - 48);
             else if (c >= 'a' && c <= 'f')
                 tmp = cpp_int(c - 87);
 
-            cpp_int tmp2 = powm(cpp_int(16), pre_res.length() - 1 - i, cpp_int(1) << 257);
+            cpp_int tmp2 = powm(cpp_int(16), hash.length() - 1 - i, cpp_int(1) << 257);
             multiply(tmp, tmp, tmp2);
             add(res, res, tmp);
         }
+
         return res;
     }
 

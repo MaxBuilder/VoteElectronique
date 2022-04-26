@@ -1,4 +1,5 @@
-#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_DEPRECATE
+
 
 #include "src/Properties.hpp"
 #include "src/CryptoUtils.hpp"
@@ -19,7 +20,7 @@
 #include <ctime>
 
 int main(int argc, char const *argv[])
-{
+{   
     std::cout << "\033[0;32mTest de la gestion des durées\033[0m\n";
     srand(clock());
 
@@ -155,5 +156,5 @@ int main(int argc, char const *argv[])
     std::cout << "\n\033[01;34mVote results:\n\033[00m";
     nat_auth.transmit_results();
 
-    return 0;
+    return 0;*/
 }
