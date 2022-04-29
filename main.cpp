@@ -107,12 +107,12 @@ int main(int argc, char const *argv[])
         }
     }
 
-    // ToDo: Filtrage des boards par signature
-    // for  (size_t i = 0; i < loc_auths.size(); i++) {
-    //     if (Verifier::check_signature(loc_auths[i].get_bulletin_board().get_board())) {
-    //         std::cout << "Vote frauduleux sur le board de l'autorité locale " << i+1 << "\n";
-    //     }
-    // }
+    // Filtrage des boards par signature de vote
+    for  (size_t i = 0; i < loc_auths.size(); i++) {
+        if (Verifier::check_signature(loc_auths[i].get_bulletin_board().get_board())) {
+            std::cout << "Vote frauduleux sur le board de l'autorité locale " << i+1 << "\n";
+        }
+    }
 
     // Filtrage des boards par preuve d'égalité des textes clairs
     for  (size_t i = 0; i < loc_auths.size(); i++) {
@@ -156,5 +156,5 @@ int main(int argc, char const *argv[])
     std::cout << "\n\033[01;34mVote results:\n\033[00m";
     nat_auth.transmit_results();
 
-    return 0;*/
+    return 0;
 }

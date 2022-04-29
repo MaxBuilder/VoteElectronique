@@ -59,7 +59,7 @@ cpp_int Client::signRSA(cpp_int message, CryptoUtils::SKeyRSA sk)
 {
     cpp_int sign;
 
-    cpp_int hash = CryptoUtils::sha256(boost::multiprecision::to_string(message));
+    cpp_int hash = CryptoUtils::sha256(boost::to_string(message));
     sign = powm(hash, sk.d, sk.pkey.n);
     return sign;
 }
@@ -78,17 +78,17 @@ void Client::vote(int vote)
 
     // Cr�ation du vote local
     CipherStruct locVote = Encryption::encrypt(pkeys[0], M_pow_vote);
-    cpp_int locSign = signRSA(M_pow_vote, sk);
+    cpp_int locSign = signRSA(locVote.cipher, sk);
     std::tuple<cpp_int, cpp_int, cpp_int> localVote = { locVote.cipher, locSign, cpp_int(0) }; // ToDo : La troisi�me preuve
 
     // Cr�ation du vote r�gional
     CipherStruct regVote = Encryption::encrypt(pkeys[1], M_pow_vote);
-    cpp_int regSign = signRSA(M_pow_vote, sk);
+    cpp_int regSign = signRSA(regVote.cipher, sk);
     std::tuple<cpp_int, cpp_int, cpp_int> regionalVote = { regVote.cipher, regSign, cpp_int(0) };
 
     // Cr�ation du vote national
     CipherStruct natVote = Encryption::encrypt(pkeys[2], M_pow_vote);
-    cpp_int natSign = signRSA(M_pow_vote, sk);
+    cpp_int natSign = signRSA(natVote.cipher, sk);
     std::tuple<cpp_int, cpp_int, cpp_int> nationalVote = { natVote.cipher, natSign, cpp_int(0) };
     
     // Génération de la preuve d'égalité des votes (zero-knowledge proof 3)
