@@ -1,4 +1,5 @@
-#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_DEPRECATE
+
 
 #include "src/Properties.hpp"
 #include "src/CryptoUtils.hpp"
@@ -19,7 +20,7 @@
 #include <ctime>
 
 int main(int argc, char const *argv[])
-{
+{   
     std::cout << "\033[0;32mTest de la gestion des durées\033[0m\n";
     srand(clock());
 
@@ -106,12 +107,12 @@ int main(int argc, char const *argv[])
         }
     }
 
-    // ToDo: Filtrage des boards par signature
-    // for  (size_t i = 0; i < loc_auths.size(); i++) {
-    //     if (Verifier::check_signature(loc_auths[i].get_bulletin_board().get_board())) {
-    //         std::cout << "Vote frauduleux sur le board de l'autorité locale " << i+1 << "\n";
-    //     }
-    // }
+    // Filtrage des boards par signature de vote
+    for  (size_t i = 0; i < loc_auths.size(); i++) {
+        if (Verifier::check_signature(loc_auths[i].get_bulletin_board().get_board())) {
+            std::cout << "Vote frauduleux sur le board de l'autorité locale " << i+1 << "\n";
+        }
+    }
 
     // Filtrage des boards par preuve d'égalité des textes clairs
     for  (size_t i = 0; i < loc_auths.size(); i++) {
