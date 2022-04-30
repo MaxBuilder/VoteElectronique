@@ -1,16 +1,15 @@
 #include "Properties.hpp"
 
+using Json = nlohmann::json;
 
-Properties * Properties::reference = nullptr;
+Properties *Properties::reference = nullptr;
 
-
-Properties::Properties() {
+Properties::Properties()
+{
 
 	// Lecture et parsing du fichier de configuration
 	std::ifstream ifs("config.json");
-	Json::Reader reader;
-	Json::Value obj;
-	reader.parse(ifs, obj);
+	Json jf = Json::parse(ifs);
 
 	// Initialisation des attributs avec les valeurs des props.
 	nbVoters = obj["nbVoters"].asInt();
@@ -25,25 +24,22 @@ Properties::Properties() {
 	delta = 1;
 	for (cpp_int i = 2; i <= nbServersPerCombiner; i++)
 		multiply(delta, delta, i);
-
 }
 
+Properties *Properties::getProperties()
+{
 
-Properties*  Properties::getProperties() {
-
-	if (reference == nullptr) {
+	if (reference == nullptr)
+	{
 		// Initialisation du pointeur
 		reference = new Properties();
 	}
 	return reference;
 }
 
-
 int Properties::get_nbVoters() { return nbVoters; }
 
-
 int Properties::get_nbRegionalAuth() { return nbRegionalAuth; }
-
 
 int Properties::get_nbLocalPerRegionalAuth() { return nbLocalPerRegionalAuth; }
 

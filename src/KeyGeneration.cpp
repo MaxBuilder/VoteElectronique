@@ -38,7 +38,7 @@ std::tuple<PKey, mp::cpp_int> KeyGeneration::generate_keys()
     boost::random::mt19937 mt(rn());
     boost::random::uniform_int_distribution<cpp_int> ui(cpp_int(0), group_order - 1);
 
-    mp::cpp_int beta = group[(int) ui(mt)];
+    mp::cpp_int beta = group[(int)ui(mt)];
     mp::cpp_int a = group[(int)ui(mt)];
     mp::cpp_int b = group[(int)ui(mt)];
 
@@ -55,11 +55,11 @@ std::tuple<PKey, mp::cpp_int> KeyGeneration::generate_keys()
     // SecretKey result
     mp::cpp_int Skey = beta * m;
 
-    
     std::cout << "Test de la génération de clé:\n"
               << "p: " << p << " | q: " << q << " | N: " << N << " | N^2 = " << Ntwo << "\n"
               << "m = p'*q' = " << m << "\n"
-              << "Beta: " << beta << " | " << "a: " << a << " | b: " << b << "\n"
+              << "Beta: " << beta << " | "
+              << "a: " << a << " | b: " << b << "\n"
               << "g = (1+N)^a * b^N mod N^2 = " << g << "\n\n"
               << " > SK = beta*m = " << Skey << "\n"
               << "tetha = a*m*beta mod N = " << tetha << "\n"

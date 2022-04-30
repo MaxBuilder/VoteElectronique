@@ -3,48 +3,43 @@
 
 #include <iostream>
 #include <fstream>
-#include <json/json.h>
+#include <nlohmann/json.hpp>
 #include <boost/multiprecision/cpp_int.hpp>
 
 using namespace boost::multiprecision;
 
-class Properties {
+class Properties
+{
 
 private:
-
-	int nbVoters; // Le nombre de votants.
-	int nbRegionalAuth; // Le nombre d'autorités régionales.
+	int nbVoters;				// Le nombre de votants.
+	int nbRegionalAuth;			// Le nombre d'autorités régionales.
 	int nbLocalPerRegionalAuth; // Le nombre d'autorités locales par autorité régionale.
-	int nbCandidats; // Le nombre de candidats présentés au vote
+	int nbCandidats;			// Le nombre de candidats présentés au vote
 
 	int nbServersPerCombiner; // Le nombre de serveurs de déchiffrement par combineur.
-	int t; // Sachant t-1 le nombre minimum de serveurs qui doivent réussir leur déchiffrement partiel pour la combinaison
-	cpp_int delta; // (nbServersPerCombiner)!
+	int t;					  // Sachant t-1 le nombre minimum de serveurs qui doivent réussir leur déchiffrement partiel pour la combinaison
+	cpp_int delta;			  // (nbServersPerCombiner)!
 
-	double voteDuration;		// Durée du vote en millisecondes
-	time_t voteStart;			// Timestamp du début de vote
-	time_t voteEnd;				// Timestamp de fin de vote
+	double voteDuration; // Durée du vote en millisecondes
+	time_t voteStart;	 // Timestamp du début de vote
+	time_t voteEnd;		 // Timestamp de fin de vote
 protected:
+	static Properties *reference; // Le pointeur sur l'unique objet (DP Singleton)
 
-	static Properties* reference;	// Le pointeur sur l'unique objet (DP Singleton)
-
-	//Constructeur
+	// Constructeur
 	Properties();
 
 public:
+	Properties(Properties &other) = delete; // Pas clonable
 
-	Properties(Properties& other) = delete;	// Pas clonable
-	
-
-	void operator=(const Properties&) = delete; // Pas de construction de copie par affectation
-
+	void operator=(const Properties &) = delete; // Pas de construction de copie par affectation
 
 	/**
-	* @brief Met en place le DP singleton. S'assure qu'il y a toujours une unique instance de la classe.
-	* Renvoie la référence vers l'objet s'il existe, ou bien le crée dans le cas contraire.
-	*/
-	static Properties* getProperties();
-
+	 * @brief Met en place le DP singleton. S'assure qu'il y a toujours une unique instance de la classe.
+	 * Renvoie la référence vers l'objet s'il existe, ou bien le crée dans le cas contraire.
+	 */
+	static Properties *getProperties();
 
 	// A la suite se trouvent les différents accesseurs sur les propriétés.
 
