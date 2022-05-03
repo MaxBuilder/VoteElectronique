@@ -30,7 +30,7 @@ public:
     /**
      * @brief Calcule et renvoie le vecteur du nombre de votes pour chaque candidat.
      */
-    std::vector<cpp_int> calculate_results(cpp_int M, int p);
+    std::vector<cpp_int> calculate_results(cpp_int M, int p, cpp_int N);
 };
 
 #endif // __NATIONAL_AUTHORITY_H__
