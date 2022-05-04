@@ -1,15 +1,10 @@
 {
-    "nbVoters": 10,
-
-    "nbRegionalAuth": 5,
-
-    "nbLocalPerRegionalAuth": 2,
-
-    "nbCandidats": 3,
-    
-    "nbServersPerCombiner": 2,
-    "t": 1,
-
+    "nbVotersPerLocalAuth": 300,
+    "nbRegionalAuth": 1,
+    "nbLocalPerRegionalAuth": 60,
+    "nbCandidats": 12,
+    "nbServersPerCombiner": 15,
+    "t": 13,
     "__DuréeDuVoteEnMilliSecondes": -1,
     "voteDuration": 7200000,
     "__voteDuration": 8000,

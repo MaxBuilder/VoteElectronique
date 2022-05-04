@@ -69,6 +69,8 @@ set(HEADERS
 
 add_compile_options(-Wall -g -lboost_random)
 
+add_subdirectory(nlohmann_json)
+
 # include_directories(src/)
 # include_directories(src/bulletins)
 # include_directories(src/authorities)
@@ -78,9 +80,9 @@ add_executable (${PROJECT_NAME}  ${SRCS} ${HEADERS})
 
 # find_package(boost REQUIRED)
 find_package(Boost 1.71 COMPONENTS random REQUIRED)
+
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS}) 
 endif()
 
-find_package(jsoncpp CONFIG REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE jsoncpp_object jsoncpp_static JsonCpp::JsonCpp ${Boost_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json ${Boost_LIBRARIES})

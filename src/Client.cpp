@@ -50,7 +50,6 @@ CryptoUtils::SKeyRSA Client::generateKeys()
     return sk;
 }
 
-
 cpp_int Client::signRSA(cpp_int message, CryptoUtils::SKeyRSA sk)
 {
     cpp_int sign;
@@ -60,35 +59,30 @@ cpp_int Client::signRSA(cpp_int message, CryptoUtils::SKeyRSA sk)
     return sign;
 }
 
-
 void Client::vote(int vote)
 {
-    // Cr�ation du message M
-    // cpp_int nbVoters = props->get_nbRegionalAuth() * props->get_nbLocalPerRegionalAuth() * props->get_nbVoters();
-    // int bitsize = (int) boost::multiprecision::msb(nbVoters) + 1;
-    // cpp_int M = boost::multiprecision::pow(cpp_int(2), bitsize);
     cpp_int M_pow_vote = boost::multiprecision::pow(M, vote);
 
     // R�cup�ration des cl�s publiques des autorit�s locales, r�gionales et nationales
-    std::array<PublicKey, 3> pkeys = loc -> get_public_keys();
+    std::array<PublicKey, 3> pkeys = loc->get_public_keys();
 
     // Cr�ation du vote local
     CipherStruct locVote = Encryption::encrypt(pkeys[0], M_pow_vote);
     cpp_int locSign = signRSA(locVote.cipher, sk);
-    std::tuple<cpp_int, cpp_int, cpp_int> localVote = { locVote.cipher, locSign, cpp_int(0) }; // ToDo : La troisi�me preuve
+    std::tuple<cpp_int, cpp_int, cpp_int> localVote = {locVote.cipher, locSign, cpp_int(0)}; // ToDo : La troisi�me preuve
 
     // Cr�ation du vote r�gional
     CipherStruct regVote = Encryption::encrypt(pkeys[1], M_pow_vote);
     cpp_int regSign = signRSA(regVote.cipher, sk);
-    std::tuple<cpp_int, cpp_int, cpp_int> regionalVote = { regVote.cipher, regSign, cpp_int(0) };
+    std::tuple<cpp_int, cpp_int, cpp_int> regionalVote = {regVote.cipher, regSign, cpp_int(0)};
 
     // Cr�ation du vote national
     CipherStruct natVote = Encryption::encrypt(pkeys[2], M_pow_vote);
     cpp_int natSign = signRSA(natVote.cipher, sk);
-    std::tuple<cpp_int, cpp_int, cpp_int> nationalVote = { natVote.cipher, natSign, cpp_int(0) };
-    
+    std::tuple<cpp_int, cpp_int, cpp_int> nationalVote = {natVote.cipher, natSign, cpp_int(0)};
+
     // Génération de la preuve d'égalité des votes (zero-knowledge proof 3)
-    EqProof eq_proof = Prover::generate_equality_proof(M_pow_vote, std::array<CipherStruct, 3> {locVote, regVote, natVote}, pkeys, Verifier::get_challenge());
+    EqProof eq_proof = Prover::generate_equality_proof(M_pow_vote, std::array<CipherStruct, 3>{locVote, regVote, natVote}, pkeys, Verifier::get_challenge());
 
     // Ajout du bulletin au BulletinBoard
     loc->get_bulletin_board().get_board().push_back(new LocalBulletin(client_id, sk.pkey, time(nullptr), localVote, regionalVote, nationalVote, eq_proof));

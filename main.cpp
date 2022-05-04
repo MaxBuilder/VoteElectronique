@@ -1,6 +1,5 @@
 #define _CRT_SECURE_NO_DEPRECATE
 
-
 #include "src/Properties.hpp"
 #include "src/CryptoUtils.hpp"
 #include "src/Encryption.hpp"
@@ -20,47 +19,50 @@
 #include <ctime>
 
 int main(int argc, char const *argv[])
-{   
+{
     std::cout << "\033[0;32mTest de la gestion des durées\033[0m\n";
     srand(clock());
 
     Properties *prop = Properties::getProperties();
+
+    std::cout << prop->get_keySize() << std::endl;
     auto start = std::chrono::system_clock::now();
     std::time_t start_time = std::chrono::system_clock::to_time_t(start);
     prop->setVoteStart(start_time);
 
     // Calcule le timestamp de fin de vote
     double voteDuration = prop->getVoteDuration();
-    std::time_t end_time = start_time + voteDuration/1000;
+    std::time_t end_time = start_time + voteDuration / 1000;
     prop->setVoteEnd(end_time);
-    std::cout << "Durée du vote: " << voteDuration/1000 << "s | " << voteDuration/1000/60 << "mn | " << voteDuration/1000/60/60 << "h\n";
+    std::cout << "Durée du vote: " << voteDuration / 1000 << "s | " << voteDuration / 1000 / 60 << "mn | " << voteDuration / 1000 / 60 / 60 << "h\n";
     std::cout << "Début: " << start_time << " | " << std::ctime(&(start_time))
               << "Fin  : " << end_time << " | " << std::ctime(&end_time) << "\n";
-    
 
     std::cout << "\033[0;32mSimulation de transmission d'un (faux) tableau Sums des autorités locales vers les régionales\033[0m\n";
 
-    int nb_voters = prop->get_nbRegionalAuth() * prop->get_nbLocalPerRegionalAuth() * prop->get_nbVoters(); // 3 électeurs par autorité locale
+    int nb_voters = prop->get_nbRegionalAuth() * prop->get_nbLocalPerRegionalAuth() * prop->get_nbVotersPerLocalAuth(); // 3 électeurs par autorité locale
     // cpp_int M = pow(cpp_int(2), ceil(log2(nb_voters)));                                  // 2^ln(l)
-    int bitsize = (int) boost::multiprecision::msb(nb_voters) + 1;
+    int bitsize = (int)boost::multiprecision::msb(nb_voters) + 1;
     cpp_int M = boost::multiprecision::pow(cpp_int(2), bitsize);
 
     // Création de l'autorité nationale
     NationalAuthority nat_auth;
     // Génération des autorités régionales
     std::vector<RegionalAuthority> reg_auths;
-    for (int i = 0; i < prop->get_nbRegionalAuth(); i++)  {
+    for (int i = 0; i < prop->get_nbRegionalAuth(); i++)
+    {
         reg_auths.push_back(RegionalAuthority(i + 1, nat_auth));
     }
 
     // Génération des autorités locales
     std::vector<LocalAuthority> loc_auths;
-    for (size_t i = 0; i < reg_auths.size(); i++)  {
-        for (int j = 0; j < prop->get_nbLocalPerRegionalAuth(); j++)  {
+    for (size_t i = 0; i < reg_auths.size(); i++)
+    {
+        for (int j = 0; j < prop->get_nbLocalPerRegionalAuth(); j++)
+        {
             loc_auths.push_back(LocalAuthority(j + 1, reg_auths[i]));
         }
     }
-
 
     // Générations de votes aléatoires non chiffrés dans les boards des autorités locales
     int choix;
@@ -73,68 +75,77 @@ int main(int argc, char const *argv[])
     EqProof eq_proof;
 
     std::vector<int> clear_clear_votes;
-    for (int i = 0; i < prop->get_nbCandidats(); i++) {
+    for (int i = 0; i < prop->get_nbCandidats(); i++)
+    {
         clear_clear_votes.push_back(0);
     }
-    
+
     std::vector<cpp_int> clear_local_votes;
-    std::vector<Client*> clients;
+    std::vector<Client *> clients;
 
     // Générations de votes aléatoires
-    for (size_t i = 0; i < loc_auths.size(); i++)  {
-        for (int j = 0; j < prop->get_nbVoters(); j++)  {   // 3 électeurs par autorité locale
+    for (size_t i = 0; i < loc_auths.size(); i++)
+    {
+        for (int j = 0; j < prop->get_nbVotersPerLocalAuth(); j++)
+        { // 3 électeurs par autorité locale
             // sleep(1);
             pkeys = loc_auths[i].get_public_keys();
             choix = rand() % prop->get_nbCandidats() + 1;
-            clear_clear_votes[choix-1] += 1;
-            
-            vote = pow(M, choix);       // Vote: M^mi
+            clear_clear_votes[choix - 1] += 1;
+
+            vote = pow(M, choix); // Vote: M^mi
             clear_local_votes.push_back(vote);
             clients.push_back(new Client(j, M, &loc_auths[i]));
             clients.back()->vote(choix);
         }
 
-
         // Affichage des votes clairs (test du déchiffrement)
-        std::cout << "Votes clairs sur l'autorité "<<i+1<<" :\n > ";
+        std::cout << "Votes clairs sur l'autorité " << i + 1 << " :\n > ";
         cpp_int sum = 0;
-        for (size_t i = 0; i < clear_local_votes.size(); i++)  {
+        for (size_t i = 0; i < clear_local_votes.size(); i++)
+        {
             std::cout << clear_local_votes[i] << ", ";
             sum += clear_local_votes[i];
         }
-        std::cout << "\nTotal: " << sum << " (mod N = " << boost::multiprecision::powm(sum,1,pkeys[0].N) << ")\n\n";
+        std::cout << "\nTotal: " << sum << " (mod N = " << boost::multiprecision::powm(sum, 1, pkeys[0].N) << ")\n\n";
         clear_local_votes.clear();
     }
     std::cout << "Choix clairs:\n";
     for (size_t i = 0; i < clear_clear_votes.size(); i++)
     {
-        std::cout << "Candidat " << i << ": " << clear_clear_votes[i] << "\n"; 
+        std::cout << "Candidat " << i << ": " << clear_clear_votes[i] << "\n";
     }
-    
 
     // Filtrage des boards par timestamp
-    for  (size_t i = 0; i < loc_auths.size(); i++) {
-        if (Verifier::check_timestamp(loc_auths[i].get_bulletin_board().get_board())) {
-            std::cout << "Vote frauduleux sur le board de l'autorité locale " << i+1 << "\n";
+    for (size_t i = 0; i < loc_auths.size(); i++)
+    {
+        if (Verifier::check_timestamp(loc_auths[i].get_bulletin_board().get_board()))
+        {
+            std::cout << "Vote frauduleux sur le board de l'autorité locale " << i + 1 << "\n";
         }
     }
 
     // Filtrage des boards par signature de vote
-    for  (size_t i = 0; i < loc_auths.size(); i++) {
-        if (Verifier::check_signature(loc_auths[i].get_bulletin_board().get_board())) {
-            std::cout << "Vote frauduleux sur le board de l'autorité locale " << i+1 << "\n";
+    for (size_t i = 0; i < loc_auths.size(); i++)
+    {
+        if (Verifier::check_signature(loc_auths[i].get_bulletin_board().get_board()))
+        {
+            std::cout << "Vote frauduleux sur le board de l'autorité locale " << i + 1 << "\n";
         }
     }
 
     // Filtrage des boards par preuve d'égalité des textes clairs
-    for  (size_t i = 0; i < loc_auths.size(); i++) {
-        if (Verifier::check_equality_proof(loc_auths[i].get_bulletin_board().get_board(), loc_auths[i].get_public_keys())) {
-            std::cout << "Vote frauduleux sur le board de l'autorité locale " << i+1 << "\n";
+    for (size_t i = 0; i < loc_auths.size(); i++)
+    {
+        if (Verifier::check_equality_proof(loc_auths[i].get_bulletin_board().get_board(), loc_auths[i].get_public_keys()))
+        {
+            std::cout << "Vote frauduleux sur le board de l'autorité locale " << i + 1 << "\n";
         }
     }
 
     // Tally des sommes locales et cout des tableaux locaux pour vérification
-    for (size_t i = 0; i < loc_auths.size(); i++)  {
+    for (size_t i = 0; i < loc_auths.size(); i++)
+    {
         loc_auths[i].make_tally(loc_auths[i].get_public_key().N);
         loc_auths[i].cout_board();
     }
@@ -142,19 +153,22 @@ int main(int argc, char const *argv[])
     // ToDo: je crois qu'il y a un bug en passant le nombre d'autorités locales à 2 au lieu d'une, pas eu le temps d'investiguer
 
     // Transmettre aux régionales
-    for (size_t i = 0; i < loc_auths.size(); i++)  {
+    for (size_t i = 0; i < loc_auths.size(); i++)
+    {
         loc_auths[i].transmit_results();
     }
 
     std::cout << "\n";
     // Tally des sommes régionales et cout des tableaux régionaux pour vérification
-    for (size_t i = 0; i < reg_auths.size(); i++)  {
+    for (size_t i = 0; i < reg_auths.size(); i++)
+    {
         reg_auths[i].make_tally(reg_auths[i].get_public_key().N);
         reg_auths[i].cout_board();
     }
 
     // Transmettre à la nationale
-    for (size_t i = 0; i < reg_auths.size(); i++)  {
+    for (size_t i = 0; i < reg_auths.size(); i++)
+    {
         reg_auths[i].transmit_results();
     }
 
