@@ -72,6 +72,11 @@ int main(int argc, char const *argv[])
     std::tuple<cpp_int, cpp_int, cpp_int> nat_vote_tuple;
     EqProof eq_proof;
 
+    std::vector<int> clear_clear_votes;
+    for (int i = 0; i < prop->get_nbCandidats(); i++) {
+        clear_clear_votes.push_back(0);
+    }
+    
     std::vector<cpp_int> clear_local_votes;
     std::vector<Client*> clients;
 
@@ -81,6 +86,7 @@ int main(int argc, char const *argv[])
             // sleep(1);
             pkeys = loc_auths[i].get_public_keys();
             choix = rand() % prop->get_nbCandidats() + 1;
+            clear_clear_votes[choix-1] += 1;
             
             vote = pow(M, choix);       // Vote: M^mi
             clear_local_votes.push_back(vote);
@@ -99,6 +105,12 @@ int main(int argc, char const *argv[])
         std::cout << "\nTotal: " << sum << " (mod N = " << boost::multiprecision::powm(sum,1,pkeys[0].N) << ")\n\n";
         clear_local_votes.clear();
     }
+    std::cout << "Choix clairs:\n";
+    for (size_t i = 0; i < clear_clear_votes.size(); i++)
+    {
+        std::cout << "Candidat " << i << ": " << clear_clear_votes[i] << "\n"; 
+    }
+    
 
     // Filtrage des boards par timestamp
     for  (size_t i = 0; i < loc_auths.size(); i++) {

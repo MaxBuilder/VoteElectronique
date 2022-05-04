@@ -63,6 +63,28 @@ public:
         return res;
     }
 
+    
+    static cpp_int getRandomInversibleElement(cpp_int N)
+    {
+        boost::random_device rn;
+        boost::random::mt19937 mt(rn());
+        boost::random::uniform_int_distribution<cpp_int> ui(cpp_int(0), N - 1);
+        cpp_int elem = ui(mt);
+        while (gcd(N, elem) != 1)
+            elem = ui(mt);
+        return elem;
+    }
+    
+
+    static bool isSafePrime(cpp_int x)
+    {
+        boost::random_device rn;
+        boost::random::mt11213b gen(rn);
+        if (!miller_rabin_test(x, 25, gen) ||         // Si au moins une des deux conditions
+            !miller_rabin_test((x - 1) / 2, 25, gen)) // n'est pas valide renvoie faux
+            return false;
+        return true;
+    }
 
     static cpp_int sha256(const std::string& str)
     {

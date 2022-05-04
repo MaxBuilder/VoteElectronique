@@ -17,6 +17,7 @@ private:
 	int nbLocalPerRegionalAuth; // Le nombre d'autorités locales par autorité régionale.
 	int nbCandidats; // Le nombre de candidats présentés au vote
 
+	int keySize;
 	int nbServersPerCombiner; // Le nombre de serveurs de déchiffrement par combineur.
 	int t; // Sachant t-1 le nombre minimum de serveurs qui doivent réussir leur déchiffrement partiel pour la combinaison
 	cpp_int delta; // (nbServersPerCombiner)!
@@ -55,6 +56,8 @@ public:
 	int get_nbLocalPerRegionalAuth();
 
 	int get_nbCandidats();
+
+	int get_keySize() {return keySize;};
 
 	int get_nbServersPerCombiner();
 	int get_t();

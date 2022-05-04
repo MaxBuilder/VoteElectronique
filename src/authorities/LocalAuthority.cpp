@@ -68,15 +68,15 @@ void LocalAuthority::make_tally(cpp_int N) {
 		
 		cpp_int loc_vote = std::get<0>(pt_b -> get_loc_vote());
 		boost::multiprecision::multiply(loc_res, loc_res, loc_vote);
-		loc_res = boost::multiprecision::powm(loc_res, 1, N2);
+		// loc_res = boost::multiprecision::powm(loc_res, 1, N2);
 
 		cpp_int reg_vote = std::get<0>(pt_b -> get_reg_vote());
 		boost::multiprecision::multiply(reg_res, reg_res, reg_vote);
-		reg_res = boost::multiprecision::powm(reg_res, 1, N2);
+		// reg_res = boost::multiprecision::powm(reg_res, 1, N2);
 
 		cpp_int nat_vote = std::get<0>(pt_b -> get_nat_vote());
 		boost::multiprecision::multiply(nat_res, nat_res, nat_vote);
-		nat_res = boost::multiprecision::powm(nat_res, 1, N2);
+		// nat_res = boost::multiprecision::powm(nat_res, 1, N2);
 
 	}
 

@@ -7,17 +7,30 @@
  */
 std::tuple<PKey, mp::cpp_int> KeyGeneration::generate_keys()
 {
-    // Temporary example of 2 valid safe prime numbers.
-    // ToDo safe prime test and prime generation.
+    Properties *prop = Properties::getProperties();
+    int size_key = prop->get_keySize();
+    boost::random_device rn;
+    boost::random::mt19937 eng(rn());
+    
+    mp::cpp_int lw_bnd = mp::pow(cpp_int(2), size_key / 2);         // Lower bound for uniform int distribution = 2^512
+    mp::cpp_int up_bnd = mp::pow(cpp_int(2), size_key / 2 + 1) - 1; // Upper Bound = 2^513 - 1
+
+    boost::random::uniform_int_distribution<mp::cpp_int> prime_gen(lw_bnd, up_bnd);
+
     // For p,q = x defined bits (512, 256, 1024) => independent_bits_engine
-    mp::cpp_int p = 5;
-    mp::cpp_int q = 7;
+    mp::cpp_int p = prime_gen(eng);
+
+    while (!CryptoUtils::isSafePrime(p)) 
+        p = prime_gen(eng);
+    
+    mp::cpp_int q = prime_gen(eng);
+    while (!CryptoUtils::isSafePrime(q) || q == p) 
+        q = prime_gen(eng);
+
     mp::cpp_int N = p * q;
     mp::cpp_int Ntwo = mp::pow(N, 2);
-
-    // Le groupe Z/nZ* et son ordre
-    std::vector<cpp_int> group = CryptoUtils::getInversibleGroup(N);
-    int group_order = group.size();
+    // ToDo : vérifier que PGCD : N et Phi(N) = 1 sinon relancer la recherche de q
+    
 
     /* m = p'*q' where p = 2p' + 1 => p' = (p-1)/2
      *                 q = 2q' + 1 (see safe prime numbers)
@@ -27,20 +40,12 @@ std::tuple<PKey, mp::cpp_int> KeyGeneration::generate_keys()
      */
     mp::cpp_int m = ((p - 1) >> 1) * ((q - 1) >> 1);
 
-    // cpp_int sizeN = msb(N);
-    // const cpp_int cstsize = sizeN;
-    // typedef independent_bits_engine<mt19937, 10, cpp_int> ex;
-
     // Random generation part : beta, (a,b). ]0;N[
 
     // Must ensure that these 3 values are inversible in N for theta to be inversible
-    boost::random_device rn;
-    boost::random::mt19937 mt(rn());
-    boost::random::uniform_int_distribution<cpp_int> ui(cpp_int(0), group_order - 1);
-
-    mp::cpp_int beta = group[(int) ui(mt)];
-    mp::cpp_int a = group[(int)ui(mt)];
-    mp::cpp_int b = group[(int)ui(mt)];
+    mp::cpp_int beta = CryptoUtils::getRandomInversibleElement(N);
+    mp::cpp_int a = CryptoUtils::getRandomInversibleElement(N);
+    mp::cpp_int b = CryptoUtils::getRandomInversibleElement(N);
 
     // mp::cpp_int g = mp::powm(mp::powm(one + N, a, Ntwo) * mp::powm(b, N, Ntwo), 1, Ntwo);
     mp::cpp_int tmp1 = mp::powm(1 + N, a, Ntwo);
@@ -55,7 +60,7 @@ std::tuple<PKey, mp::cpp_int> KeyGeneration::generate_keys()
     // SecretKey result
     mp::cpp_int Skey = beta * m;
 
-    
+    /*
     std::cout << "Test de la génération de clé:\n"
               << "p: " << p << " | q: " << q << " | N: " << N << " | N^2 = " << Ntwo << "\n"
               << "m = p'*q' = " << m << "\n"
@@ -64,6 +69,7 @@ std::tuple<PKey, mp::cpp_int> KeyGeneration::generate_keys()
               << " > SK = beta*m = " << Skey << "\n"
               << "tetha = a*m*beta mod N = " << tetha << "\n"
               << " > PK = {g, N, tetha} = {" << g << ", " << N << ", " << tetha << "}\n\n";
-
+    */
+    std::cout << "Clé générée! N: " << N << "\n";
     return std::make_tuple(return_value, Skey);
 }

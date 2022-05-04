@@ -1,7 +1,7 @@
 {
-    "nbVoters": 3,
+    "nbVoters": 10,
 
-    "nbRegionalAuth": 2,
+    "nbRegionalAuth": 5,
 
     "nbLocalPerRegionalAuth": 2,
 
@@ -11,6 +11,7 @@
     "t": 1,
 
     "__DuréeDuVoteEnMilliSecondes": -1,
-    "__voteDuration": 7200000,
-    "voteDuration": 8000
+    "voteDuration": 7200000,
+    "__voteDuration": 8000,
+    "keySize": 128
 }

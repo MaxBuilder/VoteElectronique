@@ -13,6 +13,7 @@ std::vector<cpp_int> NationalAuthority::calculate_results(cpp_int M, int p, cpp_
         cpp_int r;
         boost::multiprecision::divide_qr(final_tally, M_modN, q, r);
         final_tally = q;
+        r = boost::multiprecision::powm(final_tally, 1, M_modN);
         boost::multiprecision::subtract(final_tally, final_tally, r);
         res.push_back(r);
     }
@@ -23,10 +24,11 @@ std::vector<cpp_int> NationalAuthority::calculate_results(cpp_int M, int p, cpp_
 
 void NationalAuthority::transmit_results() {
     
-    Properties * props = Properties::getProperties();
-    auto pow = boost::multiprecision::msb(cpp_int(props->get_nbVoters())) + 2;
-	cpp_int M = boost::multiprecision::pow(cpp_int(2), pow);
-    std::vector<cpp_int> res = calculate_results(M, props -> get_nbCandidats(), get_public_key().N);
+    Properties * prop = Properties::getProperties();
+    int nb_voters = prop->get_nbRegionalAuth() * prop->get_nbLocalPerRegionalAuth() * prop->get_nbVoters();
+    int bitsize = (int) boost::multiprecision::msb(nb_voters) + 1;
+    cpp_int M = boost::multiprecision::pow(cpp_int(2), bitsize);
+    std::vector<cpp_int> res = calculate_results(M, prop -> get_nbCandidats(), get_public_key().N);
 
     for (size_t i = 0; i < res.size(); i++) {
         std::cout << "Candidat n°" << i << " : " << res[i] << " votes.\n";
@@ -64,7 +66,7 @@ void NationalAuthority::make_tally(cpp_int N) {
 
         cpp_int nat_vote = pt_b -> get_nat_product();
         boost::multiprecision::multiply(nat_prod, nat_prod, nat_vote);
-        nat_prod = boost::multiprecision::powm(nat_prod, 1, N2);
+        // nat_prod = boost::multiprecision::powm(nat_prod, 1, N2);
 
     }
 

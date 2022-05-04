@@ -54,11 +54,11 @@ void RegionalAuthority::make_tally(cpp_int N)
 
         cpp_int reg_vote = pt_b -> get_reg_product();
         boost::multiprecision::multiply(reg_prod, reg_vote, reg_prod);
-        reg_prod = boost::multiprecision::powm(reg_prod, 1, N2);
+        // reg_prod = boost::multiprecision::powm(reg_prod, 1, N2);
 
         cpp_int nat_vote = pt_b -> get_nat_product();
         boost::multiprecision::multiply(nat_prod, nat_vote, nat_prod);
-        nat_prod = boost::multiprecision::powm(nat_prod, 1, N2);
+        // nat_prod = boost::multiprecision::powm(nat_prod, 1, N2);
 
     }
 

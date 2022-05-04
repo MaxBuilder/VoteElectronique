@@ -37,11 +37,7 @@ CryptoUtils::SKeyRSA Client::generateKeys()
     cpp_int phi_N, e;
     multiply(phi_N, cpp_int(p - 1), cpp_int(q - 1));
 
-    std::vector<cpp_int> group = CryptoUtils::getInversibleGroup(phi_N);
-    int group_order = group.size();
-    boost::random::mt19937 mt(rn3);
-    boost::random::uniform_int_distribution<int> ui(0, group_order - 1);
-    e = group[ui(mt)];
+    e = CryptoUtils::getRandomInversibleElement(phi_N);
 
     cpp_int d = boost::integer::mod_inverse(e, phi_N);
     CryptoUtils::SKeyRSA sk;

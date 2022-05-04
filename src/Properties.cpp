@@ -20,6 +20,7 @@ Properties::Properties() {
 	nbServersPerCombiner = obj["nbServersPerCombiner"].asInt();
 	t = obj["t"].asInt();
 	voteDuration = obj["voteDuration"].asDouble();
+	keySize = obj["keySize"].asInt();
 
 	// Calcul de la factorielle pour delta (on le fait une seule fois pour toute l'appli)
 	delta = 1;
