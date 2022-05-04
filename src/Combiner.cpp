@@ -60,6 +60,7 @@ std::vector<cpp_int> Combiner::generateSecretShares(int nb_servers, int t, cpp_i
 			share += mult_res;
 			share = powm(share, 1, Nm);
 		}
+		std::cout << "s" << s << " = " << share << std::endl; 
 		res.push_back(share);
 		
 	}
@@ -151,6 +152,6 @@ cpp_int Combiner::combine() {
 	}
 
 	multiply(res, res, invDivider);
-	res = powm(res, 1, pk.N);
+	//res = powm(res, 1, pk.N);
 	return res;
 }

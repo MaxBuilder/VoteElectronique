@@ -1,9 +1,9 @@
 {
     "nbVoters": 3,
 
-    "nbRegionalAuth": 2,
+    "nbRegionalAuth": 1,
 
-    "nbLocalPerRegionalAuth": 2,
+    "nbLocalPerRegionalAuth": 1,
 
     "nbCandidats": 3,
     

@@ -44,6 +44,7 @@ int main(int argc, char const *argv[])
     // cpp_int M = pow(cpp_int(2), ceil(log2(nb_voters)));                                  // 2^ln(l)
     int bitsize = (int) boost::multiprecision::msb(nb_voters) + 1;
     cpp_int M = boost::multiprecision::pow(cpp_int(2), bitsize);
+	std::cout << "M = " << M << std::endl;
 
     // Création de l'autorité nationale
     NationalAuthority nat_auth;

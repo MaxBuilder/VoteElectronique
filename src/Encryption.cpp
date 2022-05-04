@@ -13,8 +13,7 @@ CipherStruct Encryption::encrypt(PKey PK, cpp_int M) {
 
     cpp_int x = group[(int)ui(mt)];
     CipherStruct res;
-    res.x = x;
-    
+    res.x = x;    
     
     cpp_int term1 = boost::multiprecision::powm(PK.g, M, N2);
     cpp_int term2 = boost::multiprecision::powm(x, PK.N, N2);

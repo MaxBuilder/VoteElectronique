@@ -78,16 +78,19 @@ void Client::vote(int vote)
 
     // Cr�ation du vote local
     CipherStruct locVote = Encryption::encrypt(pkeys[0], M_pow_vote);
+    std::cout << "loc_x = " << locVote.x << std::endl;
     cpp_int locSign = signRSA(locVote.cipher, sk);
     std::tuple<cpp_int, cpp_int, cpp_int> localVote = { locVote.cipher, locSign, cpp_int(0) }; // ToDo : La troisi�me preuve
 
     // Cr�ation du vote r�gional
     CipherStruct regVote = Encryption::encrypt(pkeys[1], M_pow_vote);
+    std::cout << "reg_x = " << regVote.x << std::endl;
     cpp_int regSign = signRSA(regVote.cipher, sk);
     std::tuple<cpp_int, cpp_int, cpp_int> regionalVote = { regVote.cipher, regSign, cpp_int(0) };
 
     // Cr�ation du vote national
     CipherStruct natVote = Encryption::encrypt(pkeys[2], M_pow_vote);
+    std::cout << "nat_x = " << natVote.x << std::endl;
     cpp_int natSign = signRSA(natVote.cipher, sk);
     std::tuple<cpp_int, cpp_int, cpp_int> nationalVote = { natVote.cipher, natSign, cpp_int(0) };
     

@@ -13,6 +13,6 @@ cpp_int CryptoServer::computeDecryptionShare(cpp_int c) {
 	res = boost::multiprecision::powm(res, 2, N2);
 	res = boost::multiprecision::powm(res, delta, N2);
 	res = boost::multiprecision::powm(res, sk, N2);
-
+	std::cout << "id" << getId() << " : " << res << std::endl;
 	return res;
 }
