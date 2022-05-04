@@ -17,3 +17,9 @@ _deps
 
 # IDE
 .vscode
+
+
+#Nlohmann embedded config
+nlohmann_json/nlohmann_json.pc
+nlohmann_json/nlohmann_jsonConfig.cmake
+nlohmann_json/nlohmann_jsonConfigVersion.cmake

@@ -12,13 +12,13 @@ Properties::Properties()
 	Json jf = Json::parse(ifs);
 
 	// Initialisation des attributs avec les valeurs des props.
-	nbVoters = obj["nbVoters"].asInt();
-	nbRegionalAuth = obj["nbRegionalAuth"].asInt();
-	nbLocalPerRegionalAuth = obj["nbLocalPerRegionalAuth"].asInt();
-	nbCandidats = obj["nbCandidats"].asInt();
-	nbServersPerCombiner = obj["nbServersPerCombiner"].asInt();
-	t = obj["t"].asInt();
-	voteDuration = obj["voteDuration"].asDouble();
+	nbVoters = jf["nbVoters"];
+	nbRegionalAuth = jf["nbRegionalAuth"];
+	nbLocalPerRegionalAuth = jf["nbLocalPerRegionalAuth"];
+	nbCandidats = jf["nbCandidats"];
+	nbServersPerCombiner = jf["nbServersPerCombiner"];
+	t = jf["t"];
+	voteDuration = jf["voteDuration"];
 
 	// Calcul de la factorielle pour delta (on le fait une seule fois pour toute l'appli)
 	delta = 1;
