@@ -33,8 +33,13 @@ void NationalAuthority::transmit_results()
 
     for (size_t i = 0; i < res.size(); i++)
     {
-        std::cout << "Candidat n°" << i << " : " << res[i] << " votes.\n";
+        std::cout << "Candidat n°" << i+1 << " : " << res[i] << " votes\n";
     }
+    std::cout << "\n"
+              << "\033[1;32mLe candidat n°" 
+              << std::max_element(res.begin(),res.end()) - res.begin() + 1
+              << " remporte l'élection avec " 
+              << *std::max_element(res.begin(), res.end()) << " voix !\033[0m\n";
 }
 
 void NationalAuthority::cout_board()
