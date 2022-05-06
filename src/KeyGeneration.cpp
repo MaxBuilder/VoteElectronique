@@ -11,26 +11,37 @@ std::tuple<PKey, mp::cpp_int> KeyGeneration::generate_keys()
     int size_key = prop->get_keySize();
     boost::random_device rn;
     boost::random::mt19937 eng(rn());
-    
+
     mp::cpp_int lw_bnd = mp::pow(cpp_int(2), size_key / 2);         // Lower bound for uniform int distribution = 2^512
     mp::cpp_int up_bnd = mp::pow(cpp_int(2), size_key / 2 + 1) - 1; // Upper Bound = 2^513 - 1
 
     boost::random::uniform_int_distribution<mp::cpp_int> prime_gen(lw_bnd, up_bnd);
 
     // For p,q = x defined bits (512, 256, 1024) => independent_bits_engine
-    mp::cpp_int p = prime_gen(eng);
 
-    while (!CryptoUtils::isSafePrime(p)) 
+    mp::cpp_int p, q, N, phiN, p_1, q_1, gcd;
+
+    p = prime_gen(eng);
+    while (!CryptoUtils::isSafePrime(p))
         p = prime_gen(eng);
-    
-    mp::cpp_int q = prime_gen(eng);
-    while (!CryptoUtils::isSafePrime(q) || q == p) 
-        q = prime_gen(eng);
 
-    mp::cpp_int N = p * q;
+    gcd = 0;
+    while (gcd != 1)
+    {
+        while (!CryptoUtils::isSafePrime(q) || q == p)
+        {
+            q = prime_gen(eng);
+        }
+
+        mp::multiply(N, p, q);
+        mp::subtract(p_1, p, cpp_int(1));
+        mp::subtract(q_1, q, cpp_int(1));
+        mp::multiply(phiN, p_1, q_1);
+        gcd = mp::gcd(N, phiN);
+    }
+
     mp::cpp_int Ntwo = mp::pow(N, 2);
     // ToDo : vérifier que PGCD : N et Phi(N) = 1 sinon relancer la recherche de q
-    
 
     /* m = p'*q' where p = 2p' + 1 => p' = (p-1)/2
      *                 q = 2q' + 1 (see safe prime numbers)

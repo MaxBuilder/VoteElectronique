@@ -33,12 +33,12 @@ void NationalAuthority::transmit_results()
 
     for (size_t i = 0; i < res.size(); i++)
     {
-        std::cout << "Candidat n°" << i+1 << " : " << res[i] << " votes\n";
+        std::cout << "Candidat n°" << i + 1 << " : " << res[i] << " votes\n";
     }
     std::cout << "\n"
-              << "\033[1;32mLe candidat n°" 
-              << std::max_element(res.begin(),res.end()) - res.begin() + 1
-              << " remporte l'élection avec " 
+              << "\033[1;32mLe candidat n°"
+              << std::max_element(res.begin(), res.end()) - res.begin() + 1
+              << " remporte l'élection avec "
               << *std::max_element(res.begin(), res.end()) << " voix !\033[0m\n";
 }
 
@@ -58,8 +58,8 @@ void NationalAuthority::cout_board()
 void NationalAuthority::make_tally(cpp_int N)
 {
 
-    cpp_int N2;
-    boost::multiprecision::multiply(N2, N, N);
+    cpp_int nat_N2;
+    boost::multiprecision::multiply(nat_N2, N, N);
 
     cpp_int reg_sum = 0;
     cpp_int nat_prod = 1;
@@ -75,7 +75,7 @@ void NationalAuthority::make_tally(cpp_int N)
 
         cpp_int nat_vote = pt_b->get_nat_product();
         boost::multiprecision::multiply(nat_prod, nat_prod, nat_vote);
-        // nat_prod = boost::multiprecision::powm(nat_prod, 1, N2);
+        nat_prod = boost::multiprecision::powm(nat_prod, 1, nat_N2);
     }
 
     // Somme des résultats régionaux

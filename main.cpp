@@ -2,7 +2,7 @@
 
 #include "src/App.hpp"
 
-int main(int argc, char const *argv[]) 
+int main(int argc, char const *argv[])
 {
     srand(clock());
 
@@ -16,7 +16,7 @@ int main(int argc, char const *argv[])
     app->generate_random_votes();
 
     // Filtrage des bulletins locaux par timestamp, signature, preuve de vote et preuve d'égalité
-    app->filter_local_boards();
+    // app->filter_local_boards();
 
     // Décompte des bulletins locaux et publication des résultats sur les boards régionaux
     app->compute_local_tallies_and_transmission();

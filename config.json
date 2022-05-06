@@ -1,7 +1,7 @@
 {
-    "nbVotersPerLocalAuth": 300,
-    "nbRegionalAuth": 3,
-    "nbLocalPerRegionalAuth": 7,
+    "nbVotersPerLocalAuth": 50,
+    "nbRegionalAuth": 5,
+    "nbLocalPerRegionalAuth": 5,
     "nbCandidats": 6,
     "nbServersPerCombiner": 2,
     "t": 1,

@@ -69,7 +69,7 @@ set(HEADERS
     )
 
 
-add_compile_options(-Wall -g -lboost_random)
+add_compile_options(-Wall -g -O3 -lboost_random)
 
 add_subdirectory(nlohmann_json)
 

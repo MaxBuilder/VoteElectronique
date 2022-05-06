@@ -12,18 +12,17 @@ typedef struct CipherStruct
     cpp_int cipher;
 } CipherStruct;
 
-class Encryption {
+class Encryption
+{
 public:
-
     /**
      * @brief Chiffrement de Pailler
-     * 
+     *
      * @param PK
      * @param M
-     * @return cpp_int 
+     * @return cpp_int
      */
     static CipherStruct encrypt(PKey PK, cpp_int M);
-
 };
 
 #endif

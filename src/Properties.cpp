@@ -21,7 +21,7 @@ Properties::Properties()
 	keySize = jf["keySize"];
 	// Calcul de la factorielle pour delta (on le fait une seule fois pour toute l'appli)
 	delta = 1;
-	for (cpp_int i = 2; i <= nbServersPerCombiner; i++)
+	for (cpp_int i = 1; i <= nbServersPerCombiner; i++)
 		multiply(delta, delta, i);
 }
 
