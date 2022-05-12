@@ -11,6 +11,7 @@ Properties::Properties()
 	Json jf = Json::parse(ifs);
 
 	// Initialisation des attributs avec les valeurs des props.
+	boardFiles = jf["generateBoardFiles"];
 	nbVotersPerLocalAuth = jf["nbVotersPerLocalAuth"];
 	nbRegionalAuth = jf["nbRegionalAuth"];
 	nbLocalPerRegionalAuth = jf["nbLocalPerRegionalAuth"];
@@ -36,6 +37,8 @@ Properties *Properties::getProperties()
 	return reference;
 }
 
+bool Properties::get_boardFiles() { return boardFiles; };
+
 int Properties::get_nbVotersPerLocalAuth() { return nbVotersPerLocalAuth; }
 
 int Properties::get_nbRegionalAuth() { return nbRegionalAuth; }
@@ -43,6 +46,8 @@ int Properties::get_nbRegionalAuth() { return nbRegionalAuth; }
 int Properties::get_nbLocalPerRegionalAuth() { return nbLocalPerRegionalAuth; }
 
 int Properties::get_nbCandidats() { return nbCandidats; }
+
+int Properties::get_keySize() { return keySize; };
 
 int Properties::get_nbServersPerCombiner() { return nbServersPerCombiner; }
 int Properties::get_t() { return t; }

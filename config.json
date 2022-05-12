@@ -1,12 +1,12 @@
 {
+    "generateBoardFiles": true,
     "nbVotersPerLocalAuth": 50,
-    "nbRegionalAuth": 5,
+    "nbRegionalAuth": 1,
     "nbLocalPerRegionalAuth": 5,
     "nbCandidats": 6,
     "nbServersPerCombiner": 2,
     "t": 1,
     "__DuréeDuVoteEnMilliSecondes": -1,
     "voteDuration": 7200000,
-    "__voteDuration": 8000,
     "keySize": 128
 }

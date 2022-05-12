@@ -118,16 +118,9 @@ void App::filter_local_boards() {
 	std::cout << "\033[1;33m ❯ Filtrage des bulletins locaux par timestamp, signature, preuve de vote et preuve d'égalité:\033[0m\n";
 	
 	for (size_t i = 0; i < loc_auths.size(); i++) {
-		// Filtrage des boards par timestamp
-		Verifier::check_timestamp(loc_auths[i].get_bulletin_board().get_board());
-		
-		// Filtrage des boards par signature de vote
-		Verifier::check_signature(loc_auths[i].get_bulletin_board().get_board());
-		
-		// ToDo: Filtrage des boards par preuve de vote
 
-		// Filtrage des boards par preuve d'égalité des textes clairs
-		Verifier::check_equality_proof(loc_auths[i].get_bulletin_board().get_board(), loc_auths[i].get_public_keys());
+		Verifier::filter_local_board(loc_auths[i].get_bulletin_board().get_board(), loc_auths[i].get_public_keys());
+		
 	}
 }
 

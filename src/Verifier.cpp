@@ -11,92 +11,18 @@ cpp_int Verifier::get_challenge()
     return challenge_gen(eng);
 }
 
-bool Verifier::check_timestamp(std::vector<Bulletin *> &board)
+bool Verifier::check_timestamp(LocalBulletin *lb, std::time_t end_time) 
 {
     bool fraud = false;
-
-    // Lit le timestamp de fin de vote dans le fichier de configuration
-    Properties *prop = Properties::getProperties();
-    std::time_t end_time = prop->getVoteEnd();
-
-    // Parcours des bulletins du board
-    LocalBulletin *lb;
-    for (size_t i = 0; i < board.size(); i++)
-    {
-        lb = (LocalBulletin *)board[i];
-        if (lb->get_timestamp() > end_time)
-        {
-            // Suppression du vote frauduleux
-            lb->set_validity(1);
-
-            std::cout << "Vote frauduleux supprimé: ";
-            lb->cout_board();
-            fraud = true;
-        }
-    }
+    
+    if (lb->get_timestamp() > end_time) {
+        lb->set_validity(1); // Suppression du vote frauduleux
+        fraud = true;
+	}
 
     return fraud;
 }
 
-bool Verifier::check_equality_proof(std::vector<Bulletin *> &board, std::array<PublicKey, 3> pkeys)
-{
-    bool fraud = false;
-
-    // Parcours des bulletins du board
-    LocalBulletin *lb;
-    EqProof proof;
-
-    std::vector<cpp_int> gauche;
-    std::vector<cpp_int> droit;
-
-    cpp_int N2;
-    cpp_int tmp;
-    std::vector<cpp_int> ciphers;
-    for (size_t i = 0; i < board.size(); i++)
-    {
-        lb = (LocalBulletin *)board[i];
-        proof = lb->get_equ_proof();
-
-        // Récupération des 3 votes chiffrés du bulletin
-        ciphers.push_back(std::get<0>(lb->get_loc_vote()));
-        ciphers.push_back(std::get<0>(lb->get_reg_vote()));
-        ciphers.push_back(std::get<0>(lb->get_nat_vote()));
-
-        // ToDo: Check si proof.z appartient à [0, 2^k]
-
-        for (size_t i = 0; i < 3; i++)
-        {
-            boost::multiprecision::multiply(N2, pkeys[i].N, pkeys[i].N);
-
-            // Calcul des termes gauche: pkeys[i].g^proof.z * proof.v_j[i]^pkeys[i].N
-            gauche.push_back(cpp_int(0));
-            gauche[i] = boost::multiprecision::powm(pkeys[i].g, proof.z, N2);
-            tmp = boost::multiprecision::powm(proof.v_j[i], pkeys[i].N, N2);
-            boost::multiprecision::multiply(gauche[i], gauche[i], tmp);
-            gauche[i] = boost::multiprecision::powm(gauche[i], 1, N2);
-
-            // Calcul des termes droit: proof.u_j[0] * ciphers[i]^proof.e
-            droit.push_back(cpp_int(0));
-            droit[i] = boost::multiprecision::powm(ciphers[i], proof.e, N2);
-            boost::multiprecision::multiply(droit[i], droit[i], proof.u_j[i]);
-            droit[i] = boost::multiprecision::powm(droit[i], 1, N2);
-
-            // Check égalité entre les termes gauches et droit
-            if (gauche[i] != droit[i])
-            {
-                lb->set_validity(4);
-                std::cout << "Vote frauduleux supprimé: ";
-                lb->cout_board();
-                fraud = true;
-            }
-        }
-        gauche.clear();
-        droit.clear();
-        ciphers.clear();
-    }
-
-    return fraud;
-}
 
 bool Verifier::verifySignatureRSA(cpp_int message, cpp_int sign, CryptoUtils::PKeyRSA pk)
 {
@@ -110,30 +36,104 @@ bool Verifier::verifySignatureRSA(cpp_int message, cpp_int sign, CryptoUtils::PK
     return false;
 }
 
-bool Verifier::check_signature(std::vector<Bulletin *> &board)
+
+bool Verifier::check_signature(LocalBulletin* lb)
 {
     bool fraud = false;
 
-    LocalBulletin *loc;
-    for (size_t i = 0; i < board.size(); i++)
+    std::tuple<cpp_int, cpp_int, cpp_int> loc_vote = lb->get_loc_vote();
+    std::tuple<cpp_int, cpp_int, cpp_int> reg_vote = lb->get_reg_vote();
+    std::tuple<cpp_int, cpp_int, cpp_int> nat_vote = lb->get_nat_vote();
+    CryptoUtils::PKeyRSA pk = lb->get_pkey_RSA();
+
+
+    if (!verifySignatureRSA(std::get<0>(loc_vote), std::get<1>(loc_vote), pk) ||
+        !verifySignatureRSA(std::get<0>(reg_vote), std::get<1>(reg_vote), pk) ||
+        !verifySignatureRSA(std::get<0>(nat_vote), std::get<1>(nat_vote), pk))
     {
-        loc = (LocalBulletin *)board[i];
-
-        std::tuple<cpp_int, cpp_int, cpp_int> loc_vote = loc->get_loc_vote();
-        std::tuple<cpp_int, cpp_int, cpp_int> reg_vote = loc->get_reg_vote();
-        std::tuple<cpp_int, cpp_int, cpp_int> nat_vote = loc->get_nat_vote();
-        CryptoUtils::PKeyRSA pk = loc->get_pkey_RSA();
-
-        if (!verifySignatureRSA(std::get<0>(loc_vote), std::get<1>(loc_vote), pk) ||
-            !verifySignatureRSA(std::get<0>(reg_vote), std::get<1>(reg_vote), pk) ||
-            !verifySignatureRSA(std::get<0>(nat_vote), std::get<1>(nat_vote), pk))
-        {
-            loc->set_validity(2);
-            std::cout << "Vote frauduleux supprimé: ";
-            loc->cout_board();
-            fraud = true;
-        }
+        lb->set_validity(2);
+        fraud = true;
     }
 
     return fraud;
+}
+
+
+bool Verifier::check_equality_proof(LocalBulletin *lb, std::array<PublicKey, 3> pkeys)
+{
+    bool fraud = false;
+
+    EqProof proof;
+
+    std::vector<cpp_int> gauche;
+    std::vector<cpp_int> droit;
+
+    cpp_int N2;
+    cpp_int tmp;
+    std::vector<cpp_int> ciphers;
+    
+
+    proof = lb->get_equ_proof();
+
+    // Récupération des 3 votes chiffrés du bulletin
+    ciphers.push_back(std::get<0>(lb->get_loc_vote()));
+    ciphers.push_back(std::get<0>(lb->get_reg_vote()));
+    ciphers.push_back(std::get<0>(lb->get_nat_vote()));
+
+    // ToDo: Check si proof.z appartient à [0, 2^k]
+
+    for (size_t i = 0; i < 3; i++)
+    {
+        boost::multiprecision::multiply(N2, pkeys[i].N, pkeys[i].N);
+
+        // Calcul des termes gauche: pkeys[i].g^proof.z * proof.v_j[i]^pkeys[i].N
+        gauche.push_back(cpp_int(0));
+        gauche[i] = boost::multiprecision::powm(pkeys[i].g, proof.z, N2);
+        tmp = boost::multiprecision::powm(proof.v_j[i], pkeys[i].N, N2);
+        boost::multiprecision::multiply(gauche[i], gauche[i], tmp);
+        gauche[i] = boost::multiprecision::powm(gauche[i], 1, N2);
+
+        // Calcul des termes droit: proof.u_j[0] * ciphers[i]^proof.e
+        droit.push_back(cpp_int(0));
+        droit[i] = boost::multiprecision::powm(ciphers[i], proof.e, N2);
+        boost::multiprecision::multiply(droit[i], droit[i], proof.u_j[i]);
+        droit[i] = boost::multiprecision::powm(droit[i], 1, N2);
+
+        // Check égalité entre les termes gauches et droit
+        if (gauche[i] != droit[i])
+        {
+            lb->set_validity(4);
+            fraud = true;
+        }
+    }
+    gauche.clear();
+    droit.clear();
+    ciphers.clear();
+
+    return fraud;
+}
+
+
+void Verifier::filter_local_board(std::vector<Bulletin*>& board, std::array<PublicKey, 3> pkeys)
+{
+    // Lit le timestamp de fin de vote dans le fichier de configuration
+    Properties *prop = Properties::getProperties();
+    std::time_t end_time = prop->getVoteEnd();
+
+    LocalBulletin* lb;
+    // Parcours des bulletins du board en les castant en lbal bulletin
+    for (size_t i = 0; i < board.size(); i++) {
+        lb = (LocalBulletin*)board[i];
+        // Filtrage des boards par timestamp
+        if (check_timestamp(lb, end_time))      continue;
+
+        // Filtrage des boards par signature de vote
+        if (check_signature(lb))                continue;
+
+        // ToDo: Filtrage des boards par preuve de vote
+        // if (check_legal_vote(lb))            continue;
+
+        // Filtrage des boards par preuve d'égalité des textes clairs
+        if (check_equality_proof(lb, pkeys))    continue;
+    }
 }
