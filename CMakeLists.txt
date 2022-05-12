@@ -37,7 +37,6 @@ set(SRCS
         src/bulletins/NationalBulletin.cpp
 
         src/cryptosystem/sha256.cpp
-        src/Client.cpp
     )
 
 set(HEADERS 
@@ -65,7 +64,6 @@ set(HEADERS
         src/bulletins/NationalBulletin.hpp
 
         src/cryptosystem/sha256.hpp
-        src/Client.hpp
     )
 
 

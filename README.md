@@ -11,20 +11,13 @@ Projet TER : Implémentation C++ d'un ensemble de protocoles sécurisés pour un
 
 ## 🔴 ToDo
 
-### Hors chiffrement
-
-- [x] Lecture du fichier config
-- [x] `check_timestamp`
-- [x] Confirmer le passage du Verifier en fonctions statiques
-- [x] Publication des résultats (`transmit_results` de la nationale pour séparer les votes de la somme claire)
-- [x] Ajouter un `int` pour la validité du vote dans le bulletin local
-- [x] Modifier les sommes et produits de votes locaux pour ne pas prendre en compte les votes invalides
-- [x] Vérification des signatures des votes
+- [x] Supprimer la classe Client et créer une superclasse pour contenir l'ensemble des autorités et les méthodes Client (Sign et Vote)
 - [ ] Modifier l'affichage des bulletins board :
   - [ ] Retirer l'affichage des votes et valeurs trop grandes
   - [ ] Garder dans la ligne sums les résultats mod N + une checkmark pour montrer qu'elles sont égales + le fait que le produit est calculé et prêt à être transférer
   - [ ] Rendre le tout compréhensible et léger pour un scénario simulation
-- [ ] Supprimer la classe Client et créer une superclasse pour contenir l'ensemble des autorités et les méthodes Client (Sign et Vote)
+- [ ] Implémenter une façon de générer les clés en amont et de lancer la simu avec un fichier de clés
+- [ ] Créer un autre scénario pour tester le retrait des votes frauduleux (par timestamp, signature, preuve de vote et preuve d'égalité)
 - [ ] Créer un scénario présentable sans modèle client/serveur
 
 ### Partie chiffrement et preuves
@@ -42,12 +35,11 @@ Projet TER : Implémentation C++ d'un ensemble de protocoles sécurisés pour un
 ### Déchiffrement et publication des résultats
 
 - [x] Premier déchiffrement (sans shares ni combiner pour un scénario test)
+- [ ] Génération d'une preuve de bon déchiffrement (Vk)
+- [ ] Vérification des preuves : t+1 bons déchiffrement nécessaires à la combinaison
 - [x] Déchiffrement partagé (§ 10.2.1)
-  - [ ] Génération d'une preuve de bon déchiffrement (Vk)
-  - [ ] Vérification des preuves : t+1 bons déchiffrement nécessaires à la combinaison
 - [x] Algorithme de combinaison
-- [x] Faire fonctionner `transmit_results()` pour la publication des résultats (depuis la combinaison finale mod N de l'autorité nationale)
-- [x] Comprendre pourquoi le déchiffrement ne passe plus avec des p,q autre que 5,7
+- [x] Méthode `transmit_results()` d'extraction des résultats depuis la combinaison finale mod N de l'autorité nationale (somme claire)  pour la publication des résultats
 - [ ] Vérifier que les tailles de clés sont assez grande pour un nombre important de vote
 - [ ] Fixer la modification du nombre de serveurs pour le combiner
 

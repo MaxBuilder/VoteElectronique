@@ -66,6 +66,97 @@ void App::instanciate_authorities() {
 	std::cout << "\n";
 }
 
+CryptoUtils::SKeyRSA App::generateVoterKeys()
+{
+    boost::random_device rn1;
+    boost::random_device rn2;
+    boost::random_device rn3;
+
+    boost::random::mt11213b base_gen(rn1);
+    boost::random::independent_bits_engine<boost::random::mt11213b, BITSIZE, cpp_int> gen(base_gen);
+
+    boost::random::mt19937 gen2(rn2);
+
+    cpp_int p;
+    while (true)
+    {
+        p = gen();
+        if (powm(p, 1, 2) == 0)
+            continue;
+        if (miller_rabin_test(p, 25, gen2))
+            break;
+    }
+
+    cpp_int q;
+    while (true)
+    {
+        q = gen();
+        if (powm(q, 1, 2) == 0 || q == p)
+            continue;
+        if (miller_rabin_test(q, 25, gen2))
+            break;
+    }
+
+    cpp_int N;
+    multiply(N, p, q);
+
+    cpp_int phi_N, e;
+    multiply(phi_N, cpp_int(p - 1), cpp_int(q - 1));
+
+    e = CryptoUtils::getRandomInversibleElement(phi_N);
+
+    cpp_int d = boost::integer::mod_inverse(e, phi_N);
+    CryptoUtils::SKeyRSA sk;
+    sk.pkey.e = e;
+    sk.pkey.n = N;
+    sk.d = d;
+    sk.p = p;
+    sk.q = q;
+
+    return sk;
+}
+
+cpp_int App::signRSA(cpp_int message, CryptoUtils::SKeyRSA sk)
+{
+    cpp_int sign;
+
+    cpp_int hash = CryptoUtils::sha256(boost::to_string(message));
+    sign = powm(hash, sk.d, sk.pkey.n);
+    return sign;
+}
+
+EncryptedVote App::vote(std::array<PublicKey, 3> pkeys, cpp_int M, int vote)
+{
+	CryptoUtils::SKeyRSA voterKeys;
+	voterKeys = generateVoterKeys();
+
+    cpp_int M_pow_vote = boost::multiprecision::pow(M, vote); // Vote: M^mi
+
+	EncryptedVote ev;
+	ev.pkey = voterKeys.pkey;
+
+    // Création du vote local
+    CipherStruct locVote = Encryption::encrypt(pkeys[0], M_pow_vote);
+    cpp_int locSign = signRSA(locVote.cipher, voterKeys);
+	// ToDo : Legal vote proof
+    ev.localVote = {locVote.cipher, locSign, cpp_int(0)}; 
+
+    // Création du vote régional
+    CipherStruct regVote = Encryption::encrypt(pkeys[1], M_pow_vote);
+    cpp_int regSign = signRSA(regVote.cipher, voterKeys);
+    ev.regionalVote = {regVote.cipher, regSign, cpp_int(0)};
+
+    // Création du vote national
+    CipherStruct natVote = Encryption::encrypt(pkeys[2], M_pow_vote);
+    cpp_int natSign = signRSA(natVote.cipher, voterKeys);
+    ev.nationalVote = {natVote.cipher, natSign, cpp_int(0)};
+
+    // Génération de la preuve d'égalité des votes (zero-knowledge proof 3)
+    ev.eq_proof = Prover::generate_equality_proof(M_pow_vote, std::array<CipherStruct, 3>{locVote, regVote, natVote}, pkeys, Verifier::get_challenge());
+
+	return ev;
+}
+
 void App::generate_random_votes() {
 	Properties *prop = Properties::getProperties();
 
@@ -79,9 +170,8 @@ void App::generate_random_votes() {
 	for (int i = 0; i < prop->get_nbCandidats(); i++)
 		clear_clear_votes.push_back(0);
 
-	// std::vector<cpp_int> clear_local_votes;
-	std::vector<Client*> clients;
 
+	EncryptedVote ev;
 	// Générations de votes aléatoires
 	for (size_t i = 0; i < loc_auths.size(); i++) {
 		for (int j = 0; j < prop->get_nbVotersPerLocalAuth(); j++) {
@@ -90,23 +180,13 @@ void App::generate_random_votes() {
 			choix = rand() % prop->get_nbCandidats() + 1;
 			clear_clear_votes[choix - 1] += 1;
 
-			vote = pow(M, choix); // Vote: M^mi
-			// clear_local_votes.push_back(vote);
-			clients.push_back(new Client(j, M, &loc_auths[i]));
-			clients.back()->vote(choix);
+			// Génération d'un vote par la méthode client
+			ev = App::vote(loc_auths[i].get_public_keys(), M, choix);
+			// Ajout du bulletin au BulletinBoard
+			loc_auths[i].get_bulletin_board().get_board().push_back(
+				new LocalBulletin(j, ev.pkey, time(nullptr), 
+				ev.localVote, ev.regionalVote, ev.nationalVote, ev.eq_proof));
 		}
-
-		// Affichage des votes clairs (test du déchiffrement)
-		/*
-		std::cout << "Votes clairs sur l'autorité " << i + 1 << " :\n > ";
-		cpp_int sum = 0;
-		for (size_t i = 0; i < clear_local_votes.size(); i++) {
-			std::cout << clear_local_votes[i] << ", ";
-			sum += clear_local_votes[i];
-		}
-		std::cout << "\nTotal: " << sum << " (mod N = " << boost::multiprecision::powm(sum, 1, pkeys[0].N) << ")\n\n";
-		clear_local_votes.clear();
-		*/
 	}
 	std::cout << "   \033[1mVotes clairs: \033[0m";
 	for (size_t i = 0; i < clear_clear_votes.size(); i++)

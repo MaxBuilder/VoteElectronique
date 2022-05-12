@@ -6,13 +6,24 @@
 
 #include "Properties.hpp"
 #include "cryptosystem/Encryption.hpp"
+#include "Verifier.hpp"
+#include "Prover.hpp"
+#define BITSIZE 8
 
 #include "authorities/Center.hpp"
 #include "authorities/NationalAuthority.hpp"
 #include "authorities/RegionalAuthority.hpp"
 #include "authorities/LocalAuthority.hpp"
 
-#include "Client.hpp"
+
+typedef struct EncryptedVote {
+        CryptoUtils::PKeyRSA pkey;
+        std::tuple<cpp_int, cpp_int, cpp_int> localVote;
+        std::tuple<cpp_int, cpp_int, cpp_int> regionalVote;
+        std::tuple<cpp_int, cpp_int, cpp_int> nationalVote;
+        // ToDo: legal_vote_proof
+        EqProof eq_proof;
+} EncryptedVote;
 
 class App {
 private:
@@ -48,6 +59,21 @@ public:
 
     // Instanciation des autorités régionales et locales
     void instanciate_authorities();
+
+    
+
+    // Méthodes de vote à exécuter par les électeurs
+    CryptoUtils::SKeyRSA generateVoterKeys();
+    cpp_int signRSA(cpp_int message, CryptoUtils::SKeyRSA sk);
+
+    /**
+     * @brief 
+     * 
+     * @param pkeys         Clés publiques des autorités locales, régionales et nationales
+     * @param M 
+     * @param vote 
+     */
+    EncryptedVote vote(std::array<PublicKey, 3> pkeys, cpp_int M, int vote);
 
     // Génération de votes aléatoires chiffrés dans les boards des autorités locales
     void generate_random_votes();
