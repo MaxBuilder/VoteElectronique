@@ -1,12 +1,10 @@
 #ifndef __REGIONAL_AUTHORITY_H
 #define __REGIONAL_AUTHORITY_H
 
-#include "../CryptoUtils.hpp"
 #include "Center.hpp"
 #include "NationalAuthority.hpp"
 #include "../bulletins/NationalBulletin.hpp"
 #include "../bulletins/RegionalBulletin.hpp"
-#include <boost/multiprecision/cpp_int.hpp>
 
 using namespace boost::multiprecision;
 

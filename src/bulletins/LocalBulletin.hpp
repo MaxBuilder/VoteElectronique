@@ -2,7 +2,7 @@
 #define __LOCALBULLETIN_H__
 
 #include <tuple>
-#include "../CryptoUtils.hpp"
+#include "../cryptosystem/CryptoUtils.hpp"
 #include "../Prover.hpp"
 #include "Bulletin.hpp"
 

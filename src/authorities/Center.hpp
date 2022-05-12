@@ -3,10 +3,10 @@
 
 #include <boost/multiprecision/cpp_int.hpp>
 
-#include "../CryptoUtils.hpp"
-#include "../KeyGeneration.hpp"
+#include "../cryptosystem/CryptoUtils.hpp"
+#include "../cryptosystem/KeyGeneration.hpp"
 #include "../Properties.hpp"
-#include "../Combiner.hpp"
+#include "../cryptosystem/Combiner.hpp"
 #include "BulletinBoard.hpp"
 
 using namespace boost::multiprecision;

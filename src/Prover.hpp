@@ -1,8 +1,7 @@
 #ifndef __PROVER_H__
 #define __PROVER_H__
 
-#include "CryptoUtils.hpp"
-#include "Encryption.hpp"
+#include "cryptosystem/Encryption.hpp"
 #include <iostream>
 #include <boost/multiprecision/cpp_int.hpp>
 

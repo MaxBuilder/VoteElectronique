@@ -5,8 +5,7 @@
 #include <ctime>
 
 #include "Properties.hpp"
-#include "CryptoUtils.hpp"
-#include "Encryption.hpp"
+#include "cryptosystem/Encryption.hpp"
 
 #include "authorities/Center.hpp"
 #include "authorities/NationalAuthority.hpp"

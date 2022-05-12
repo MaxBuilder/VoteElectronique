@@ -19,10 +19,10 @@ set(SRCS
         src/Properties.cpp
         src/App.cpp
 
-        src/KeyGeneration.cpp
-        src/Encryption.cpp
-        src/Combiner.cpp
-        src/CryptoServer.cpp
+        src/cryptosystem/KeyGeneration.cpp
+        src/cryptosystem/Encryption.cpp
+        src/cryptosystem/Combiner.cpp
+        src/cryptosystem/CryptoServer.cpp
         
         src/Prover.cpp
         src/Verifier.cpp  
@@ -36,7 +36,7 @@ set(SRCS
         src/bulletins/RegionalBulletin.cpp
         src/bulletins/NationalBulletin.cpp
 
-        src/sha256.cpp
+        src/cryptosystem/sha256.cpp
         src/Client.cpp
     )
 
@@ -44,11 +44,11 @@ set(HEADERS
         src/Properties.hpp
         src/App.hpp
 
-        src/CryptoUtils.hpp
-        src/KeyGeneration.hpp
-        src/Encryption.hpp
-        src/Combiner.hpp
-        src/CryptoServer.hpp
+        src/cryptosystem/CryptoUtils.hpp
+        src/cryptosystem/KeyGeneration.hpp
+        src/cryptosystem/Encryption.hpp
+        src/cryptosystem/Combiner.hpp
+        src/cryptosystem/CryptoServer.hpp
 
         src/Prover.hpp
         src/Verifier.hpp
@@ -64,7 +64,7 @@ set(HEADERS
         src/bulletins/RegionalBulletin.hpp
         src/bulletins/NationalBulletin.hpp
 
-        src/sha256.hpp
+        src/cryptosystem/sha256.hpp
         src/Client.hpp
     )
 

@@ -3,7 +3,6 @@
 
 #include "Center.hpp"
 #include "../bulletins/NationalBulletin.hpp"
-#include "../Properties.hpp"
 
 /**
  * @brief Représente le centre national d'autorité.
