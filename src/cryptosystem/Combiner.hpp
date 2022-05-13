@@ -16,6 +16,8 @@ class Combiner
 private:
 	std::vector<CryptoServer *> servers; // Les serveurs de d�chiffrement
 
+	int tval; // Valeur du seuil t
+	
 	cpp_int sk; // La cl� secr�te de l'autorit�.
 
 	cpp_int delta; // Le param�tre delta (nombre de serveurs factoriel)

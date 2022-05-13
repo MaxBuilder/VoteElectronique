@@ -41,7 +41,7 @@ Projet TER : Implémentation C++ d'un ensemble de protocoles sécurisés pour un
 - [x] Algorithme de combinaison
 - [x] Méthode `transmit_results()` d'extraction des résultats depuis la combinaison finale mod N de l'autorité nationale (somme claire)  pour la publication des résultats
 - [ ] Vérifier que les tailles de clés sont assez grande pour un nombre important de vote
-- [ ] Fixer la modification du nombre de serveurs pour le combiner
+- [x] Fixer la modification du nombre de serveurs pour le combiner
 
 ### Plus tard
 
