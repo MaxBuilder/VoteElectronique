@@ -3,7 +3,8 @@
 
 #include <iostream>
 #include <fstream>
-#include <nlohmann/json.hpp>
+// #include <nlohmann/json.hpp>
+#include "json.hpp"
 #include <boost/multiprecision/cpp_int.hpp>
 
 using namespace boost::multiprecision;

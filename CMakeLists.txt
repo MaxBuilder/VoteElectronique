@@ -40,6 +40,7 @@ set(SRCS
     )
 
 set(HEADERS 
+        src/json.hpp
         src/Properties.hpp
         src/App.hpp
 
@@ -69,7 +70,7 @@ set(HEADERS
 
 add_compile_options(-Wall -g -O3 -lboost_random)
 
-add_subdirectory(nlohmann_json)
+# add_subdirectory(lib/nlohmann_json)
 
 # include_directories(src/)
 # include_directories(src/bulletins)
@@ -85,4 +86,5 @@ if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS}) 
 endif()
 
-target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json ${Boost_LIBRARIES})
+# target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json ${Boost_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${Boost_LIBRARIES})
