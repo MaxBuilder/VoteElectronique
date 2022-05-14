@@ -37,12 +37,11 @@ std::tuple<PKey, mp::cpp_int> KeyGeneration::generate_keys()
         mp::subtract(p_1, p, cpp_int(1));
         mp::subtract(q_1, q, cpp_int(1));
         mp::multiply(phiN, p_1, q_1);
-        gcd = mp::gcd(N, phiN);
+        gcd = mp::gcd(N, phiN); // N et phi(N) doivent être premiers entre eux 
     }
 
     mp::cpp_int Ntwo = mp::pow(N, 2);
-    // ToDo : vérifier que PGCD : N et Phi(N) = 1 sinon relancer la recherche de q
-
+    
     /* m = p'*q' where p = 2p' + 1 => p' = (p-1)/2
      *                 q = 2q' + 1 (see safe prime numbers)
      * p,q,p',q' are (different) prime numbers.
@@ -81,6 +80,6 @@ std::tuple<PKey, mp::cpp_int> KeyGeneration::generate_keys()
               << "tetha = a*m*beta mod N = " << tetha << "\n"
               << " > PK = {g, N, tetha} = {" << g << ", " << N << ", " << tetha << "}\n\n";
     */
-    std::cout << "Clé générée! N: " << N << "\n";
+    // std::cout << "Clé générée! N: " << N << "\n";
     return std::make_tuple(return_value, Skey);
 }

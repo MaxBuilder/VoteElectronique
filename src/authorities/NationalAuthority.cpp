@@ -33,13 +33,13 @@ void NationalAuthority::transmit_results()
 
     for (size_t i = 0; i < res.size(); i++)
     {
-        std::cout << "Candidat n°" << i + 1 << " : " << res[i] << " votes\n";
+        std::cout << "  Candidat n°" << i + 1 << " : " << res[i] << " votes\n";
     }
     std::cout << "\n"
               << "\033[1;32mLe candidat n°"
               << std::max_element(res.begin(), res.end()) - res.begin() + 1
               << " remporte l'élection avec "
-              << *std::max_element(res.begin(), res.end()) << " voix !\033[0m\n";
+              << *std::max_element(res.begin(), res.end()) << " voix décomptées !\033[0m\n";
 }
 
 void NationalAuthority::cout_board()
@@ -55,9 +55,9 @@ void NationalAuthority::cout_board()
     std::cout << "\n";
 }
 
-void NationalAuthority::make_tally(cpp_int N)
+bool NationalAuthority::make_tally()
 {
-
+    cpp_int N = get_public_key().N; 
     cpp_int nat_N2;
     boost::multiprecision::multiply(nat_N2, N, N);
 
@@ -83,5 +83,9 @@ void NationalAuthority::make_tally(cpp_int N)
 
     // Déchiffrement de la somme nationale
     get_combiner().calculateResults(nat_prod);
-    get_bulletin_board().get_sums().push_back(get_combiner().combine());
+    cpp_int decrypted_nat_prod = get_combiner().combine();
+    get_bulletin_board().get_sums().push_back(decrypted_nat_prod);
+
+    // Comparaison de la somme des résultats régionaux au déchiffrement national
+    return reg_sum == decrypted_nat_prod;
 }

@@ -11,13 +11,13 @@ cpp_int Verifier::get_challenge()
     return challenge_gen(eng);
 }
 
-bool Verifier::check_timestamp(LocalBulletin *lb, std::time_t end_time) 
+int Verifier::check_timestamp(LocalBulletin *lb, std::time_t end_time) 
 {
-    bool fraud = false;
+    int fraud = 0;
     
     if (lb->get_timestamp() > end_time) {
         lb->set_validity(1); // Suppression du vote frauduleux
-        fraud = true;
+        fraud  += 1;
 	}
 
     return fraud;
@@ -37,9 +37,9 @@ bool Verifier::verifySignatureRSA(cpp_int message, cpp_int sign, CryptoUtils::PK
 }
 
 
-bool Verifier::check_signature(LocalBulletin* lb)
+int Verifier::check_signature(LocalBulletin* lb)
 {
-    bool fraud = false;
+    int fraud = 0;
 
     std::tuple<cpp_int, cpp_int, cpp_int> loc_vote = lb->get_loc_vote();
     std::tuple<cpp_int, cpp_int, cpp_int> reg_vote = lb->get_reg_vote();
@@ -52,16 +52,16 @@ bool Verifier::check_signature(LocalBulletin* lb)
         !verifySignatureRSA(std::get<0>(nat_vote), std::get<1>(nat_vote), pk))
     {
         lb->set_validity(2);
-        fraud = true;
+        fraud += 1;
     }
 
     return fraud;
 }
 
 
-bool Verifier::check_equality_proof(LocalBulletin *lb, std::array<PublicKey, 3> pkeys)
+int Verifier::check_equality_proof(LocalBulletin *lb, std::array<PublicKey, 3> pkeys)
 {
-    bool fraud = false;
+    int fraud = 0;
 
     EqProof proof;
 
@@ -103,7 +103,7 @@ bool Verifier::check_equality_proof(LocalBulletin *lb, std::array<PublicKey, 3> 
         if (gauche[i] != droit[i])
         {
             lb->set_validity(4);
-            fraud = true;
+            fraud += 1;
         }
     }
     gauche.clear();
@@ -114,26 +114,37 @@ bool Verifier::check_equality_proof(LocalBulletin *lb, std::array<PublicKey, 3> 
 }
 
 
-void Verifier::filter_local_board(std::vector<Bulletin*>& board, std::array<PublicKey, 3> pkeys)
+int Verifier::filter_local_board(std::vector<Bulletin*>& board, std::array<PublicKey, 3> pkeys)
 {
     // Lit le timestamp de fin de vote dans le fichier de configuration
     Properties *prop = Properties::getProperties();
     std::time_t end_time = prop->getVoteEnd();
+
+    int tmp_res;
+    int total_fraud = 0;
 
     LocalBulletin* lb;
     // Parcours des bulletins du board en les castant en lbal bulletin
     for (size_t i = 0; i < board.size(); i++) {
         lb = (LocalBulletin*)board[i];
         // Filtrage des boards par timestamp
-        if (check_timestamp(lb, end_time))      continue;
+        tmp_res = check_timestamp(lb, end_time);
+        total_fraud += tmp_res;
+        if (tmp_res)    continue;
 
         // Filtrage des boards par signature de vote
-        if (check_signature(lb))                continue;
+        tmp_res = check_signature(lb);
+        total_fraud += tmp_res;
+        if (tmp_res)    continue;
 
         // ToDo: Filtrage des boards par preuve de vote
         // if (check_legal_vote(lb))            continue;
 
         // Filtrage des boards par preuve d'égalité des textes clairs
-        if (check_equality_proof(lb, pkeys))    continue;
+        tmp_res = check_equality_proof(lb, pkeys);
+        total_fraud += tmp_res;
+        if (tmp_res)    continue;
     }
+
+    return total_fraud;
 }

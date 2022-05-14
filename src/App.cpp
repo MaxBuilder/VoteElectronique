@@ -55,6 +55,7 @@ void App::instanciate_authorities() {
 	for (int i = 0; i < prop->get_nbRegionalAuth(); i++) {
 		reg_auths.push_back(RegionalAuthority(i + 1, nat_auth));
 	}
+	std::cout << "	✅ " << prop->get_nbRegionalAuth() << " paires de clés "<<prop->get_keySize()<<" bits ont été générées\n";
 
 	std::cout << "\033[1;33m ❯ Génération des autorités locales:\033[0m\n";
 	// Génération des autorités locales
@@ -63,6 +64,7 @@ void App::instanciate_authorities() {
 			loc_auths.push_back(LocalAuthority(j + 1, reg_auths[i]));
 		}
 	}
+	std::cout << "	✅ " << prop->get_nbRegionalAuth()*prop->get_nbLocalPerRegionalAuth() << " paires de clés "<<prop->get_keySize()<<" bits ont été générées\n";
 	std::cout << "\n";
 }
 
@@ -196,20 +198,19 @@ void App::generate_random_votes() {
 
 void App::filter_local_boards() {
 	std::cout << "\033[1;33m ❯ Filtrage des bulletins locaux par timestamp, signature, preuve de vote et preuve d'égalité:\033[0m\n";
-	
+	int total_fraud = 0;
 	for (size_t i = 0; i < loc_auths.size(); i++) {
-
-		Verifier::filter_local_board(loc_auths[i].get_bulletin_board().get_board(), loc_auths[i].get_public_keys());
-		
+		total_fraud += Verifier::filter_local_board(loc_auths[i].get_bulletin_board().get_board(), loc_auths[i].get_public_keys());
 	}
+	std::cout << "	✅ " << total_fraud << " bulletins frauduleux ont été supprimés. " << nb_voters-total_fraud << " bulletins valides restants.\n";
 }
 
 void App::compute_local_tallies_and_transmission() {
-	std::cout << "\033[1;33m ❯ Décompte des bulletins locaux et publication des résultats sur les boards régionaux:\033[0m\n";
+	std::cout << "\033[1;33m ❯ Décompte des bulletins locaux et publication des résultats sur les boards régionaux\033[0m\n";
 	
 	// Tally des sommes locales et cout des tableaux locaux pour vérification
     for (size_t i = 0; i < loc_auths.size(); i++) {
-        loc_auths[i].make_tally(loc_auths[i].get_public_key().N);
+        loc_auths[i].make_tally();
         // loc_auths[i].cout_board();
     }
 
@@ -224,7 +225,10 @@ void App::compute_regional_tallies_and_transmission() {
 	
 	// Tally des sommes régionales et cout des tableaux régionaux pour vérification
     for (size_t i = 0; i < reg_auths.size(); i++) {
-        reg_auths[i].make_tally(reg_auths[i].get_public_key().N);
+        if (reg_auths[i].make_tally())
+			std::cout << "	✅ Résultats déchiffrés de Régionale n°" << i+1 << " conformes à la somme des décomptes clairs reçus des locales.\n";       
+		else
+            std::cout << "❌";
         // reg_auths[i].cout_board();
     }
 
@@ -238,7 +242,10 @@ void App::compute_national_tally() {
 	std::cout << "\033[1;33m ❯ Décompte des bulletins nationaux:\033[0m\n";
 
 	// Tally des sommes nationales et cout du tableau national pour vérification
-    nat_auth.make_tally(nat_auth.get_public_key().N);
+    if (nat_auth.make_tally())
+		std::cout << "	✅ Les résultats déchiffrés de l'autorité nationale sont conformes à la somme des décomptes clairs reçus de ses régionales.\n";       
+	else
+		std::cout << "❌";
     // nat_auth.cout_board();
 };
 

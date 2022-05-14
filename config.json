@@ -9,6 +9,7 @@
     "nbRegionalAuth": 2,
     "nbLocalPerRegionalAuth": 5,
     "nbVotersPerLocalAuth": 50,
+    
     "nbServersPerCombiner": 7,
     "t": 5,
     "keySize": 128

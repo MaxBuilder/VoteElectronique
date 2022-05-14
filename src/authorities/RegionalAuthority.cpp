@@ -6,16 +6,10 @@ NationalAuthority &RegionalAuthority::get_sup_auth() { return national_auth; }
 
 void RegionalAuthority::transmit_results()
 {
-
-    // std::vector<Bulletin *> national_board = get_sup_auth().get_bulletin_board().get_board();
-
     int id = get_id();
     cpp_int reg_sum = get_bulletin_board().get_sums()[1];
     cpp_int nat_prod = get_bulletin_board().get_sums()[2];
 
-    // NationalBulletin votes(id, reg_sum, nat_prod);
-
-    // national_board.push_back(&votes);
     get_sup_auth().get_bulletin_board().get_board().push_back(
         new NationalBulletin(id, reg_sum, nat_prod));
 }
@@ -33,9 +27,9 @@ void RegionalAuthority::cout_board()
     std::cout << "\n";
 }
 
-void RegionalAuthority::make_tally(cpp_int N)
+bool RegionalAuthority::make_tally()
 {
-
+    cpp_int N = get_public_key().N;
     cpp_int reg_N2, nat_N2; // Le modulo auquel on fait les calculs de chiffrement
     nat_N2 = get_sup_auth().get_public_key().N;
 
@@ -70,7 +64,11 @@ void RegionalAuthority::make_tally(cpp_int N)
 
     // Déchiffrement de la somme régionale
     get_combiner().calculateResults(reg_prod);
-    get_bulletin_board().get_sums().push_back(get_combiner().combine());
+    cpp_int decrypted_reg_prod = get_combiner().combine();
+    get_bulletin_board().get_sums().push_back(decrypted_reg_prod);
 
     get_bulletin_board().get_sums().push_back(nat_prod);
+    
+    // Comparaison de la somme des résultats locaux au déchiffrement régional
+    return loc_sum == decrypted_reg_prod;
 }

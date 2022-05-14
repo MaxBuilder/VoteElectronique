@@ -47,9 +47,9 @@ void LocalAuthority::cout_board()
 	std::cout << "\033[0m\n";
 }
 
-void LocalAuthority::make_tally(cpp_int N)
+bool LocalAuthority::make_tally()
 {
-
+	cpp_int N = get_public_key().N;
 	cpp_int loc_N2, reg_N2, nat_N2; // Le modulo auquel on fait les calculs de chiffrement
 	nat_N2 = get_sup_auth().get_sup_auth().get_public_key().N;
 	reg_N2 = get_sup_auth().get_public_key().N;
@@ -90,4 +90,6 @@ void LocalAuthority::make_tally(cpp_int N)
 
 	get_bulletin_board().get_sums().push_back(reg_res);
 	get_bulletin_board().get_sums().push_back(nat_res);
+
+	return true;
 }

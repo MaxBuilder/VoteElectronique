@@ -87,9 +87,13 @@ public:
 
 
     /**
-    * @brief Effectue le décompte des votes. Suppose que les votes sont déjà triés : on a supprimé ceux qui étaient invalides.
+    * @brief Effectue le décompte des votes. 
+    * Suppose que les votes sont déjà triés : on a supprimé ceux qui étaient invalides.
+    *  
+    * @return true si le résultat obtenu après déchiffrement est égal à la somme des résultats reçus par l'autorité inférieure
+    * @return false si non
     */
-    virtual void make_tally(cpp_int) = 0;
+    virtual bool make_tally() = 0;
 };
 
 #endif // __CENTER_H__

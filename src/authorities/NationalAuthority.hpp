@@ -24,7 +24,14 @@ public:
      */
     void cout_board() override;
 
-    void make_tally(cpp_int) override;
+    /**
+    * @brief Effectue le décompte des votes. 
+    * Suppose que les votes sont déjà triés : on a supprimé ceux qui étaient invalides.
+    *  
+    * @return true si le résultat obtenu après déchiffrement est égal à la somme des résultats reçus par l'autorité inférieure
+    * @return false si non
+    */
+    bool make_tally() override;
 
     /**
      * @brief Calcule et renvoie le vecteur du nombre de votes pour chaque candidat.

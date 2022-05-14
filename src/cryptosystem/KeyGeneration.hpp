@@ -13,6 +13,8 @@ class KeyGeneration
 
 public:
     static std::tuple<PKey, mp::cpp_int> generate_keys();
+
+    // ToDo: sérialiser les clés générées
 };
 
 #endif // __KEY_GENERATION_H

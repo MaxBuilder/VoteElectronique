@@ -20,12 +20,6 @@ private:
 
     std::vector<cpp_int> sums; // Décompte de chaque colonne
 
-    /**
-     * @brief Objet Verifier pour la vérification des votes
-     * // ToDo : Confirmer le passage du Verifier en fonctions statiques
-     */
-    // Verifier verifier;
-
 public:
     /**
      * @brief Retourne la référence du tableau des votes.
