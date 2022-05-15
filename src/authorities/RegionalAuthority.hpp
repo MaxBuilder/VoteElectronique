@@ -21,7 +21,7 @@ private:
 
 public:
     // Constructeur
-    RegionalAuthority(int _id, NationalAuthority &_national_auth) : Center(), id(_id), national_auth(_national_auth){};
+    RegionalAuthority(int _id, NationalAuthority &_national_auth, bool verbose) : Center(verbose), id(_id), national_auth(_national_auth){};
 
     /**
      * @brief Accesseur à l'attribut id.

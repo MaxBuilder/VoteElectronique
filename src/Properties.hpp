@@ -13,7 +13,6 @@ class Properties
 {
 
 private:
-	bool boardFiles; 	// Booléen indiquant s'il est nécessaire d'exporter les fichiers des bulletin boards
 	int nbVotersPerLocalAuth;	// Le nombre de votants.
 	int nbRegionalAuth;			// Le nombre d'autorités régionales.
 	int nbLocalPerRegionalAuth; // Le nombre d'autorités locales par autorité régionale.
@@ -45,8 +44,6 @@ public:
 	static Properties *getProperties();
 
 	// A la suite se trouvent les différents accesseurs sur les propriétés.
-	bool get_boardFiles();
-
 	int get_nbVotersPerLocalAuth();
 
 	int get_nbRegionalAuth();

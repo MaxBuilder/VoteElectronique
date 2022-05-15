@@ -47,13 +47,13 @@ App *App::getApp() {
 	return reference;
 }
 
-void App::instanciate_authorities() {
+void App::instanciate_authorities(bool verbose) {
 	Properties *prop = Properties::getProperties();
 
 	std::cout << "\033[1;33m ❯ Génération des autorités régionales:\033[0m\n";
 	// Génération des autorités régionales
 	for (int i = 0; i < prop->get_nbRegionalAuth(); i++) {
-		reg_auths.push_back(RegionalAuthority(i + 1, nat_auth));
+		reg_auths.push_back(RegionalAuthority(i + 1, nat_auth, verbose));
 	}
 	std::cout << "	✅ " << prop->get_nbRegionalAuth() << " paires de clés "<<prop->get_keySize()<<" bits ont été générées\n";
 
@@ -61,7 +61,7 @@ void App::instanciate_authorities() {
 	// Génération des autorités locales
 	for (size_t i = 0; i < reg_auths.size(); i++) {
 		for (int j = 0; j < prop->get_nbLocalPerRegionalAuth(); j++) {
-			loc_auths.push_back(LocalAuthority(j + 1, reg_auths[i]));
+			loc_auths.push_back(LocalAuthority(j + 1, reg_auths[i], verbose));
 		}
 	}
 	std::cout << "	✅ " << prop->get_nbRegionalAuth()*prop->get_nbLocalPerRegionalAuth() << " paires de clés "<<prop->get_keySize()<<" bits ont été générées\n";
@@ -190,11 +190,109 @@ void App::generate_random_votes() {
 				ev.localVote, ev.regionalVote, ev.nationalVote, ev.eq_proof));
 		}
 	}
-	std::cout << "   \033[1mVotes clairs: \033[0m";
+	std::cout << "	\033[1mVotes clairs: \033[0m";
 	for (size_t i = 0; i < clear_clear_votes.size(); i++)
 		std::cout << i+1 << ": " << clear_clear_votes[i] << " | ";
 	std::cout << "\n";
 }
+
+
+
+void App::read_vote_file() {
+	std::cout << "\033[1;33m ❯ Génération de votes issus de la configuration dans les boards des autorités locales:\033[0m\n";
+
+	// Lecture et parsing du fichier de configuration
+	// using Json = nlohmann::json;
+	// std::ifstream ifs("votes.json");
+	// Json jf = Json::parse(ifs);
+	// TODO : fixer la lecture du fichier
+
+	std::vector<std::array<int, 5>> votes;
+	votes.push_back({1, 1, 1, 0, 0});
+	votes.push_back({2, 2, 2, 1, 0}); // fraud 
+    votes.push_back({1, 1, 1, 0, 0});
+    votes.push_back({2, 2, 1, 0, 0}); // fraud
+    votes.push_back({1, 1, 1, 0, 0});
+    votes.push_back({2, 2, 2, 0, 0});
+	votes.push_back({2, 2, 2, 0, 0});
+    votes.push_back({2, 2, 2, 0, 0});
+    votes.push_back({2, 2, 2, 1, 0}); // fraud
+    votes.push_back({3, 3, 3, 0, 0});
+    votes.push_back({3, 3, 3, 0, 0});
+    votes.push_back({2, 1, 2, 0, 0}); // fraud
+    votes.push_back({3, 3, 3, 0, 0});
+    votes.push_back({3, 3, 3, 0, 0});
+    votes.push_back({3, 3, 3, 0, 1}); // fraud
+    votes.push_back({3, 3, 3, 0, 0});
+	nb_voters = votes.size();
+
+	std::array<PublicKey, 3> pkeys;
+	cpp_int M_pow_vote;
+	int loci;
+	int counter = 1;
+	EncryptedVote ev;
+	CryptoUtils::SKeyRSA voterKeys;
+	std::time_t timestamp;
+	CipherStruct locVote, regVote, natVote;
+	cpp_int locSign, regSign, natSign;
+	
+	for (std::array<int, 5> v : votes) {
+
+		loci = rand() % loc_auths.size();
+		pkeys = loc_auths[loci].get_public_keys();
+
+		// Fausse signature ?
+		if (v[4]) {
+			voterKeys.pkey.e = cpp_int(3);
+			voterKeys.pkey.n = cpp_int(2);
+		}
+		else {
+			voterKeys = generateVoterKeys();
+		}
+		ev.pkey = voterKeys.pkey;
+
+		// Vote local
+		M_pow_vote = boost::multiprecision::pow(M, v[0]);
+		locVote = Encryption::encrypt(pkeys[0], M_pow_vote);
+		if (v[4])	locSign = cpp_int(0);
+		else		locSign = signRSA(locVote.cipher, voterKeys);
+		ev.localVote = {locVote.cipher, locSign, cpp_int(0)};
+
+		// Vote regional
+		M_pow_vote = boost::multiprecision::pow(M, v[1]);
+		regVote = Encryption::encrypt(pkeys[1], M_pow_vote);
+		if (v[4])	regSign = cpp_int(0);
+		else		regSign = signRSA(regVote.cipher, voterKeys);
+		ev.regionalVote = {regVote.cipher, regSign, cpp_int(0)};
+
+
+		// Vote national
+		M_pow_vote = boost::multiprecision::pow(M, v[2]);
+		natVote = Encryption::encrypt(pkeys[2], M_pow_vote);
+		if (v[4])	natSign = cpp_int(0);
+		else		natSign = signRSA(natVote.cipher, voterKeys);
+		ev.nationalVote = {natVote.cipher, natSign, cpp_int(0)};
+
+		// Génération de la preuve d'égalité des votes (zero-knowledge proof 3)
+    	ev.eq_proof = Prover::generate_equality_proof(M_pow_vote, std::array<CipherStruct, 3>{locVote, regVote, natVote}, pkeys, Verifier::get_challenge());
+
+		// Faux timestamp ?
+		if (v[3]) {
+			timestamp = time(nullptr) + 9999999;
+		}
+		else {
+			timestamp = time(nullptr) + rand() % 1000;
+		}
+
+		// Ajout du bulletin au BulletinBoard
+		loc_auths[loci].get_bulletin_board().get_board().push_back(
+			new LocalBulletin(counter, ev.pkey, timestamp, 
+			ev.localVote, ev.regionalVote, ev.nationalVote, ev.eq_proof));
+		
+		counter++;
+	}
+}
+
 
 void App::filter_local_boards() {
 	std::cout << "\033[1;33m ❯ Filtrage des bulletins locaux par timestamp, signature, preuve de vote et preuve d'égalité:\033[0m\n";
@@ -205,13 +303,16 @@ void App::filter_local_boards() {
 	std::cout << "	✅ " << total_fraud << " bulletins frauduleux ont été supprimés. " << nb_voters-total_fraud << " bulletins valides restants.\n";
 }
 
-void App::compute_local_tallies_and_transmission() {
+void App::compute_local_tallies_and_transmission(bool verbose) {
 	std::cout << "\033[1;33m ❯ Décompte des bulletins locaux et publication des résultats sur les boards régionaux\033[0m\n";
+	if (verbose)
+		std::cout << "\n";
 	
 	// Tally des sommes locales et cout des tableaux locaux pour vérification
     for (size_t i = 0; i < loc_auths.size(); i++) {
         loc_auths[i].make_tally();
-        // loc_auths[i].cout_board();
+		if (verbose)
+        	loc_auths[i].cout_board();
     }
 
     // Transmettre aux régionales
@@ -220,16 +321,20 @@ void App::compute_local_tallies_and_transmission() {
     }
 };
 
-void App::compute_regional_tallies_and_transmission() {
+void App::compute_regional_tallies_and_transmission(bool verbose) {
 	std::cout << "\033[1;33m ❯ Décompte des bulletins régionaux et publication des résultats sur le board national:\033[0m\n";
-	
+	if (verbose)
+		std::cout << "\n";
+
 	// Tally des sommes régionales et cout des tableaux régionaux pour vérification
     for (size_t i = 0; i < reg_auths.size(); i++) {
-        if (reg_auths[i].make_tally())
-			std::cout << "	✅ Résultats déchiffrés de Régionale n°" << i+1 << " conformes à la somme des décomptes clairs reçus des locales.\n";       
+        if (reg_auths[i].make_tally()) {
+			if (verbose)
+				reg_auths[i].cout_board();
+			std::cout << "	✅ Résultats déchiffrés de Régionale n°" << i+1 << " conformes à la somme des décomptes clairs reçus des locales.\n\n";       
+		}
 		else
-            std::cout << "❌";
-        // reg_auths[i].cout_board();
+            std::cout << "❌\n";
     }
 
     // Transmettre à la nationale
@@ -238,15 +343,19 @@ void App::compute_regional_tallies_and_transmission() {
     }
 };
 
-void App::compute_national_tally() {
+void App::compute_national_tally(bool verbose) {
 	std::cout << "\033[1;33m ❯ Décompte des bulletins nationaux:\033[0m\n";
+	if (verbose)
+		std::cout << "\n";
 
 	// Tally des sommes nationales et cout du tableau national pour vérification
-    if (nat_auth.make_tally())
-		std::cout << "	✅ Les résultats déchiffrés de l'autorité nationale sont conformes à la somme des décomptes clairs reçus de ses régionales.\n";       
+    if (nat_auth.make_tally()) {
+		if (verbose)
+			nat_auth.cout_board();
+		std::cout << "	✅ Les résultats déchiffrés de l'autorité nationale sont conformes à la somme des décomptes clairs reçus de ses régionales.\n\n";       
+	}
 	else
-		std::cout << "❌";
-    // nat_auth.cout_board();
+		std::cout << "❌\n";
 };
 
 void App::publish_vote_results() {

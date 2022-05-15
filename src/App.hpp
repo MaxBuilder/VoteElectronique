@@ -58,7 +58,7 @@ public:
     std::vector<LocalAuthority>& get_loc_auths() { return loc_auths; };
 
     // Instanciation des autorités régionales et locales
-    void instanciate_authorities();
+    void instanciate_authorities(bool verbose);
 
     
 
@@ -78,17 +78,20 @@ public:
     // Génération de votes aléatoires chiffrés dans les boards des autorités locales
     void generate_random_votes();
 
+    // Génération de votes issus de la configuration dans les boards des autorités locales
+    void read_vote_file();
+
     // Filtrage des bulletins locaux par timestamp, signature, preuve de vote et preuve d'égalité
     void filter_local_boards();
 
     // Décompte des bulletins locaux et publication des résultats sur les boards régionaux
-    void compute_local_tallies_and_transmission();
+    void compute_local_tallies_and_transmission(bool verbose);
 
     // Décompte des bulletins régionaux et publication des résultats sur le board national
-    void compute_regional_tallies_and_transmission();
+    void compute_regional_tallies_and_transmission(bool verbose);
     
     // Décompte des bulletins nationaux
-    void compute_national_tally();
+    void compute_national_tally(bool verbose);
     
     // Extraction des résultats du vote à partir du décompte total déchiffré
     void publish_vote_results();

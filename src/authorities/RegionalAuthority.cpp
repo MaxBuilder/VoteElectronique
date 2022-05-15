@@ -16,15 +16,18 @@ void RegionalAuthority::transmit_results()
 
 void RegionalAuthority::cout_board()
 {
-    std::cout << "\033[;33mBoard de l'autorité régionale n°" << get_id() << " :\033[00m\n";
-    get_bulletin_board().cout_board();
+    std::cout << "	\033[;34mBoard de l'autorité régionale n°" << get_id() << " :\033[00m\n";
+    std::cout << "	\033[1m| IdAut |   Local sums    | Regional prods  | National prods  |\n\033[0m";
+	get_bulletin_board().cout_board();
 
-    std::cout << "| Sums. | ";
+    std::cout << "	\033[1m| Sums. | ";
     for (size_t i = 0; i < get_bulletin_board().get_sums().size(); i++)
     {
-        std::cout << std::setfill(' ') << std::setw(5) << get_bulletin_board().get_sums()[i] << " | ";
+        std::cout << std::setfill(' ') << std::setw(15) << std::hex 
+        << get_bulletin_board().get_sums()[i] 
+        << " | " << std::dec;
     }
-    std::cout << "\n";
+    std::cout << "\033[0m\n";
 }
 
 bool RegionalAuthority::make_tally()

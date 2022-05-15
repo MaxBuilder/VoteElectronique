@@ -11,7 +11,9 @@ cpp_int RegionalBulletin::get_nat_product() { return nat_product; }
 
 
 void RegionalBulletin::cout_board() {
-    std::cout << "| " << std::setfill(' ') << std::setw(5) << get_pseudonym() << " | " << std::setfill(' ')
-        << std::setw(5) << loc_sum << " | " << std::setfill(' ') << std::setw(5) << reg_product << " | "
-        << std::setfill(' ') << std::setw(5) << nat_product << " |\n";
+    std::cout << "	| " << std::hex 
+    << std::setfill(' ') << std::setw(5) << get_pseudonym() << " | " 
+    << std::setfill(' ') << std::setw(15) << loc_sum << " | " 
+    << std::setfill(' ') << std::setw(15) << reg_product << " | " 
+    << std::setfill(' ') << std::setw(15) << nat_product << " |\n" << std::dec;
 }

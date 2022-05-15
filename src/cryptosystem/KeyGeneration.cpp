@@ -5,7 +5,7 @@
  *  PKey : public key struct (N,g,thetha)
  *  cpp_int : Secret key m = m*beta.
  */
-std::tuple<PKey, mp::cpp_int> KeyGeneration::generate_keys()
+std::tuple<PKey, mp::cpp_int> KeyGeneration::generate_keys(bool verbose)
 {
     Properties *prop = Properties::getProperties();
     int size_key = prop->get_keySize();
@@ -80,6 +80,8 @@ std::tuple<PKey, mp::cpp_int> KeyGeneration::generate_keys()
               << "tetha = a*m*beta mod N = " << tetha << "\n"
               << " > PK = {g, N, tetha} = {" << g << ", " << N << ", " << tetha << "}\n\n";
     */
-    // std::cout << "Clé générée! N: " << N << "\n";
+    if (verbose) {
+        std::cout << "	Clé d'autorité générée | N : " << std::hex << std::uppercase << N << std::dec << "\n";
+    }
     return std::make_tuple(return_value, Skey);
 }

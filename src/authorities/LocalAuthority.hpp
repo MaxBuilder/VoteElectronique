@@ -21,7 +21,7 @@ private:
 
 public:
     // Constructeur
-    LocalAuthority(int _id, RegionalAuthority &_regional_auth) : Center(), id(_id), regional_auth(_regional_auth){};
+    LocalAuthority(int _id, RegionalAuthority &_regional_auth, bool verbose) : Center(verbose), id(_id), regional_auth(_regional_auth){};
 
     /**
      * @brief Accesseur sur l'attribut id.

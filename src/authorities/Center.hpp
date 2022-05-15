@@ -29,8 +29,8 @@ private:
 public:
     
     // Constructeur
-    Center() {
-        std::tuple<PKey, cpp_int> keys = KeyGeneration::generate_keys();
+    Center(bool verbose) {
+        std::tuple<PKey, cpp_int> keys = KeyGeneration::generate_keys(verbose);
         public_key = std::get<0>(keys);
         private_key = std::get<1>(keys);
 

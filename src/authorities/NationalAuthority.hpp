@@ -12,7 +12,7 @@ class NationalAuthority : public Center
 
 public:
     // Constructeur
-    NationalAuthority() : Center() {}
+    NationalAuthority() : Center(false) {}
 
     /**
      * @brief Annonce les résultats de l'élection.

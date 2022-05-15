@@ -1,0 +1,14 @@
+{
+    "__DuréeDuVoteEnMilliSecondes": -1,
+    "voteDuration": 7200000,
+
+    "nbCandidats": 3,
+
+    "nbRegionalAuth": 1,
+    "nbLocalPerRegionalAuth": 2,
+    "nbVotersPerLocalAuth": 8,
+    
+    "nbServersPerCombiner": 2,
+    "t": 1,
+    "keySize": 26
+}

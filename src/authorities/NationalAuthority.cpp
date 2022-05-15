@@ -33,7 +33,7 @@ void NationalAuthority::transmit_results()
 
     for (size_t i = 0; i < res.size(); i++)
     {
-        std::cout << "  Candidat n°" << i + 1 << " : " << res[i] << " votes\n";
+        std::cout << "	Candidat n°" << i + 1 << " : " << res[i] << " votes\n";
     }
     std::cout << "\n"
               << "\033[1;32mLe candidat n°"
@@ -44,15 +44,17 @@ void NationalAuthority::transmit_results()
 
 void NationalAuthority::cout_board()
 {
-    std::cout << "\033[;33mBoard de l'autorité nationale :\033[00m\n";
+    std::cout << "	\033[;34mBoard de l'autorité nationale :\033[00m\n";
+    std::cout << "	\033[1m| IdAut |  Regional sums  | National prods  |\n\033[0m";
     get_bulletin_board().cout_board();
 
-    std::cout << "| Sums. | ";
+    std::cout << "	\033[1m| Sums. | ";
     for (size_t i = 0; i < get_bulletin_board().get_sums().size(); i++)
     {
-        std::cout << std::setfill(' ') << std::setw(5) << get_bulletin_board().get_sums()[i] << " | ";
+        std::cout << std::setfill(' ') << std::setw(15) << std::hex << get_bulletin_board().get_sums()[i] 
+        << " | " << std::dec;
     }
-    std::cout << "\n";
+    std::cout << "\n\033[0m";
 }
 
 bool NationalAuthority::make_tally()

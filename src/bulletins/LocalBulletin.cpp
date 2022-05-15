@@ -27,17 +27,19 @@ void LocalBulletin::cout_board() {
         // << std::setfill(' ') << std::setw(5) << std::get<2>(loc_vote) << " |\n";
 
         std::tm *tm = std::localtime(&timestamp);
-        std::cout << "| " 
+        std::cout << "	| " 
         << std::setfill('0') << std::setw(2) << tm->tm_hour
         << ':' << std::setfill('0') << std::setw(2) << tm->tm_min 
         << ':' << std::setfill('0') << std::setw(2) << tm->tm_sec
-        << " | " << std::setfill(' ') << std::setw(5) << get_pseudonym() << " | " << std::setfill(' ');
+        << " | " << std::setfill(' ') << std::setw(3) << get_pseudonym() + 1 << " | " << std::setfill(' ');
         
         
 
-        std::cout << std::setw(5) << std::get<0>(loc_vote) << " | "
-        << std::setw(5) << std::get<0>(reg_vote) << " | "
-        << std::setw(5) << std::get<0>(nat_vote) << " | ";
+        std::cout << std::hex 
+        << std::setw(15) << std::get<0>(loc_vote) << " | "
+        << std::setw(15) << std::get<0>(reg_vote) << " | "
+        << std::setw(15) << std::get<0>(nat_vote) << " | "
+        << std::dec;
 
         if (!valid)
                 std::cout << "✅";
