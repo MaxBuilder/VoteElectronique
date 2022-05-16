@@ -1,53 +1,78 @@
-# VoteElectronique
+# Secured Election System
 
-Projet TER : Implémentation C++ d'un ensemble de protocoles sécurisés pour un système de vote électronique.
+[![SchoolProject](https://img.shields.io/badge/School-project-83BD75?labelColor=B4E197&style=for-the-badge)]()
+[![C++](https://img.shields.io/badge/Made%20with-C++-B22727?labelColor=EE5007&style=for-the-badge)]()
+[![Boost](https://img.shields.io/badge/Uses-Boost%20library-E4AEC5?labelColor=FFC4DD&style=for-the-badge)]()
 
-## Deadlines
+**Cryptographically secured** multi-candidate election system using a **treshold version of Paillier Cryptosystem** and **Zero-Knowledge proofs**.
 
-- Scénario complet de votes, chiffrement, déchiffrement et publication des résultats au **15/04/2022**
-- Passage en déchiffrement à seuil (secrets partagés et algorithme de combinaison)
-- Scénario complet présentable (avec ~10k votes) sans modèle client/serveur au **29/04/2022**
-- Modèle client/serveur pour la simulation complète au **29/04/2022**
+This is an implementation of the paper published in *PODC '01: « Proceedings of the twentieth annual ACM symposium on Principles of distributed computing », August 2001, pages 274–283, available on the [ACM Digital Library](https://doi.org/10.1145/383962.384044)*.
 
-## 🔴 ToDo
+## Usage
 
-- [x] Supprimer la classe Client et créer une superclasse pour contenir l'ensemble des autorités et les méthodes Client (Sign et Vote)
-- [ ] Modifier l'affichage des bulletins board :
-  - [ ] Retirer l'affichage des votes et valeurs trop grandes
-  - [ ] Garder dans la ligne sums les résultats mod N + une checkmark pour montrer qu'elles sont égales + le fait que le produit est calculé et prêt à être transférer
-  - [ ] Rendre le tout compréhensible et léger pour un scénario simulation
-- [ ] Implémenter une façon de générer les clés en amont et de lancer la simu avec un fichier de clés
-- [ ] Créer un autre scénario pour tester le retrait des votes frauduleux (par timestamp, signature, preuve de vote et preuve d'égalité)
-- [ ] Créer un scénario présentable sans modèle client/serveur
+### Prerequisites
 
-### Partie chiffrement et preuves
+This project uses `cmake` for the build and the `boost` library for its `multiprecision` and `random` modules.
+On a Debian-based system you can install them with:
 
-- [x] Génération des clés
-  - [x] Génération prime et safe prime test
-  - [x] Génération de PK et SK
-- [x] Chiffrement (§ 10.2.1)
-- [x] Preuve / vérification d'égalité des messages clairs (Zero-knowledge proof 3, § 10.3.3)
-- [x] Génération du challenge aléatoire e dans `[0, A[` (A est un entier de 80 bits d'après §1) (méthode `Verifier::get_challenge()`)
-- [ ] Preuve de validité d'un vote (Zero-knowledge proof 2, § 10.3.2)
-- [ ] Vérifications de la preuve
-- [ ] Méthode de comparaison des résultats après tally des autorités et ajout d'un checkmark sur le bulletinboard
+```
+$ sudo apt-get install cmake libboost-all-dev
+```
 
-### Déchiffrement et publication des résultats
+### Initial configuration
+Complete the configuration file before running the simulation.
 
-- [x] Premier déchiffrement (sans shares ni combiner pour un scénario test)
-- [ ] Génération d'une preuve de bon déchiffrement (Vk)
+<p align="center">
+  <img src="./res/config.png" alt="Configuration file" width="650">
+</p>
+
+
+### Build using CMake
+
+```sh
+$ cmake CMakeLists.txt
+$ make
+```
+
+### Run
+
+- Classic execution of the election system simulation :
+```sh
+$ ./EVote
+```
+
+- Verbose mode on some fraudulent votes (we do not recommand using the `--verbose` on a heavy configuration) :
+```sh
+$ ./EVote --verbose --votes
+```
+
+## Benchmarking
+
+After a few runs of the simulation with different configurations on the same processor, we reached the limit of our implementation at **400,000 voters** for 128 bits keys. 
+Below are time metrics taken on the different phases of the execution.
+  
+|        **Simulation phase**        | **Measured time** |
+|:----------------------------------:|:-----------------:|
+|       Generation of 200 keys       |       9'03s       |
+|     Encryption of 225,000 votes    |       7'25s       |
+| Zero-Knowledge Proof verifications |       1'52s       |
+|         Treshold decryption        |        < 1s       |
+
+
+
+## Authors
+
+* [@Blutch10](https://github.com/Blutch10)
+* [@Guerric-H](https://github.com/Guerric-H)
+* [@vdElyn](https://github.com/vdElyn)
+* [@MaxBuilder](https://github.com/MaxBuilder)
+
+
+## Remaining
+
+- [ ] Add a keys serialization 
+- [ ] Legal vote proof (Zero-knowledge proof 2, § 10.3.2)
+- [ ] Partial decryption proof (§ 10.2.1)
 - [ ] Vérification des preuves : t+1 bons déchiffrement nécessaires à la combinaison
-- [x] Déchiffrement partagé (§ 10.2.1)
-- [x] Algorithme de combinaison
-- [x] Méthode `transmit_results()` d'extraction des résultats depuis la combinaison finale mod N de l'autorité nationale (somme claire)  pour la publication des résultats
-- [ ] Vérifier que les tailles de clés sont assez grande pour un nombre important de vote
-- [x] Fixer la modification du nombre de serveurs pour le combiner
-
-### Plus tard
-
-- [x] Implémenter RSA pour la signature des votes
-  - [x] Ajouter la clé publique de l'utilisateur au bulletin local
-- [ ] Génération de certificats pour les pseudos de chaque votant (§ 10.4)
 - [ ] Receipt-free property (§ 10.5)
-- [x] Rendre notre dossier exécutable statiquement (la librairie `jsoncpp` doit être avec le projet)
 - [ ] The commitments can be replaced by their hash values (§ 6)
